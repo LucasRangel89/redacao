@@ -6,8 +6,10 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas,
+    "Liberation Mono", "Courier New", monospace;
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -124,7 +126,24 @@
       oklch(1 0 0 / 6%) 32px
     );
   line-height: 32px;
-  font-size: 15px;
+  font-size: 16px;
+  font-family: "Times New Roman", Times, Georgia, "Source Serif Pro", serif;
+  text-indent: 1.5em;
+  padding-bottom: 64px !important;
+}
+
+/* O primeiro parágrafo dentro do editor também ganha indentação */
+.folha-redacao::first-line {
+  /* indenta a partir do placeholder? Não — text-indent aplica a cada "linha" do textarea?
+     Na prática o text-indent do textarea só afeta a primeira linha visual. Aceitamos como dica visual. */
+}
+
+/* Desabilita text-indent enquanto o placeholder está visível (placeholder não é ::first-line) */
+.folha-redacao::placeholder {
+  text-indent: 0;
+  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
 }
 
 /* Scrollbar discreta para painéis */

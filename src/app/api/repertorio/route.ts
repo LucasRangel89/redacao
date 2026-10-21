@@ -1,8 +1,11 @@
 import { NextResponse } from "next/server";
 import { chatComplete, extractJson } from "@/lib/ai";
+import { HttpError, schemas, validateBody } from "@/lib/validation";
+import { clientIdentifier, rateLimit } from "@/lib/rate-limit";
 import type { RepertorioSugestao } from "@/lib/types";
 
 export const maxDuration = 90;
+export const dynamic = "force-dynamic";
 
 const SYSTEM = `Você é um consultor de repertórios socioculturais para redações ENEM/Concursos.
 Dado um tema e um TIPO de repertório, proponha 3 repertórios PRODUTIVOS (específicos, verificáveis e discutíveis),
@@ -20,32 +23,17 @@ REGRAS:
 
 export async function POST(req: Request) {
   try {
-    const { tema, tipo } = (await req.json()) as {
-      tema: string;
-      tipo: string;
-    };
-
-    if (!tema?.trim() || !tipo) {
+    const rl = rateLimit(clientIdentifier(req), { max: 15, windowSec: 60 });
+    if (!rl.ok) {
       return NextResponse.json(
-        { error: "Informe tema e tipo de repertório." },
-        { status: 400 }
+        { error: `Muitas requisições. Aguarde ${rl.resetInSec}s.` },
+        { status: 429, headers: { "Retry-After": String(rl.resetInSec) } }
       );
     }
 
-    const user = `TEMA: """${tema}"""
-TIPO DE REPERTÓRIO: ${tipo}
+    const { tema, tipo } = await validateBody(req, schemas.repertorio);
 
-Responda APENAS com JSON:
-{
-  "sugestoes": [
-    {
-      "titulo": "nome do repertório (obra/autor, lei, instituição+tema)",
-      "fonte": "autoria ou instituição",
-      "ideiaCentral": "1-2 frases",
-      "comoUsar": "1 frase de aplicação argumentativa"
-    }
-  ]
-}`;
+    const user = `TEMA: """${tema}"""\nTIPO DE REPERTÓRIO: ${tipo}\n\nResponda APENAS com JSON:\n{\n  "sugestoes": [\n    {\n      "titulo": "nome do repertório (obra/autor, lei, instituição+tema)",\n      "fonte": "autoria ou instituição",\n      "ideiaCentral": "1-2 frases",\n      "comoUsar": "1 frase de aplicação argumentativa"\n    }\n  ]\n}`;
 
     const raw = await chatComplete({
       system: SYSTEM,
@@ -68,6 +56,9 @@ Responda APENAS com JSON:
     return NextResponse.json({ sugestoes: sugestoes.slice(0, 4) });
   } catch (err) {
     console.error("[api/repertorio]", err);
+    if (err instanceof HttpError) {
+      return NextResponse.json({ error: err.message }, { status: err.status });
+    }
     return NextResponse.json(
       { error: "Falha ao buscar repertórios. Tente novamente." },
       { status: 500 }

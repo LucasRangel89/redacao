@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { PenLine, RotateCcw, Timer } from "lucide-react";
+import { Check, PenLine, RotateCcw, Save, Timer } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   AlertDialog,
@@ -18,13 +18,14 @@ import { useRedacaoStore } from "@/lib/store";
 import type { Stage } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
-const ETAPAS: { id: Stage; numero: string; titulo: string }[] = [
-  { id: "setup", numero: "1", titulo: "Tema" },
-  { id: "arquitetura", numero: "2", titulo: "Arquitetura" },
-  { id: "escrita", numero: "3", titulo: "Escrita" },
+const ETAPAS: { id: Stage; numero: string; titulo: string; descricao: string }[] = [
+  { id: "setup", numero: "1", titulo: "Tema", descricao: "Escolha do tema" },
+  { id: "arquitetura", numero: "2", titulo: "Arquitetura", descricao: "Planejamento" },
+  { id: "escrita", numero: "3", titulo: "Escrita", descricao: "Redação" },
 ];
 
 function formatarTempo(segundos: number) {
+  if (segundos < 0) segundos = 0;
   const h = Math.floor(segundos / 3600);
   const m = Math.floor((segundos % 3600) / 60);
   const s = segundos % 60;
@@ -34,27 +35,41 @@ function formatarTempo(segundos: number) {
 }
 
 export function AppHeader() {
-  const { stage, setStage, tema, startedAt, novaRedacao } = useRedacaoStore();
+  const { stage, setStage, tema, startedAt, novaRedacao, textoFinal } = useRedacaoStore();
   const [elapsed, setElapsed] = useState(0);
+  const [salvo, setSalvo] = useState<"salvo" | "salvando">("salvo");
 
+  // Timer total da sessão (apenas quando há tema escolhido)
   useEffect(() => {
-    if (!startedAt) return;
+    if (!startedAt) {
+      setElapsed(0);
+      return;
+    }
     const tick = () => setElapsed(Math.floor((Date.now() - startedAt) / 1000));
+    tick();
     const id = setInterval(tick, 1000);
     return () => clearInterval(id);
   }, [startedAt]);
 
-  const podeIrPara = (destino: Stage) => {
+  // Indicador "salvo" — simula debounce de 800ms após qualquer edição
+  useEffect(() => {
+    if (!tema) return;
+    setSalvo("salvando");
+    const t = setTimeout(() => setSalvo("salvo"), 800);
+    return () => clearTimeout(t);
+  }, [textoFinal, tema, useRedacaoStore.getState().tese, useRedacaoStore.getState().argumentos]);
+
+  const podeIrPara = (destino: Stage): boolean => {
     if (destino === "setup") return true;
     if (!tema) return false;
     if (destino === "escrita") {
-      return (
-        useRedacaoStore.getState().tese.trim().length > 0 &&
-        useRedacaoStore.getState().argumentos.length > 0
-      );
+      const s = useRedacaoStore.getState();
+      return s.tese.trim().length > 0 && s.argumentos.length > 0;
     }
     return true;
   };
+
+  const etapaAtual = ETAPAS.find((e) => e.id === stage);
 
   return (
     <header className="sticky top-0 z-40 border-b border-border/60 bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -72,7 +87,9 @@ export function AppHeader() {
               </span>
             </p>
             <p className="hidden sm:block truncate text-xs text-muted-foreground leading-tight">
-              Planeje. Escreva. Revisão em tempo real.
+              {etapaAtual
+                ? `Etapa ${etapaAtual.numero} · ${etapaAtual.descricao}`
+                : "Planeje. Escreva. Revise."}
             </p>
           </div>
         </div>
@@ -128,17 +145,39 @@ export function AppHeader() {
           })}
         </nav>
 
-        {/* Timer + reset */}
+        {/* Status: save + timer + reset */}
         <div className="flex items-center gap-2">
+          {/* Status de salvamento (apenas na etapa de escrita ou com tema) */}
+          {tema && (
+            <div
+              className="hidden sm:flex items-center gap-1.5 rounded-full border border-border bg-secondary/40 px-2.5 py-1 text-[11px] text-muted-foreground"
+              aria-live="polite"
+              title="Salvamento automático em seu navegador"
+            >
+              {salvo === "salvo" ? (
+                <>
+                  <Check className="h-3 w-3 text-emerald-400" />
+                  Salvo
+                </>
+              ) : (
+                <>
+                  <Save className="h-3 w-3 text-amber-400 animate-pulse" />
+                  Salvando…
+                </>
+              )}
+            </div>
+          )}
+
           {startedAt && (
             <div
               className="flex items-center gap-1.5 rounded-full border border-border bg-secondary/60 px-3 py-1.5 text-xs font-mono tabular-nums text-muted-foreground"
-              title="Tempo total da sessão"
+              title="Tempo total da sessão (desde a escolha do tema)"
             >
               <Timer className="h-3.5 w-3.5 text-blue-400" />
               {formatarTempo(elapsed)}
             </div>
           )}
+
           <AlertDialog>
             <AlertDialogTrigger asChild>
               <Button
@@ -146,6 +185,7 @@ export function AppHeader() {
                 size="icon"
                 className="h-9 w-9 text-muted-foreground hover:text-destructive"
                 title="Nova redação (limpar tudo)"
+                aria-label="Nova redação"
               >
                 <RotateCcw className="h-4 w-4" />
               </Button>

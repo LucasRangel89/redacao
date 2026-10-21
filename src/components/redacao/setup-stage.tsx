@@ -30,8 +30,10 @@ import {
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-import { useRedacaoStore, useRedacaoStore as useStore } from "@/lib/store";
+import { useRedacaoStore } from "@/lib/store";
 import { AREAS_TEMAS, type Tema } from "@/lib/types";
+
+const useStore = useRedacaoStore;
 
 export function SetupStage() {
   const setTema = useStore((s) => s.setTema);

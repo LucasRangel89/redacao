@@ -1,7 +1,13 @@
 "use client";
 
-import { useMemo } from "react";
-import { ClipboardList, Eye, EyeOff } from "lucide-react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import {
+  ClipboardList,
+  Copy,
+  Download,
+  Eye,
+  EyeOff,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -12,16 +18,82 @@ import {
 import { Progress } from "@/components/ui/progress";
 import { SidePanel } from "@/components/redacao/side-panel";
 import { estatisticasTexto, useRedacaoStore } from "@/lib/store";
-import { useState } from "react";
+import { cn } from "@/lib/utils";
+import { toast } from "sonner";
+
+const META_LINHAS = 30;
 
 export function EscritaStage() {
   const { tema, tese, argumentos, intervencao, textoFinal, setTextoFinal } =
     useRedacaoStore();
   const [planoVisivel, setPlanoVisivel] = useState(true);
+  const [painelAberto, setPainelAberto] = useState(false);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const stats = useMemo(() => estatisticasTexto(textoFinal), [textoFinal]);
-  const metaLinhas = 30;
-  const progressoLinhas = Math.min(100, (stats.linhas / metaLinhas) * 100);
+  const progressoLinhas = Math.min(100, (stats.linhas / META_LINHAS) * 100);
+
+  // Auto-resize do textarea conforme o conteúdo cresce
+  useEffect(() => {
+    const el = textareaRef.current;
+    if (!el) return;
+    el.style.height = "auto";
+    el.style.height = `${Math.max(el.scrollHeight, 400)}px`;
+  }, [textoFinal]);
+
+  function copiarTexto() {
+    if (!textoFinal.trim()) {
+      toast.error("Escreva algo antes de copiar.");
+      return;
+    }
+    navigator.clipboard.writeText(textoFinal).then(
+      () => toast.success("Redação copiada para a área de transferência."),
+      () => toast.error("Não foi possível copiar.")
+    );
+  }
+
+  function baixarTxt() {
+    if (!textoFinal.trim()) {
+      toast.error("Escreva algo antes de exportar.");
+      return;
+    }
+    const nome =
+      (tema?.titulo ?? "redacao")
+        .slice(0, 60)
+        .replace(/[^\p{L}\p{N}\s-]/gu, "")
+        .trim()
+        .replace(/\s+/g, "-")
+        .toLowerCase() || "redacao";
+    const blob = new Blob(
+      [
+        `Tema: ${tema?.titulo ?? ""}\n\n`,
+        textoFinal,
+        `\n\n---\nPalavras: ${stats.palavras} · Linhas: ${stats.linhas}/30 · Parágrafos: ${stats.paragrafos}`,
+      ],
+      { type: "text/plain;charset=utf-8" }
+    );
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${nome}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    toast.success("Arquivo .txt gerado.");
+  }
+
+  // Atalho: Ctrl/Cmd+Enter foca o editor? Não — melhor Ctrl+S prevenido e feedback.
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === "s") {
+        e.preventDefault();
+        toast.success("Progresso salvo localmente.");
+      }
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, []);
 
   return (
     <div className="mx-auto max-w-7xl px-4 sm:px-6 py-6">
@@ -40,7 +112,7 @@ export function EscritaStage() {
           {planoVisivel && (
             <Card>
               <CardHeader className="pb-2">
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between gap-2">
                   <CardTitle className="flex items-center gap-2 text-sm">
                     <ClipboardList className="h-4 w-4 text-blue-400" />
                     Seu plano arquitetado
@@ -72,9 +144,7 @@ export function EscritaStage() {
                 ))}
                 {(intervencao.agente || intervencao.acao) && (
                   <p>
-                    <span className="font-semibold text-emerald-400">
-                      Intervenção:{" "}
-                    </span>
+                    <span className="font-semibold text-emerald-400">Intervenção: </span>
                     <span className="text-muted-foreground">
                       {intervencao.agente || "…"} · {intervencao.acao || "…"} ·{" "}
                       {intervencao.meio || "…"} · {intervencao.finalidade || "…"}
@@ -97,8 +167,8 @@ export function EscritaStage() {
             </Button>
           )}
 
-          {/* Estatísticas */}
-          <div className="rounded-xl border border-border bg-card p-3">
+          {/* Estatísticas + ações */}
+          <div className="rounded-xl border border-border bg-card p-3 space-y-2">
             <div className="flex flex-wrap items-center gap-x-5 gap-y-1 text-xs">
               <span className="text-muted-foreground">
                 <span className="font-bold text-foreground tabular-nums">{stats.palavras}</span>{" "}
@@ -115,14 +185,33 @@ export function EscritaStage() {
                   <span className="font-bold text-foreground tabular-nums">
                     {stats.linhas}
                   </span>
-                  /{metaLinhas} linhas
+                  /{META_LINHAS} linhas
                 </span>
                 <Progress
                   value={progressoLinhas}
-                  className="h-1.5 flex-1"
+                  className={cn(
+                    "h-1.5 flex-1",
+                    progressoLinhas >= 100 ? "[&>div]:bg-emerald-500" : ""
+                  )}
                   aria-label="Progresso de linhas"
                 />
               </span>
+            </div>
+            <div className="flex flex-wrap gap-2 pt-1">
+              <Button size="xs" variant="outline" onClick={copiarTexto}>
+                <Copy className="mr-1.5 h-3.5 w-3.5" /> Copiar texto
+              </Button>
+              <Button size="xs" variant="outline" onClick={baixarTxt}>
+                <Download className="mr-1.5 h-3.5 w-3.5" /> Baixar .txt
+              </Button>
+              <Button
+                size="xs"
+                variant="secondary"
+                className="lg:hidden ml-auto"
+                onClick={() => setPainelAberto(true)}
+              >
+                Mentor/Busca/Revisão
+              </Button>
             </div>
           </div>
 
@@ -133,25 +222,68 @@ export function EscritaStage() {
                 Folha de redação — dissertativo-argumentativo
               </p>
               <p className="text-[10px] text-muted-foreground/60">
-                texto em rascunho · salvamento automático
+                salvamento automático
               </p>
             </div>
             <textarea
+              ref={textareaRef}
               value={textoFinal}
               onChange={(e) => setTextoFinal(e.target.value)}
               placeholder={`Escreva aqui sua redação.\n\nEstrutura sugerida:\n1. Introdução — contextualize e apresente a tese\n2. Desenvolvimento 1 — argumento 1 (tópico + repertório + análise)\n3. Desenvolvimento 2 — argumento 2 (tópico + repertório + análise)\n4. Conclusão — retome a tese e a proposta de intervenção completa`}
               aria-label="Editor da redação"
               spellCheck
-              className="folha-redacao w-full resize-none bg-transparent px-6 py-3 font-serif text-foreground outline-none placeholder:text-muted-foreground/40 min-h-[55vh]"
+              className="folha-redacao w-full resize-none bg-transparent px-6 py-3 font-serif text-foreground outline-none placeholder:text-muted-foreground/40"
+              style={{ minHeight: "55vh", overflowY: "hidden" }}
             />
           </div>
+
+          <p className="text-[11px] text-muted-foreground text-center">
+            Dica: pressione{" "}
+            <kbd className="rounded border border-border bg-secondary px-1 py-0.5 text-[10px] font-mono">
+              Ctrl
+            </kbd>
+            +
+            <kbd className="rounded border border-border bg-secondary px-1 py-0.5 text-[10px] font-mono">
+              S
+            </kbd>{" "}
+            para confirmar o salvamento a qualquer momento.
+          </p>
         </div>
 
-        {/* ===== Coluna direita: ferramentas ===== */}
-        <aside className="lg:sticky lg:top-20 h-[70vh] min-h-96 flex flex-col overflow-hidden rounded-xl border border-border bg-card">
+        {/* ===== Coluna direita: ferramentas (desktop) ===== */}
+        <aside className="hidden lg:flex lg:sticky lg:top-20 h-[70vh] min-h-96 flex-col overflow-hidden rounded-xl border border-border bg-card">
           <SidePanel />
         </aside>
       </div>
+
+      {/* ===== Painel mobile (drawer-like) ===== */}
+      {painelAberto && (
+        <div className="fixed inset-0 z-50 lg:hidden">
+          <div
+            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            onClick={() => setPainelAberto(false)}
+            aria-hidden
+          />
+          <div className="absolute inset-x-0 bottom-0 top-16 flex flex-col rounded-t-xl border-t border-border bg-card animate-[slideUp_0.25s_ease-out]">
+            <div className="flex items-center justify-between border-b border-border p-3">
+              <p className="text-sm font-semibold">Ferramentas</p>
+              <Button size="sm" variant="ghost" onClick={() => setPainelAberto(false)}>
+                Fechar
+              </Button>
+            </div>
+            <div className="flex-1 overflow-hidden">
+              <SidePanel />
+            </div>
+          </div>
+        </div>
+      )}
+
+      <style jsx>{`
+        @keyframes slideUp {
+          from { transform: translateY(100%); }
+          to { transform: translateY(0); }
+        }
+      `}</style>
     </div>
   );
 }

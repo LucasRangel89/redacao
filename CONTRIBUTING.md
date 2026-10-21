@@ -9,53 +9,76 @@ toda contribuição: **a IA guia e questiona, nunca escreve pelo estudante**.
 1. **Fork** e clone o repositório:
 
 ```bash
-git clone https://github.com/SEU_USUARIO/redacao-nota-maxima-ai.git
-cd redacao-nota-maxima-ai
-bun install   # ou npm install
+git clone https://github.com/LucasRangel89/redacao.git
+cd redacao
+npm install        # ou bun install / pnpm install
 ```
 
-2. **Variáveis de ambiente** (opcional para desenvolvimento):
+2. **Variáveis de ambiente** (opcionais):
 
 ```bash
-cp .env.example .env
+cp .env.example .env.local
 # GEMINI_API_KEY é opcional — sem ela, o fallback de IA embutido é usado.
 ```
 
 3. **Rode o servidor de desenvolvimento:**
 
 ```bash
-bun run dev
+npm run dev
 ```
 
-4. **Verifique a qualidade antes do commit:**
+Abra http://localhost:3000.
+
+4. **Qualidade antes de submeter:**
 
 ```bash
-bun run lint
+npm run lint
+npm run typecheck
+npm run build
 ```
 
 ## Padrões do projeto
 
-- **TypeScript estrito** — nenhum `any` sem justificativa; tipos compartilhados em `src/lib/types.ts`.
-- **Componentes** — prefira os componentes `shadcn/ui` existentes em `src/components/ui`.
-- **IA no backend apenas** — o SDK de IA nunca deve ser importado em componentes client; sempre via rotas em `src/app/api/*`.
-- **Motores de IA** — ao criar uma rota nova, declare o motor adequado (`pro`, `flash`, `flash-lite`) conforme a exigência de latência.
-- **Responsividade** — teste em mobile (375px) e desktop; o painel lateral deve colapsar elegantemente.
-- **Idioma** — toda a UI e os prompts ficam em português do Brasil.
+- **TypeScript estrito** (`strict: true` + `noImplicitAny: true`).
+  Evite `any`; justifique cada exceção com um comentário.
+- **Validação nas bordas**: toda rota API deve usar `validateBody(req, schema)`
+  com um schema Zod definido em `src/lib/validation.ts`. Não confie em inputs
+  do cliente.
+- **IA no backend apenas** — o SDK de IA nunca deve ser importado em
+  componentes client; sempre via rotas em `src/app/api/*`.
+- **Motores de IA** — declare o motor adequado (`pro`, `flash`, `flash-lite`)
+  conforme a exigência de latência/profundidade:
+  - `pro`: análise profunda (arquitetura, revisão completa 5 competências).
+  - `flash`: interação durante a escrita (chat, gramática, intervenção).
+  - `flash-lite`: sugestões rápidas e sínteses (repertório, busca, revisão rápida).
+- **Rate limiting** — toda rota que chama IA deve invocar `rateLimit()` antes
+  de processar. Use tetos coerentes com o custo da operação.
+- **Componentes**: prefira os componentes `shadcn/ui` existentes em
+  `src/components/ui`. Antes de adicionar um novo componente shadcn, confira
+  se não há um já existente que resolva o problema (evitamos componentes
+  órfãos).
+- **Responsividade**: teste em viewport móvel (375px) e desktop; o painel
+  lateral deve colapsar em drawer.
+- **Idioma**: UI e prompts em português do Brasil.
+
+## Adicionando uma nova feature de IA
+
+1. Crie a rota em `src/app/api/<nome>/route.ts`;
+2. Adicione o schema Zod em `src/lib/validation.ts`;
+3. Escolha o motor (`pro`/`flash`/`flash-lite`) e aplique rate limit;
+4. Trate erros com `HttpError` e `try/catch` com log no servidor;
+5. Responda com JSON tipado conforme um tipo em `src/lib/types.ts`;
+6. (Se necessário) Adicione ações no Zustand store e UI em um componente
+   `src/components/redacao/`.
 
 ## Fluxo de PR
 
-1. Crie uma branch descritiva: `feat/controle-tempo-por-etapa`
-2. Faça commits pequenos e claros (pt-BR ou inglês, mas consistentes)
-3. Garanta que `bun run lint` passa sem erros
-4. Descreva no PR: **o que muda**, **por quê** e **como testar**
+1. Crie uma branch descritiva: `feat/contagem-regressiva` ou `fix/...`.
+2. Faça commits pequenos e claros; mantenha o `main` verde.
+3. Garanta que `lint`, `typecheck` e `build` passam.
+4. Descreva no PR: **o que muda**, **por quê** e **como testar**.
 
 ## Reportando bugs
 
-Abra uma issue com: passos para reproduzir, comportamento esperado vs. obtido
-e screenshots quando aplicável. Se envolver resposta de IA, inclua o modo/motor
-utilizado.
-
-## Ideias prioritárias
-
-Consulte o roadmap no [README](README.md#-roadmap). Issues marcadas com
-`good first issue` são pontos de entrada recomendados.
+Abra uma issue com: passos para reproduzir, comportamento esperado vs. obtido,
+screenshots e, se envolver resposta de IA, o modo/motor utilizado.
