@@ -39,7 +39,7 @@ export function extractJson<T>(raw: string): T | null {
 
   // Remove cercas de código ```json ... ``` ou ``` ... ```
   const fence = text.match(/```(?:json)?\s*([\s\S]*?)```/i);
-  if (fence) text = fence[1].trim();
+  if (fence?.[1]) text = fence[1].trim();
 
   try {
     return JSON.parse(text) as T;

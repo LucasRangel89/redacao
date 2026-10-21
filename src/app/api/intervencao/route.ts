@@ -1,8 +1,11 @@
 import { NextResponse } from "next/server";
 import { chatComplete, extractJson } from "@/lib/ai";
+import { HttpError, schemas, validateBody } from "@/lib/validation";
+import { clientIdentifier, rateLimit } from "@/lib/rate-limit";
 import type { IntervencaoSugestao } from "@/lib/types";
 
 export const maxDuration = 90;
+export const dynamic = "force-dynamic";
 
 const SYSTEM = `Você é um professor de redação ENEM especialista na Competência 5 (proposta de intervenção).
 Dado o tema/problema, elabore os 5 ELEMENTOS obrigatórios:
@@ -22,29 +25,17 @@ REGRAS:
 
 export async function POST(req: Request) {
   try {
-    const { tema, problema } = (await req.json()) as {
-      tema: string;
-      problema?: string;
-    };
-
-    if (!tema?.trim()) {
+    const rl = rateLimit(clientIdentifier(req), { max: 6, windowSec: 60 });
+    if (!rl.ok) {
       return NextResponse.json(
-        { error: "Informe o tema antes de solicitar a proposta." },
-        { status: 400 }
+        { error: `Muitas requisições. Aguarde ${rl.resetInSec}s.` },
+        { status: 429, headers: { "Retry-After": String(rl.resetInSec) } }
       );
     }
 
-    const user = `TEMA: """${tema}"""
-${problema?.trim() ? `FOCO DO PROBLEMA (análise do estudante): """${problema}"""\n` : ""}
-Responda APENAS com JSON:
-{
-  "agente": "...",
-  "acao": "...",
-  "meio": "...",
-  "finalidade": "...",
-  "detalhamento": "...",
-  "esqueletoParagrafo": "modelo com lacunas [ ] para o estudante completar"
-}`;
+    const { tema, problema } = await validateBody(req, schemas.intervencao);
+
+    const user = `TEMA: """${tema}"""\n${problema ? `FOCO DO PROBLEMA (análise do estudante): """${problema}"""\n` : ""}Responda APENAS com JSON:\n{\n  "agente": "...",\n  "acao": "...",\n  "meio": "...",\n  "finalidade": "...",\n  "detalhamento": "...",\n  "esqueletoParagrafo": "modelo com lacunas [ ] para o estudante completar"\n}`;
 
     const raw = await chatComplete({
       system: SYSTEM,
@@ -72,6 +63,9 @@ Responda APENAS com JSON:
     });
   } catch (err) {
     console.error("[api/intervencao]", err);
+    if (err instanceof HttpError) {
+      return NextResponse.json({ error: err.message }, { status: err.status });
+    }
     return NextResponse.json(
       { error: "Falha ao gerar proposta de intervenção." },
       { status: 500 }

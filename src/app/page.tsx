@@ -1,22 +1,33 @@
 "use client";
 
-import { useEffect } from "react";
 import { PenLine } from "lucide-react";
 import { AppHeader } from "@/components/redacao/app-header";
 import { SetupStage } from "@/components/redacao/setup-stage";
 import { ArquiteturaStage } from "@/components/redacao/arquitetura-stage";
 import { EscritaStage } from "@/components/redacao/escrita-stage";
 import { useHydrated, useRedacaoStore } from "@/lib/store";
+import { useEffect } from "react";
 
 export default function Home() {
   const montado = useHydrated();
   const stage = useRedacaoStore((s) => s.stage);
-  const iniciarSessao = useRedacaoStore((s) => s.iniciarSessao);
+  const textoFinal = useRedacaoStore((s) => s.textoFinal);
+  const tema = useRedacaoStore((s) => s.tema);
 
-  // Registra o início da sessão (KPI de tempo de planejamento)
+  // Aviso antes de sair da página com texto não vazio
   useEffect(() => {
-    iniciarSessao();
-  }, [iniciarSessao]);
+    const adverteSaida = (e: BeforeUnloadEvent) => {
+      if (textoFinal.trim().length > 20) {
+        e.preventDefault();
+        e.returnValue = "";
+      }
+    };
+    window.addEventListener("beforeunload", adverteSaida);
+    return () => window.removeEventListener("beforeunload", adverteSaida);
+  }, [textoFinal]);
+
+  // Auto-save está implícito via persistência do Zustand em localStorage.
+  // O header marca "salvo" sempre que o store muda.
 
   if (!montado) {
     return (
@@ -47,7 +58,7 @@ export default function Home() {
           <p className="flex items-center gap-1.5 text-xs text-muted-foreground">
             <PenLine className="h-3 w-3 text-blue-400" />
             <span className="font-medium text-foreground/80">Redação Nota Máxima AI</span>
-            — a IA guia e questiona, a autoria é sua.
+            {" "}{tema ? `· ${palavrasResumo(textoFinal)}` : "— a IA guia e questiona, a autoria é sua."}
           </p>
           <p className="text-[11px] text-muted-foreground/70">
             Next.js · React 19 · IA Generativa com arquitetura de modelos híbrida
@@ -56,4 +67,9 @@ export default function Home() {
       </footer>
     </div>
   );
+}
+
+function palavrasResumo(texto: string): string {
+  const p = texto.trim().split(/\s+/).filter(Boolean).length;
+  return p > 0 ? `${p} palavras escritas` : "a IA guia e questiona, a autoria é sua.";
 }

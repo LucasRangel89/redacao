@@ -1,0 +1,51 @@
+# Dependencies
+node_modules/
+.pnp/
+.pnp.js
+
+# Testing
+coverage/
+
+# Next.js build output
+.next/
+out/
+build/
+.standalone/
+
+# Production runtime
+*.log
+dev.log
+server.log
+
+# Environment
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Database (SQLite)
+prisma/dev.db*
+prisma/migrations/dev.db*
+
+# Prisma
+# Lib and engines generated during install
+libquery_engine-*
+schema-engine*
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
+# Bun
+bun.lockb
