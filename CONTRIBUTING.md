@@ -18,7 +18,8 @@ npm install        # ou bun install / pnpm install
 
 ```bash
 cp .env.example .env.local
-# GEMINI_API_KEY é opcional — sem ela, o fallback de IA embutido é usado.
+# GEMINI_API_KEY é opcional — sem provedor de IA, o app usa o modo local
+# (src/lib/local-ai.ts) e todas as ferramentas continuam funcionando.
 ```
 
 3. **Rode o servidor de desenvolvimento:**
@@ -34,7 +35,8 @@ Abra http://localhost:3000.
 ```bash
 npm run lint
 npm run typecheck
-npm run build
+npm run build          # servidor Node com rotas /api
+npm run build:pages    # estático para GitHub Pages (modo local)
 ```
 
 ## Padrões do projeto
@@ -46,6 +48,9 @@ npm run build
   do cliente.
 - **IA no backend apenas** — o SDK de IA nunca deve ser importado em
   componentes client; sempre via rotas em `src/app/api/*`.
+- **Modo local é cidadão de primeira classe** — qualquer feature que dependa de
+  IA precisa de equivalente em `src/lib/local-ai.ts`, pois o build de GitHub Pages
+  não tem servidor. Use os wrappers de `src/lib/api.ts`.
 - **Motores de IA** — declare o motor adequado (`pro`, `flash`, `flash-lite`)
   conforme a exigência de latência/profundidade:
   - `pro`: análise profunda (arquitetura, revisão completa 5 competências).

@@ -31,10 +31,14 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { useRedacaoStore, novoArgumento } from "@/lib/store";
+import {
+  apiArquitetura,
+  apiIntervencao,
+  apiRepertorio,
+} from "@/lib/api";
 import type { ArquiteturaSugestao, IntervencaoSugestao, RepertorioSugestao } from "@/lib/types";
 import { TIPOS_REPERTORIO } from "@/lib/types";
 import { cn } from "@/lib/utils";
@@ -85,14 +89,8 @@ export function ArquiteturaStage() {
   async function gerarArquitetura() {
     setGerandoArq(true);
     try {
-      const res = await fetch("/api/arquitetura", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ tema: tema!.titulo, teseAtual: tese }),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data?.error ?? "Erro ao gerar arquitetura");
-      setSugestao(data as ArquiteturaSugestao);
+      const { data } = await apiArquitetura(tema!.titulo, tese);
+      setSugestao(data);
       setDialogoAberto(true);
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Falha ao gerar arquitetura.");
@@ -122,14 +120,8 @@ export function ArquiteturaStage() {
     setGerandoRep(true);
     setReps([]);
     try {
-      const res = await fetch("/api/repertorio", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ tema: tema!.titulo, tipo: tipoRep }),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data?.error ?? "Erro");
-      setReps(data.sugestoes as RepertorioSugestao[]);
+      const { data } = await apiRepertorio(tema!.titulo, tipoRep);
+      setReps(data.sugestoes);
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Falha ao buscar repertórios.");
       setRepAberto(false);
@@ -151,17 +143,11 @@ export function ArquiteturaStage() {
   async function gerarIntervencao() {
     setGerandoInt(true);
     try {
-      const res = await fetch("/api/intervencao", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          tema: tema!.titulo,
-          problema: argumentos[0]?.topicoFrasal ?? "",
-        }),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data?.error ?? "Erro");
-      setSugInt(data as IntervencaoSugestao);
+      const { data } = await apiIntervencao(
+        tema!.titulo,
+        argumentos[0]?.topicoFrasal ?? ""
+      );
+      setSugInt(data);
       setIntAberta(true);
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Falha ao gerar proposta.");

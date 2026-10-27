@@ -1,12 +1,17 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import {
+  BookmarkPlus,
   ClipboardList,
   Copy,
   Download,
   Eye,
   EyeOff,
+  Printer,
+  Timer,
+  TimerOff,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -17,21 +22,45 @@ import {
 } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { SidePanel } from "@/components/redacao/side-panel";
-import { estatisticasTexto, useRedacaoStore } from "@/lib/store";
+import { estatisticasTexto, useHydrated, useRedacaoStore } from "@/lib/store";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 
 const META_LINHAS = 30;
 
 export function EscritaStage() {
-  const { tema, tese, argumentos, intervencao, textoFinal, setTextoFinal } =
-    useRedacaoStore();
+  const {
+    tema,
+    tese,
+    argumentos,
+    intervencao,
+    textoFinal,
+    setTextoFinal,
+    salvarNoHistorico,
+    provaAte,
+    iniciarProva,
+    encerrarProva,
+  } = useRedacaoStore();
   const [planoVisivel, setPlanoVisivel] = useState(true);
   const [painelAberto, setPainelAberto] = useState(false);
+  const [agora, setAgora] = useState(() => Date.now());
+  const montado = useHydrated();
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const stats = useMemo(() => estatisticasTexto(textoFinal), [textoFinal]);
   const progressoLinhas = Math.min(100, (stats.linhas / META_LINHAS) * 100);
+  const segundosProva = provaAte ? Math.max(0, Math.ceil((provaAte - agora) / 1000)) : 0;
+  const provaAtiva = Boolean(provaAte) && segundosProva > 0;
+
+  useEffect(() => {
+    if (!provaAte) return;
+    const id = setInterval(() => setAgora(Date.now()), 1000);
+    return () => clearInterval(id);
+  }, [provaAte]);
+
+  const tempoProva = `${String(Math.floor(segundosProva / 60)).padStart(2, "0")}:${String(
+    segundosProva % 60
+  ).padStart(2, "0")}`;
 
   // Auto-resize do textarea conforme o conteúdo cresce
   useEffect(() => {
@@ -81,6 +110,37 @@ export function EscritaStage() {
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
     toast.success("Arquivo .txt gerado.");
+  }
+
+  function salvarVersao() {
+    const id = salvarNoHistorico();
+    if (!id) {
+      toast.error("Escreva ao menos um parágrafo antes de salvar uma versão.");
+      return;
+    }
+    toast.success("Versão salva no histórico.", {
+      description: "Acompanhe sua evolução em Progresso.",
+    });
+  }
+
+  function alternarProva() {
+    if (provaAte) {
+      encerrarProva();
+      toast.info("Modo prova encerrado.");
+    } else {
+      iniciarProva(60);
+      toast.success("Modo prova iniciado: 60 minutos no relógio.", {
+        description: "Simule as condições reais do ENEM. Boa redação!",
+      });
+    }
+  }
+
+  function imprimir() {
+    if (!textoFinal.trim()) {
+      toast.error("Escreva algo antes de gerar o PDF.");
+      return;
+    }
+    window.print();
   }
 
   // Atalho: Ctrl/Cmd+Enter foca o editor? Não — melhor Ctrl+S prevenido e feedback.
@@ -204,6 +264,29 @@ export function EscritaStage() {
               <Button size="xs" variant="outline" onClick={baixarTxt}>
                 <Download className="mr-1.5 h-3.5 w-3.5" /> Baixar .txt
               </Button>
+              <Button size="xs" variant="outline" onClick={imprimir}>
+                <Printer className="mr-1.5 h-3.5 w-3.5" /> PDF / folha oficial
+              </Button>
+              <Button size="xs" variant="outline" onClick={salvarVersao}>
+                <BookmarkPlus className="mr-1.5 h-3.5 w-3.5" /> Salvar versão
+              </Button>
+              <Button
+                size="xs"
+                variant={provaAtiva ? "destructive" : "secondary"}
+                onClick={alternarProva}
+                className={provaAtiva ? "animate-pulse" : ""}
+                title="Simulação de prova com 60 minutos"
+              >
+                {provaAtiva ? (
+                  <>
+                    <TimerOff className="mr-1.5 h-3.5 w-3.5" /> Encerrar prova {tempoProva}
+                  </>
+                ) : (
+                  <>
+                    <Timer className="mr-1.5 h-3.5 w-3.5" /> Modo prova 60 min
+                  </>
+                )}
+              </Button>
               <Button
                 size="xs"
                 variant="secondary"
@@ -251,7 +334,7 @@ export function EscritaStage() {
         </div>
 
         {/* ===== Coluna direita: ferramentas (desktop) ===== */}
-        <aside className="hidden lg:flex lg:sticky lg:top-20 h-[70vh] min-h-96 flex-col overflow-hidden rounded-xl border border-border bg-card">
+        <aside className="hidden lg:flex lg:sticky lg:top-28 h-[calc(100vh-8rem)] min-h-96 flex-col overflow-hidden rounded-xl border border-border bg-card">
           <SidePanel />
         </aside>
       </div>
@@ -277,6 +360,68 @@ export function EscritaStage() {
           </div>
         </div>
       )}
+
+      {/* ===== Folha de correção oficial (aparece somente na impressão/PDF) =====
+          Portal para o body: permite esconder todo o app com display:none na
+          impressão, sem páginas em branco por elementos apenas invisíveis. */}
+      {montado &&
+        createPortal(
+          <div className="imprimir-folha">
+        <div className="imprimir-cabecalho">
+          <p className="imprimir-titulo">Redação Nota Máxima — folha de redação</p>
+          <p className="imprimir-tema">Tema: {tema?.titulo ?? "Não informado"}</p>
+        </div>
+        <div className="imprimir-texto">
+          {textoFinal
+            .split(/\n{1,}/)
+            .map((p) => p.trim())
+            .filter(Boolean)
+            .map((p, i) => (
+              <p key={i}>{p}</p>
+            ))}
+        </div>
+        <div className="imprimir-grade">
+          <p className="imprimir-rodape">
+            {stats.palavras} palavras · {stats.paragrafos} parágrafos · ~{stats.linhas} linhas
+          </p>
+          <table>
+            <thead>
+              <tr>
+                <th>Competência</th>
+                {[0, 40, 80, 120, 160, 200].map((n) => (
+                  <th key={n}>{n}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {[
+                ["C1", "Domínio da norma culta"],
+                ["C2", "Compreensão da proposta / repertório"],
+                ["C3", "Organização e argumentação"],
+                ["C4", "Coesão e mecanismos linguísticos"],
+                ["C5", "Proposta de intervenção"],
+              ].map(([codigo, nome]) => (
+                <tr key={codigo}>
+                  <td>
+                    <strong>{codigo}</strong> — {nome}
+                  </td>
+                  {[0, 40, 80, 120, 160, 200].map((n) => (
+                    <td key={n} />
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <p className="imprimir-rodape">
+            Nota total: ______ / 1000 · Corretor(a): ____________________________ · Data: ___/___/______
+          </p>
+            <p className="imprimir-rodape">
+              Use esta folha para uma correção humana. O Diagnóstico local do app é uma estimativa didática, não uma nota oficial.
+            </p>
+          </div>
+        </div>,
+          document.body
+        )}
 
       <style jsx>{`
         @keyframes slideUp {

@@ -2,6 +2,9 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
 
+// No GitHub Pages o app é servido em /<repo>; os assets precisam do prefixo.
+const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
+
 export const metadata: Metadata = {
   metadataBase: new URL("https://redacao-nota-maxima.app"),
   title: {
@@ -58,7 +61,7 @@ export default function RootLayout({
   return (
     <html lang="pt-BR" className="dark" suppressHydrationWarning>
       <head>
-        <link rel="icon" href="/logo.svg" type="image/svg+xml" />
+        <link rel="icon" href={`${basePath}/logo.svg`} type="image/svg+xml" />
       </head>
       <body
         className="antialiased bg-background text-foreground min-h-screen font-sans"

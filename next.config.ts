@@ -1,15 +1,24 @@
 import type { NextConfig } from "next";
 
-const nextConfig: NextConfig = {
-  output: "standalone",
-  reactStrictMode: true,
-  // Permitimos o domínio do Gemini em scripts somente em runtime (fetch).
-  experimental: {
-    // Melhor tratamento de erros de server actions / route handlers
-    serverMinification: true,
-  },
-  // Security headers básicos para uma EdTech
+/**
+ * Dois modos de publicação:
+ *
+ * 1. `npm run build` (padrão) → output "standalone": servidor Node com as rotas
+ *    /api/* (IA real). Use em Vercel, Render, Railway, Fly.io, Docker etc.
+ * 2. `STATIC_EXPORT=1 npm run build:pages` → output "export": arquivos estáticos
+ *    em out/, prontos para GitHub Pages. Nesse modo as rotas de API são
+ *    temporariamente removidas pelo script e o cliente usa o motor local.
+ */
+const staticExport = process.env.STATIC_EXPORT === "1";
+const basePath = staticExport
+  ? (process.env.PAGES_BASE_PATH ?? "/redacao").replace(/\/$/, "")
+  : "";
+
+// `headers()` não é suportado em exportação estática, então omitimos a chave.
+const seguranca = {
   async headers() {
+    // Em dev, evitamos X-Frame-Options para permitir a pré-visualização em iframe.
+    if (process.env.NODE_ENV === "development") return [];
     return [
       {
         source: "/(.*)",
@@ -22,6 +31,16 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+};
+
+const nextConfig: NextConfig = {
+  output: staticExport ? "export" : "standalone",
+  ...(basePath ? { basePath, assetPrefix: `${basePath}/` } : {}),
+  reactStrictMode: true,
+  experimental: {
+    serverMinification: true,
+  },
+  ...(staticExport ? {} : seguranca),
 };
 
 export default nextConfig;

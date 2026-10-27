@@ -1,0 +1,59 @@
+name: Publicar no GitHub Pages
+
+on:
+  push:
+    # O ambiente github-pages normalmente só permite deploy a partir da main.
+    # Branches de trabalho são validadas pelo workflow ci.yml (sem deploy).
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: true
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Instalar dependências
+        run: npm ci
+
+      - name: Regenerar acervo estruturado
+        run: npm run recursos
+
+      # Gera out/ com index.html de verdade (não o README).
+      - name: Build estático
+        run: npm run build:pages
+        env:
+          # Repositórios de projeto são servidos em /<nome-do-repo>.
+          # Para um site de usuário (usuario.github.io), defina como "".
+          PAGES_BASE_PATH: /${{ github.event.repository.name }}
+
+      - name: Configurar Pages
+        uses: actions/configure-pages@v5
+
+      - name: Enviar artefato
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: out
+
+      - name: Publicar
+        id: deployment
+        uses: actions/deploy-pages@v4
