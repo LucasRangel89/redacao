@@ -179,6 +179,11 @@ scripts/
 
 ## 🗺️ Roadmap — o que já foi entregue e o que vem depois
 
+> 📌 **Plano detalhado para as próximas conversas:** [`docs/plano-evolucao.md`](docs/plano-evolucao.md)
+> traz backlog priorizado (P0/P1/P2), escopo, arquivos sugeridos, critérios de aceite,
+> sequenciamento em fases, definição de pronto e um **prompt pronto para copiar e colar**
+> em uma nova conversa.
+
 **Entregue nesta iteração**
 - [x] Interface navegável (5 seções) em vez de uma única página de wizard
 - [x] Biblioteca interativa a partir do acervo enviado
