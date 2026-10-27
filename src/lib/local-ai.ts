@@ -18,6 +18,12 @@ import {
   type Citacao,
 } from "@/lib/recursos";
 import { CHECKLIST, CONECTIVOS } from "@/data/guia";
+import {
+  buscarRepertoriosVerificados,
+  repertorioVerificadoComoSugestao,
+  repertoriosVerificados,
+  type RepertorioVerificado,
+} from "@/data/repertorios-verificados";
 import type {
   ArquiteturaSugestao,
   BuscaResultado,
@@ -132,7 +138,8 @@ export function arquiteturaLocal(tema: string, teseAtual = ""): ArquiteturaSuges
 export function repertorioLocal(tema: string, tipo: string): RepertorioSugestao[] {
   const proximo = temaMaisProximo(tema);
   const palavras = termos(tema);
-  const pontuar = (c: Citacao) => {
+
+  const pontuarCitacao = (c: Citacao) => {
     const texto = normalizar(`${c.texto} ${c.autor} ${c.fonte}`);
     return (
       palavras.reduce((acc, p) => acc + (texto.includes(p) ? 2 : 0), 0) +
@@ -140,15 +147,37 @@ export function repertorioLocal(tema: string, tipo: string): RepertorioSugestao[
       (proximo && c.temaId === proximo.id ? 3 : 0)
     );
   };
-  const ordenadas = [...acervo.citacoes].sort((a, b) => pontuar(b) - pontuar(a));
-  const doTipo = ordenadas.filter((c) => c.tipo === tipo).slice(0, 4);
-  const complemento = ordenadas.filter((c) => !doTipo.includes(c)).slice(0, 5 - doTipo.length);
-  return [...doTipo, ...complemento].map((c) => ({
-    titulo: `“${c.texto.slice(0, 90)}${c.texto.length > 90 ? "…" : ""}”`,
-    fonte: c.autor,
-    ideiaCentral: c.texto,
-    comoUsar: `Cite ${c.autor} no início do parágrafo e, em seguida, explique como a ideia comprova seu tópico frasal: “Isso demonstra que…”. Confira a atribuição antes de usar.`,
-  }));
+
+  // P0.2: repertórios verificados entram primeiro. São fontes rastreáveis e
+  // reduzem o risco de o estudante usar uma atribuição inventada do acervo.
+  const pontuarVerificado = (r: RepertorioVerificado) => {
+    const texto = normalizar(`${r.texto} ${r.autor} ${r.fonte} ${r.area} ${r.comoUsar}`);
+    return (
+      palavras.reduce((acc, p) => acc + (texto.includes(p) ? 2 : 0), 0) +
+      (r.tipo === tipo ? 4 : 0) +
+      (proximo && r.area === proximo.area ? 2 : 0) +
+      (r.nivelFonte === "primaria" ? 2 : 0)
+    );
+  };
+
+  const verificados = [...repertoriosVerificados]
+    .sort((a, b) => pontuarVerificado(b) - pontuarVerificado(a))
+    .slice(0, 3)
+    .map(repertorioVerificadoComoSugestao);
+
+  const ordenadas = [...acervo.citacoes].sort((a, b) => pontuarCitacao(b) - pontuarCitacao(a));
+  const doTipo = ordenadas.filter((c) => c.tipo === tipo).slice(0, 3);
+  const complemento = ordenadas.filter((c) => !doTipo.includes(c));
+  const doAcervo = [...doTipo, ...complemento]
+    .slice(0, Math.max(0, 5 - verificados.length))
+    .map((c) => ({
+      titulo: `“${c.texto.slice(0, 90)}${c.texto.length > 90 ? "…" : ""}”`,
+      fonte: c.autor,
+      ideiaCentral: c.texto,
+      comoUsar: `Cite ${c.autor} no início do parágrafo e, em seguida, explique como a ideia comprova seu tópico frasal: “Isso demonstra que…”. Confira a atribuição antes de usar.`,
+    }));
+
+  return [...verificados, ...doAcervo];
 }
 
 // ---------------------------------------------------------------------------
@@ -227,6 +256,7 @@ export function chatLocal(mensagens: ChatMessage[], contexto: ContextoMentor = {
 // ---------------------------------------------------------------------------
 
 export function buscaLocal(query: string): BuscaResultado {
+  const verificados = buscarRepertoriosVerificados(query).slice(0, 4);
   const { temas, citacoes } = (() => {
     const nq = normalizar(query);
     return {
@@ -251,11 +281,22 @@ export function buscaLocal(query: string): BuscaResultado {
 
   return {
     sintese:
-      temas.length || citacoes.length
-        ? `Busca local no acervo do projeto (sem acesso à web): ${temas.length} dossiê(s) temático(s) e ${citacoes.length} citação(ões) relacionadas a “${query}”. Abra a Biblioteca para ler os textos completos.`
+      temas.length || citacoes.length || verificados.length
+        ? `Busca local no acervo do projeto (sem acesso à web): ${verificados.length} repertório(s) verificado(s), ${temas.length} dossiê(s) temático(s) e ${citacoes.length} citação(ões) relacionadas a “${query}”. Abra a Biblioteca para ler os textos completos.`
         : `Não encontrei correspondência direta para “${query}” no acervo local. Tente termos mais amplos (ex.: "educação", "tecnologia") ou conecte uma chave de IA para busca fundamentada na web.`,
-    dados: citacoes.slice(0, 6).map((c) => ({ dado: `“${c.texto}” — ${c.autor}`, fonte: `Acervo local · ${c.tipo}` })),
+    dados: [
+      ...verificados.map((r) => ({
+        dado: `“${r.texto}” — ${r.autor}`,
+        fonte: `Fonte verificada · ${r.fonte}`,
+      })),
+      ...citacoes.slice(0, 6).map((c) => ({ dado: `“${c.texto}” — ${c.autor}`, fonte: `Acervo local · ${c.tipo}` })),
+    ].slice(0, 8),
     resultados: [
+      ...verificados.map((r) => ({
+        title: `✓ ${r.autor}`,
+        snippet: `Fonte verificada · ${r.natureza} · ${r.texto.slice(0, 150)}`,
+        url: r.url,
+      })),
       ...temas.slice(0, 4).map((t) =>
         fonteLocal(`Dossiê: ${t.titulo}`, `${t.redacoes.length} redações modelo · ${t.citacoes.length} citações · ${t.resumo.slice(0, 130)}`)
       ),

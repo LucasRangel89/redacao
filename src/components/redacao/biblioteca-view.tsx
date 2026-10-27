@@ -11,6 +11,7 @@ import {
   PenLine,
   Quote,
   Search,
+  ShieldCheck,
   Sparkles,
   Star,
   X,
@@ -46,10 +47,19 @@ import {
   type RedacaoModelo,
   type TemaAcervo,
 } from "@/lib/recursos";
+import {
+  AREAS_REPERTORIO,
+  buscarRepertoriosVerificados,
+  repertoriosVerificados,
+  ROTULOS_NATUREZA,
+  TOTAL_REPERTORIOS_VERIFICADOS,
+  verificadoComoCitacao,
+  type RepertorioVerificado,
+} from "@/data/repertorios-verificados";
 import type { Tema } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
-type Aba = "temas" | "redacoes" | "citacoes" | "favoritos";
+type Aba = "temas" | "redacoes" | "citacoes" | "verificados" | "favoritos";
 
 const COR_ETIQUETA: Record<string, string> = {
   Introdução: "border-amber-500/30 bg-amber-500/10 text-amber-300",
@@ -115,8 +125,16 @@ export function BibliotecaView() {
     [query, resultados.redacoes, area]
   );
 
+  const verificados = useMemo(
+    () => buscarRepertoriosVerificados(query, tipo, area),
+    [query, tipo, area]
+  );
+
   const favoritosTemas = acervo.temas.filter((t) => favoritos.includes(`tema:${t.id}`));
   const favoritosCitacoes = acervo.citacoes.filter((c) => favoritos.includes(`cit:${c.id}`));
+  const favoritosVerificados = repertoriosVerificados.filter((r) =>
+    favoritos.includes(`verif:${r.id}`)
+  );
   const favoritosRedacoes = TODAS_REDACOES.filter((r) =>
     favoritos.includes(`red:${r.redacao.id}`)
   );
@@ -143,12 +161,15 @@ export function BibliotecaView() {
   }
 
   function usarCitacao(c: Citacao) {
+    const ehVerificado = c.id.startsWith("verif:");
     const trecho = `Segundo ${c.autor}, “${c.texto}”.`;
     setTextoFinal(textoFinal.trim() ? `${textoFinal.trim()}\n\n${trecho}` : trecho);
     setView("estudio");
     setStage("escrita");
     toast.success("Citação adicionada ao rascunho.", {
-      description: "Adapte ao seu argumento e acrescente uma frase de análise.",
+      description: ehVerificado
+        ? `Fonte verificada: ${c.fonte}`
+        : "Adapte ao seu argumento, acrescente uma frase de análise e confira a atribuição.",
     });
   }
 
@@ -164,7 +185,11 @@ export function BibliotecaView() {
     });
     setView("estudio");
     setStage("arquitetura");
-    toast.success("Repertório inserido no argumento 1.");
+    toast.success("Repertório inserido no argumento 1.", {
+      description: c.id.startsWith("verif:")
+        ? `Fonte verificada: ${c.fonte}`
+        : "Explique com suas palavras como ele comprova o tópico frasal.",
+    });
   }
 
   function usarEstrutura(tema: TemaAcervo, redacao: RedacaoModelo) {
@@ -208,9 +233,10 @@ export function BibliotecaView() {
         <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Biblioteca de redação</h1>
         <p className="max-w-3xl text-sm text-muted-foreground">
           {acervo.totalTemas} dossiês temáticos, {acervo.totalRedacoes} redações modelo
-          anotadas por função (introdução, desenvolvimento, conclusão) e{" "}
-          {acervo.totalCitacoes} citações classificadas por tipo de repertório. Use qualquer
-          item diretamente no seu rascunho.
+          anotadas por função (introdução, desenvolvimento, conclusão),{" "}
+          {acervo.totalCitacoes} citações do acervo e {TOTAL_REPERTORIOS_VERIFICADOS}{" "}
+          <span className="font-medium text-emerald-300">repertórios com fonte verificada</span>.
+          Use qualquer item diretamente no seu rascunho.
         </p>
       </div>
 
@@ -248,6 +274,10 @@ export function BibliotecaView() {
               <TabsTrigger value="citacoes" className="text-xs">
                 Citações ({citacoes.length})
               </TabsTrigger>
+              <TabsTrigger value="verificados" className="text-xs">
+                <ShieldCheck className="mr-1 h-3 w-3" />
+                Verificados ({verificados.length})
+              </TabsTrigger>
               <TabsTrigger value="favoritos" className="text-xs">
                 Favoritos ({favoritos.length})
               </TabsTrigger>
@@ -255,7 +285,7 @@ export function BibliotecaView() {
           </Tabs>
           {aba !== "favoritos" && (
             <div className="flex flex-wrap gap-1.5">
-              {["Todas", ...AREAS_ACERVO].map((a) => (
+              {["Todas", ...(aba === "verificados" ? AREAS_REPERTORIO : AREAS_ACERVO)].map((a) => (
                 <button
                   key={a}
                   type="button"
@@ -272,7 +302,7 @@ export function BibliotecaView() {
               ))}
             </div>
           )}
-          {(aba === "citacoes" || aba === "favoritos") && (
+          {(aba === "citacoes" || aba === "verificados" || aba === "favoritos") && (
             <div className="flex flex-wrap gap-1.5">
               {[{ value: "todos", label: "Todos os tipos" }, ...TIPOS_CITACAO].map((t) => (
                 <button
@@ -454,21 +484,60 @@ export function BibliotecaView() {
         </div>
       )}
 
-      {/* CITAÇÕES */}
+      {/* CITAÇÕES DO ACERVO (não verificadas) */}
       {aba === "citacoes" && (
-        <div className="grid gap-3 md:grid-cols-2">
-          {citacoes.map((c) => (
-            <CitacaoCard
-              key={c.id}
-              citacao={c}
-              favorito={favoritos.includes(`cit:${c.id}`)}
-              onFavorito={() => toggleFavorito(`cit:${c.id}`)}
-              onCopiar={() => copiar(`“${c.texto}” — ${c.autor}`, "Citação copiada.")}
-              onUsar={() => usarCitacao(c)}
-              onRepertorio={() => usarComoRepertorio(c)}
-            />
-          ))}
-          {citacoes.length === 0 && <Vazio texto="Nenhuma citação encontrada. Troque o filtro ou a busca." />}
+        <div className="space-y-3">
+          <AvisoConferencia onVerVerificados={() => setAba("verificados")} />
+          <div className="grid gap-3 md:grid-cols-2">
+            {citacoes.map((c) => (
+              <CitacaoCard
+                key={c.id}
+                citacao={c}
+                favorito={favoritos.includes(`cit:${c.id}`)}
+                onFavorito={() => toggleFavorito(`cit:${c.id}`)}
+                onCopiar={() => copiar(`“${c.texto}” — ${c.autor}`, "Citação copiada.")}
+                onUsar={() => usarCitacao(c)}
+                onRepertorio={() => usarComoRepertorio(c)}
+              />
+            ))}
+            {citacoes.length === 0 && <Vazio texto="Nenhuma citação encontrada. Troque o filtro ou a busca." />}
+          </div>
+        </div>
+      )}
+
+      {/* REPERTÓRIOS VERIFICADOS */}
+      {aba === "verificados" && (
+        <div className="space-y-3">
+          <div className="flex flex-wrap items-start gap-3 rounded-lg border border-emerald-500/25 bg-emerald-500/5 p-3">
+            <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-emerald-400" />
+            <div className="flex-1 space-y-1 text-xs text-muted-foreground">
+              <p className="font-semibold text-emerald-300">O que significa “fonte verificada”?</p>
+              <p>
+                Cada item abaixo tem autor, fonte, ano e link institucional conferidos.
+                Itens marcados como <strong>paráfrase</strong> são reformulações didáticas —
+                não são citações literais, então não use aspas. Ainda assim, abra a fonte e
+                confirme a redação antes de uma prova.
+              </p>
+            </div>
+          </div>
+          <div className="grid gap-3 md:grid-cols-2">
+            {verificados.map((r) => (
+              <VerificadoCard
+                key={r.id}
+                repertorio={r}
+                favorito={favoritos.includes(`verif:${r.id}`)}
+                onFavorito={() => toggleFavorito(`verif:${r.id}`)}
+                onCopiar={() =>
+                  copiar(`“${r.texto}” — ${r.autor}. Fonte: ${r.fonte} (${r.url})`, "Repertório e fonte copiados.")
+                }
+                onUsar={() => usarCitacao(verificadoComoCitacao(r))}
+                onRepertorio={() => usarComoRepertorio(verificadoComoCitacao(r))}
+              />
+            ))}
+            {verificados.length === 0 && (
+              <Vazio texto="Nenhum repertório verificado para esse filtro. Volte a 'Todos os tipos'." />
+            )}
+          </div>
         </div>
       )}
 
@@ -526,9 +595,31 @@ export function BibliotecaView() {
                   </div>
                 </section>
               )}
+              {favoritosVerificados.filter((r) => tipo === "todos" || r.tipo === tipo).length > 0 && (
+                <section className="space-y-2">
+                  <h2 className="flex items-center gap-1.5 text-sm font-semibold">
+                    <ShieldCheck className="h-3.5 w-3.5 text-emerald-400" /> Verificados
+                  </h2>
+                  <div className="grid gap-3 md:grid-cols-2">
+                    {favoritosVerificados
+                      .filter((r) => tipo === "todos" || r.tipo === tipo)
+                      .map((r) => (
+                        <VerificadoCard
+                          key={r.id}
+                          repertorio={r}
+                          favorito
+                          onFavorito={() => toggleFavorito(`verif:${r.id}`)}
+                          onCopiar={() => copiar(`“${r.texto}” — ${r.autor}. Fonte: ${r.url}`)}
+                          onUsar={() => usarCitacao(verificadoComoCitacao(r))}
+                          onRepertorio={() => usarComoRepertorio(verificadoComoCitacao(r))}
+                        />
+                      ))}
+                  </div>
+                </section>
+              )}
               {favoritosCitacoes.filter((c) => tipo === "todos" || c.tipo === tipo).length > 0 && (
                 <section className="space-y-2">
-                  <h2 className="text-sm font-semibold">Citações</h2>
+                  <h2 className="text-sm font-semibold">Citações do acervo (não verificadas)</h2>
                   <div className="grid gap-3 md:grid-cols-2">
                     {favoritosCitacoes
                       .filter((c) => tipo === "todos" || c.tipo === tipo)
@@ -551,10 +642,13 @@ export function BibliotecaView() {
         </div>
       )}
 
-      <p className="text-center text-[11px] text-muted-foreground">
-        Fonte: <code className="rounded bg-secondary px-1">docs/acervo-redacoes.md</code> ·
-        dados gerados por <code className="rounded bg-secondary px-1">scripts/parse-recursos.mjs</code>.
-        Confira a atribuição de citações antes de usá-las em uma prova.
+      <p className="text-center text-[11px] leading-relaxed text-muted-foreground">
+        Acervo: <code className="rounded bg-secondary px-1">docs/acervo-redacoes.md</code> ·
+        gerado por <code className="rounded bg-secondary px-1">scripts/parse-recursos.mjs</code>.
+        <br />
+        Repertórios verificados: <code className="rounded bg-secondary px-1">src/data/repertorios-verificados.json</code> ·
+        validado por <code className="rounded bg-secondary px-1">npm run validar:repertorios</code>.
+        Confira sempre a fonte antes de usar em uma prova.
       </p>
 
       {/* Leitor de redação modelo */}
@@ -655,6 +749,114 @@ function CitacaoCard({
       </CardHeader>
       <CardContent className="mt-auto space-y-2 pt-0">
         <p className="line-clamp-2 text-[11px] text-muted-foreground">{citacao.fonte}</p>
+        <p className="rounded border border-amber-500/20 bg-amber-500/5 px-2 py-1 text-[10px] leading-relaxed text-amber-300/90">
+          Atribuição não conferida — item extraído de material de estudo. Confira a fonte
+          antes de usar ou prefira um repertório verificado.
+        </p>
+        <div className="flex flex-wrap gap-1.5">
+          <Button size="xs" variant="outline" onClick={onCopiar}>
+            <Copy className="mr-1 h-3 w-3" /> Copiar
+          </Button>
+          <Button size="xs" variant="outline" onClick={onRepertorio}>
+            <Sparkles className="mr-1 h-3 w-3" /> Usar no plano
+          </Button>
+          <Button size="xs" variant="ghost" onClick={onUsar}>
+            Inserir no rascunho <ArrowRight className="ml-1 h-3 w-3" />
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+function AvisoConferencia({ onVerVerificados }: { onVerVerificados: () => void }) {
+  return (
+    <div className="flex flex-wrap items-start gap-3 rounded-lg border border-amber-500/25 bg-amber-500/5 p-3">
+      <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-amber-400" />
+      <div className="flex-1 space-y-1 text-xs text-muted-foreground">
+        <p className="font-semibold text-amber-300">Aviso importante sobre estas citações</p>
+        <p>
+          Este material foi extraído de um documento de estudo e pode conter atribuições
+          imprecisas. Use como inspiração, nunca como fonte definitiva. Para uma prova,
+          prefira os repertórios com fonte verificada.
+        </p>
+      </div>
+      <Button size="xs" variant="outline" onClick={onVerVerificados}>
+        <ShieldCheck className="mr-1 h-3 w-3" /> Ver verificados
+      </Button>
+    </div>
+  );
+}
+
+function VerificadoCard({
+  repertorio: r,
+  favorito,
+  onFavorito,
+  onCopiar,
+  onUsar,
+  onRepertorio,
+}: {
+  repertorio: RepertorioVerificado;
+  favorito: boolean;
+  onFavorito: () => void;
+  onCopiar: () => void;
+  onUsar: () => void;
+  onRepertorio: () => void;
+}) {
+  const tipo = TIPOS_CITACAO.find((t) => t.value === r.tipo)?.label ?? r.tipo;
+  const primaria = r.nivelFonte === "primaria";
+  return (
+    <Card className="flex flex-col border-emerald-500/20">
+      <CardHeader className="pb-2">
+        <div className="flex flex-wrap items-start justify-between gap-2">
+          <div className="flex flex-wrap items-center gap-1.5">
+            <Badge
+              variant="outline"
+              className="gap-1 border-emerald-500/30 bg-emerald-500/10 text-[10px] text-emerald-300"
+            >
+              <ShieldCheck className="h-3 w-3" />
+              {primaria ? "Fonte oficial" : "Obra de referência"}
+            </Badge>
+            <Badge variant="secondary" className="text-[10px]">
+              {ROTULOS_NATUREZA[r.natureza]}
+            </Badge>
+            <Badge variant="outline" className="text-[10px]">
+              {tipo}
+            </Badge>
+          </div>
+          <button
+            type="button"
+            onClick={onFavorito}
+            aria-label="Favoritar repertório verificado"
+            className="text-muted-foreground hover:text-amber-400"
+          >
+            <Star className={cn("h-4 w-4", favorito && "fill-amber-400 text-amber-400")} />
+          </button>
+        </div>
+        <CardTitle className="text-sm font-medium leading-relaxed">
+          <Quote className="mr-1 inline h-3.5 w-3.5 text-emerald-400" />
+          {r.texto}
+        </CardTitle>
+        <CardDescription className="text-xs">— {r.autor}</CardDescription>
+      </CardHeader>
+      <CardContent className="mt-auto space-y-2 pt-0">
+        <p className="text-[11px] text-muted-foreground">
+          {r.fonte} · {r.ano} · conferido em {r.verificadoEm}
+        </p>
+        <a
+          href={r.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-1 text-[11px] text-blue-300 hover:underline"
+        >
+          Abrir fonte original <ArrowRight className="h-3 w-3" />
+        </a>
+        <p className="rounded border border-border bg-secondary/30 px-2 py-1.5 text-[11px] leading-relaxed text-foreground/80">
+          <strong>Como usar:</strong> {r.comoUsar}
+        </p>
+        {r.observacao && (
+          <p className="text-[10px] italic text-muted-foreground">{r.observacao}</p>
+        )}
         <div className="flex flex-wrap gap-1.5">
           <Button size="xs" variant="outline" onClick={onCopiar}>
             <Copy className="mr-1 h-3 w-3" /> Copiar

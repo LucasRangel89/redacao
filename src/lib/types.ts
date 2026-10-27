@@ -32,6 +32,23 @@ export interface PropostaIntervencao {
   detalhamento: string;
 }
 
+/** Uma versão salva pelo estudante (histórico local). */
+export interface RedacaoSalva {
+  id: string;
+  criadoEm: number;
+  titulo: string;
+  area: string;
+  texto: string;
+  tese: string;
+  argumentos: Argumento[];
+  intervencao: PropostaIntervencao;
+  palavras: number;
+  linhas: number;
+  paragrafos: number;
+  tempoSegundos: number;
+  notaEstimada?: number;
+}
+
 export type ModoRevisao = "rapida" | "gramatical" | "profunda";
 
 export interface CompetenciaScore {

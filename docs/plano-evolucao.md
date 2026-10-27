@@ -7,6 +7,13 @@
 > Acervo em [`docs/acervo-redacoes.md`](acervo-redacoes.md) ·
 > Visão de produto em [`docs/visao-produto.md`](visao-produto.md).
 
+> **Decisão de produto (2026-10-27):** o projeto é, neste momento, de **uso
+> exclusivamente pessoal** (notebook + eventualmente celular/tablet de um mesmo
+> usuário). Um sistema de contas multiusuário (Auth.js + Prisma/Postgres) seria
+> over-engineering. O P0.1 foi **redefinido** para portabilidade de dados sem
+> login; a versão com autenticação real fica adiada como **P0.1B**.
+> Detalhes e critérios de aceite revisados na seção 4.
+
 ## 1. Como usar este plano
 
 - **Para continuar em uma nova conversa:** copie o prompt da [seção 7](#7-prompt-pronto-para-uma-nova-conversa),
@@ -27,13 +34,16 @@
 | IA | Rotas em `src/app/api/*` (Gemini ou SDK embutido) + fallback local em `src/lib/local-ai.ts`, orquestrado por `src/lib/api.ts` |
 | Deploy | `npm run build:pages` → `out/` → `actions/deploy-pages` (GitHub Pages, `basePath: /redacao`); `npm run build` → standalone com Node |
 | Qualidade | `npm run typecheck`, `npm run lint`, `ci.yml` (ambos os builds em PRs), `deploy-pages.yml` (publish na `main`) |
-| Dados do usuário | 100% locais, sem login; `historico`, `favoritos`, `checklist`, `provaAte` no store |
+| Dados do usuário | 100% locais, sem login; `historico`, `favoritos`, `checklist`, `provaAte` no store; backup/restore em arquivo JSON (P0.1) |
+| Repertórios | 20 itens verificados em `src/data/repertorios-verificados.json` + 59 citações do acervo (não verificadas, com aviso) |
 
 **Dívidas conhecidas (resolver antes de escalar):**
 
-- O acervo contém citações com atribuição possivelmente imprecisa — a UI avisa,
-  mas ainda não há curadoria/verificação.
-- `prisma/schema.prisma` usa SQLite e não tem modelos de usuário/turma.
+- O acervo original ainda tem citações com atribuição possivelmente imprecisa —
+  a UI avisa e a aba "Verificados" oferece alternativa conferida; falta expandir
+  a curadoria verificada.
+- `prisma/schema.prisma` usa SQLite e não tem modelos de usuário/turma
+  (proposital: P0.1B adiado).
 - O diagnóstico local é heurístico; sem IA, não há correção gramatical profunda
   (concordância, regência, crase).
 - Sem autenticação, o histórico não sobrevive à troca de dispositivo.
@@ -55,31 +65,52 @@
 
 ### P0 — Fase 1: fundação de dados e identidade
 
-#### P0.1 · Autenticação + persistência em nuvem
-- **Valor:** histórico entre dispositivos, base para turmas e cobrança futura.
-- **Esforço:** L (2–3 iterações).
-- **Escopo**
-  - Auth.js/NextAuth com provedor Google + magic link; sessão via cookie HttpOnly.
-  - Prisma com PostgreSQL em produção (manter SQLite para dev), migrações versionadas.
-  - Evoluir `prisma/schema.prisma`: `User`, `Account`, `Session`, `Turma` (opcional),
-    e adicionar `userId` + `remoto` à `Redacao`.
-  - Endpoints `GET/POST /api/redacoes`, `GET/PATCH/DELETE /api/redacoes/:id`.
-  - Sincronização: ao logar, oferecer "importar minhas redações locais" (merge
-    por `createdAt` + hash do texto; nunca apagar dados locais sem confirmação).
-  - Rota de exportação/exclusão de dados (LGPD).
-- **Arquivos:** `prisma/schema.prisma`, `src/lib/auth.ts`, `src/app/api/auth/*`,
-  `src/app/api/redacoes/*`, `src/lib/store.ts`, `src/components/redacao/progresso-view.tsx`,
-  `.env.example`.
-- **Critérios de aceite**
-  - [ ] Login/logout funcionam em dev sem segredo extra (provedor de dev).
-  - [ ] Usuário anônimo continua usando 100% do app (modo local).
-  - [ ] Importação local → nuvem não duplica redações idênticas.
-  - [ ] Sem login, nenhum dado é enviado a servidores (verificado no Network).
-  - [ ] `npm run build:pages` continua passando (rotas dinâmicas isoladas).
+#### ✅ P0.1 · Portabilidade de dados sem login (CONCLUÍDO em 2026-10-27)
+> **Decisão:** uso pessoal em notebook + celular/tablet de **um único usuário**.
+> Auth multiusuário seria over-engineering. Implementamos uma "maleta": o usuário
+> baixa um arquivo JSON num aparelho e restaura no outro. Ver **P0.1B** para a
+> versão com conta/nuvem, adiada.
 
-#### P0.2 · Banco de repertórios verificados
+- **Valor:** levar histórico, favoritos, checklist e rascunho entre aparelhos, sem
+  senha, sem servidor, sem custo e sem enviar dados a terceiros.
+- **Esforço:** M (concluído).
+- **Escopo entregue**
+  - `src/lib/backup.ts` — módulo puro: geração, serialização, validação/saneamento,
+    resumo e mesclagem sem duplicatas.
+  - `src/components/redacao/dados-pessoais-card.tsx` — "Meus dados" em Progresso:
+    **Baixar meus dados**, **Restaurar de arquivo** (Juntar / Substituir) e
+    **Apagar tudo** (LGPD).
+  - Atalho "Meus dados" no Início; ações `aplicarBackup`/`apagarTudo` no store;
+    `RedacaoSalva` movido para `src/lib/types.ts`.
+  - Limites anti-abuso: 3 MB por arquivo, 200 versões, textos de até 20.000
+    caracteres, checklist restrito aos IDs conhecidos.
+  - 8 testes em `tests/backup.test.ts`.
+- **Critérios de aceite**
+  - [x] Exportar → importar preserva histórico, favoritos, checklist e rascunho.
+  - [x] "Juntar" nunca duplica versões idênticas e **nunca apaga** um rascunho
+    em andamento no aparelho atual.
+  - [x] "Substituir" troca tudo mediante confirmação explícita.
+  - [x] Arquivo inválido/corrompido gera mensagem em português, sem travar o app.
+  - [x] Funciona 100% no build estático do GitHub Pages (sem `/api`, sem login).
+  - [x] "Apagar tudo" remove os dados de `localStorage` deste navegador.
+
+#### ⏸️ P0.1B · Conta + sincronização automática (ADIADO)
+- **Quando retomar:** se o app passar a ser usado por mais pessoas, ou se o
+  usuário quiser sincronização automática sem carregar arquivo manualmente.
+- **Escopo:** Auth.js v5 (Google + magic link), Prisma/PostgreSQL, endpoints
+  `GET/POST /api/redacoes`, `GET/PATCH/DELETE /api/redacoes/:id`, merge local →
+  nuvem por `createdAt` + hash, exportação/exclusão de dados (LGPD).
+- **Trade-offs registrados:** Auth.js/Prisma dão OAuth e migrations prontos, mas
+  adicionam ~30–40 dependências, `prisma generate` obrigatório no CI, engines com
+  download externo e necessidade de provedor de e-mail/credenciais Google.
+  Alternativa leve: sessão assinada (Web Crypto) + repositório plugável
+  (JSON em dev / `pg` em produção), sem engines externos.
+- **Riscos:** modo anônimo deve continuar funcionando; nenhum dado pode sair do
+  aparelho sem consentimento explícito; `build:pages` precisa seguir passando.
+
+#### ✅ P0.2 · Banco de repertórios verificados (CONCLUÍDO em 2026-10-27)
 - **Valor:** combate citações inventadas/atribuídas errado — maior risco pedagógico atual.
-- **Esforço:** M.
+- **Esforço:** M (concluído).
 - **Escopo**
   - Novo `src/data/repertorios-verificados.ts` com campos
     `{ id, tipo, texto, autor, fonte, url, ano, verificadoEm, area, comoUsar }`.
@@ -88,12 +119,18 @@
   - Selo "Fonte verificada" na Biblioteca (difere das citações do acervo).
   - Filtro "Somente verificados" e aviso educativo nas não verificadas.
   - Script `scripts/validar-repertorios.mjs` que checa campos obrigatórios e URLs.
-- **Arquivos:** `src/data/`, `src/components/redacao/biblioteca-view.tsx`,
-  `src/lib/recursos.ts`, `src/lib/local-ai.ts` (priorizar verificados no fallback).
+- **Arquivos entregues:** `src/data/repertorios-verificados.json` (20 itens),
+  `src/data/repertorios-verificados.ts`, `scripts/validar-repertorios.mjs`,
+  `tests/repertorios.test.ts` (9 testes), Biblioteca com aba "Verificados",
+  selo de fonte, link para a fonte original e aviso nas citações não conferidas;
+  `src/lib/local-ai.ts` prioriza verificados em `repertorioLocal` e `buscaLocal`.
 - **Critérios de aceite**
-  - [ ] Nenhuma citação sem `autor` + `fonte` aparece como verificada.
-  - [ ] O gerador de repertório local prioriza itens verificados.
-  - [ ] Aviso de conferência permanece visível para itens do acervo original.
+  - [x] Nenhuma citação sem `autor` + `fonte` aparece como verificada
+        (validador + CI bloqueiam).
+  - [x] O gerador de repertório local prioriza itens verificados (teste dedicado).
+  - [x] Aviso de conferência permanece visível para itens do acervo original.
+  - [x] Paráfrases são rotuladas e nunca tratadas como citação literal.
+  - [x] `npm run validar:repertorios` e `npm test` rodam no CI.
 
 ### P1 — Fase 2: qualidade da correção
 
@@ -190,19 +227,21 @@
 ## 5. Sequenciamento recomendado
 
 ```text
-Fase 1 (P0)  → identidade + dados + repertórios verificados
+Fase 1 (P0)  → ✅ P0.2 repertórios verificados · ✅ P0.1 backup sem login
+               ⏸️ P0.1B conta + nuvem (adiado, uso pessoal)
 Fase 2 (P1)  → correção calibrada, diff, área do professor
 Fase 3 (P2)  → PWA offline, voz, acessibilidade, simulado, analytics
 ```
 
-Comece por **P0.2** se quiser ganho pedagógico rápido (S/M, sem infraestrutura).
-Comece por **P0.1** se o objetivo for produto multiusuário. Não implemente P1.4
-antes de P0.1.
+A Fase 1 foi concluída. Próximo passo recomendado: **P1.2** (diagnóstico local
+mais profundo) — melhora o uso no celular/GitHub Pages sem exigir infraestrutura.
+Não implemente P1.4 (área do professor) antes de P0.1B.
 
 ## 6. Definição de pronto (DoD)
 
 - [ ] `npm run typecheck` sem erros.
 - [ ] `npm run lint` sem erros.
+- [ ] `npm test` (17 testes) e `npm run validar:repertorios` passam.
 - [ ] `npm run build` (Node) e `npm run build:pages` (estático) passam.
 - [ ] Fluxo funciona em **modo local** (sem `GEMINI_API_KEY`) e em **modo IA**.
 - [ ] Testado em viewport 375px e 1440px, sem console errors.
@@ -247,6 +286,23 @@ ENTREGA
   proponha 2 alternativas com trade-offs antes de implementar.
 ```
 
+## 7.1 Registro de validação da Fase 1 (2026-10-27)
+
+| Verificação | Resultado |
+| --- | --- |
+| `npm run validar:repertorios` | ✓ 20 repertórios verificados · 13 com fonte primária · 7 obras de referência |
+| `npm test` | ✓ 17 testes (9 de repertórios + 8 de backup), 0 falhas |
+| `npm run typecheck` | ✓ sem erros |
+| `npm run lint` | ✓ sem erros |
+| `npm run build:pages` | ✓ `out/` gerado, `basePath: /redacao`, rotas `/api` restauradas |
+| `npm run build` | ✓ standalone com as 8 rotas `/api/*` |
+| E2E navegador · **modo local** | ✓ 14 etapas: Início → Biblioteca (Verificados) → Guia → Estúdio/Setup → Arquitetura → Escrita → Diagnóstico → Progresso → download → restauração "Juntar" → arquivo corrompido → "Apagar tudo"; **0 erros de console** |
+| E2E navegador · **modo IA** | ✓ 10 etapas com `/api/status`, `/api/temas`, `/api/arquitetura` e `/api/revisao` **mockados** (sem chave real); fluxo completo + backup; **0 erros de console** |
+
+> Observação honesta: o modo IA foi exercitado com respostas simuladas no
+> navegador, porque este ambiente não possui `GEMINI_API_KEY`. A chamada real ao
+> provedor continua dependendo da configuração de quem publicar o app em Node.
+
 ## 8. Notas de infraestrutura
 
 - **GitHub Pages:** `Settings → Pages → Source = GitHub Actions`. O workflow
@@ -260,3 +316,9 @@ ENTREGA
   as rotas em `finally`. Qualquer rota nova deve seguir esse contrato.
 - **CI:** `npm ci` exige `package-lock.json` sincronizado; após mudar
   dependências, rode `npm install --package-lock-only` e commite o lock.
+  `ci.yml` roda `npm run validar:repertorios`, `npm test`, typecheck, lint e
+  os dois builds a cada PR / branch `arena/**`.
+- **Dados pessoais:** não há banco nem login por padrão. O arquivo de backup
+  (versão 1) é a única forma de mover dados entre aparelhos. Ao evoluir o
+  formato, incremente `VERSAO_BACKUP` e implemente migração em
+  `validarBackup()` — nunca descarte arquivos antigos sem avisar o usuário.

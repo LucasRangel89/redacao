@@ -6,9 +6,13 @@ import { persist } from "zustand/middleware";
 import type {
   Argumento,
   PropostaIntervencao,
+  RedacaoSalva,
   Stage,
   Tema,
 } from "@/lib/types";
+import type { DadosPessoais } from "@/lib/backup";
+
+export type { RedacaoSalva } from "@/lib/types";
 
 const noopSubscribe = () => () => {};
 
@@ -25,22 +29,6 @@ export function useHydrated(): boolean {
 }
 
 export type View = "inicio" | "estudio" | "biblioteca" | "guia" | "progresso";
-
-export interface RedacaoSalva {
-  id: string;
-  criadoEm: number;
-  titulo: string;
-  area: string;
-  texto: string;
-  tese: string;
-  argumentos: Argumento[];
-  intervencao: PropostaIntervencao;
-  palavras: number;
-  linhas: number;
-  paragrafos: number;
-  tempoSegundos: number;
-  notaEstimada?: number;
-}
 
 export const INTERVENCAO_VAZIA: PropostaIntervencao = {
   agente: "",
@@ -95,6 +83,10 @@ interface RedacaoState {
   encerrarProva: () => void;
   favoritos: string[];
   toggleFavorito: (id: string) => void;
+
+  // Portabilidade de dados (P0.1): backup em arquivo, sem login/servidor.
+  aplicarBackup: (dados: DadosPessoais) => void;
+  apagarTudo: () => void;
 }
 
 export function novoArgumento(): Argumento {
@@ -280,6 +272,33 @@ export const useRedacaoStore = create<RedacaoState>()(
             ? s.favoritos.filter((f) => f !== id)
             : [...s.favoritos, id],
         })),
+
+      aplicarBackup: (dados) =>
+        set({
+          historico: dados.historico,
+          favoritos: dados.favoritos,
+          checklist: dados.checklist,
+          tema: dados.rascunho.tema,
+          tese: dados.rascunho.tese,
+          argumentos: dados.rascunho.argumentos,
+          intervencao: dados.rascunho.intervencao,
+          textoFinal: dados.rascunho.textoFinal,
+          stage: dados.rascunho.stage,
+          stageStartedAt: Date.now(),
+          savedAt: Date.now(),
+          provaAte: null,
+        }),
+      apagarTudo: () => {
+        // Volta ao estado inicial e remove qualquer resquício do localStorage.
+        set(useRedacaoStore.getInitialState());
+        if (typeof window !== "undefined") {
+          try {
+            window.localStorage.removeItem("redacao-nota-maxima");
+          } catch {
+            /* navegador em modo privado bloqueia storage */
+          }
+        }
+      },
     }),
     {
       name: "redacao-nota-maxima",

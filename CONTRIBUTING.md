@@ -33,6 +33,8 @@ Abra http://localhost:3000.
 4. **Qualidade antes de submeter:**
 
 ```bash
+npm run validar:repertorios   # integridade do banco de fontes verificadas
+npm test                     # node --test (lógica pura)
 npm run lint
 npm run typecheck
 npm run build          # servidor Node com rotas /api
