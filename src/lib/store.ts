@@ -24,6 +24,24 @@ export function useHydrated(): boolean {
   );
 }
 
+export type View = "inicio" | "estudio" | "biblioteca" | "guia" | "progresso";
+
+export interface RedacaoSalva {
+  id: string;
+  criadoEm: number;
+  titulo: string;
+  area: string;
+  texto: string;
+  tese: string;
+  argumentos: Argumento[];
+  intervencao: PropostaIntervencao;
+  palavras: number;
+  linhas: number;
+  paragrafos: number;
+  tempoSegundos: number;
+  notaEstimada?: number;
+}
+
 export const INTERVENCAO_VAZIA: PropostaIntervencao = {
   agente: "",
   acao: "",
@@ -33,6 +51,14 @@ export const INTERVENCAO_VAZIA: PropostaIntervencao = {
 };
 
 interface RedacaoState {
+  // Navegação
+  view: View;
+  bibliotecaQuery: string;
+  setView: (view: View) => void;
+  irParaBiblioteca: (query?: string) => void;
+  setBibliotecaQuery: (query: string) => void;
+
+  // Fluxo de escrita
   stage: Stage;
   tema: Tema | null;
   tese: string;
@@ -54,6 +80,21 @@ interface RedacaoState {
   iniciarSessao: () => void;
   novaRedacao: () => void;
   marcarSalvo: () => void;
+
+  // Biblioteca / histórico / treino
+  historico: RedacaoSalva[];
+  salvarNoHistorico: (notaEstimada?: number) => string | null;
+  carregarDoHistorico: (id: string) => void;
+  removerDoHistorico: (id: string) => void;
+  limparHistorico: () => void;
+  checklist: string[];
+  toggleChecklist: (id: string) => void;
+  resetChecklist: () => void;
+  provaAte: number | null;
+  iniciarProva: (minutos?: number) => void;
+  encerrarProva: () => void;
+  favoritos: string[];
+  toggleFavorito: (id: string) => void;
 }
 
 export function novoArgumento(): Argumento {
@@ -68,9 +109,40 @@ export function novoArgumento(): Argumento {
   };
 }
 
+function gerarId(): string {
+  return typeof crypto !== "undefined" && "randomUUID" in crypto
+    ? crypto.randomUUID()
+    : `id-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+}
+
+export function estatisticasTexto(texto: string) {
+  const trim = texto.trim();
+  const palavras = trim ? trim.split(/\s+/).filter(Boolean).length : 0;
+  const caracteres = texto.length;
+
+  const blocos = trim
+    .split(/\n{1,}/)
+    .map((b) => b.trim())
+    .filter((b) => b.length > 0);
+
+  let linhas = 0;
+  for (const b of blocos) {
+    linhas += Math.max(1, Math.ceil(b.length / 70));
+  }
+
+  return { palavras, caracteres, linhas, paragrafos: blocos.length };
+}
+
 export const useRedacaoStore = create<RedacaoState>()(
   persist(
-    (set) => ({
+    (set, get) => ({
+      view: "inicio",
+      bibliotecaQuery: "",
+      setView: (view) => set({ view }),
+      irParaBiblioteca: (query) =>
+        set({ view: "biblioteca", bibliotecaQuery: query ?? "" }),
+      setBibliotecaQuery: (bibliotecaQuery) => set({ bibliotecaQuery }),
+
       stage: "setup",
       tema: null,
       tese: "",
@@ -81,48 +153,38 @@ export const useRedacaoStore = create<RedacaoState>()(
       stageStartedAt: null,
       savedAt: null,
 
-      setStage: (stage) =>
-        set({ stage, stageStartedAt: Date.now() }),
-
+      setStage: (stage) => set({ stage, stageStartedAt: Date.now() }),
       setTema: (tema) =>
         set({ tema, startedAt: Date.now(), stageStartedAt: Date.now() }),
-
       setTese: (tese) => set({ tese }),
-
       addArgumento: () =>
         set((s) => {
           if (s.argumentos.length >= 3) return s;
           return { argumentos: [...s.argumentos, novoArgumento()] };
         }),
-
       updateArgumento: (id, campo) =>
         set((s) => ({
           argumentos: s.argumentos.map((a) =>
             a.id === id ? { ...a, ...campo } : a
           ),
         })),
-
       removeArgumento: (id) =>
         set((s) => ({
           argumentos: s.argumentos.filter((a) => a.id !== id),
         })),
-
       updateIntervencao: (campo) =>
         set((s) => ({ intervencao: { ...s.intervencao, ...campo } })),
-
       setTextoFinal: (textoFinal) => set({ textoFinal }),
-
       iniciarSessao: () =>
         set((s) =>
           s.startedAt === null
             ? { startedAt: Date.now(), stageStartedAt: Date.now() }
             : s
         ),
-
       marcarSalvo: () => set({ savedAt: Date.now() }),
-
       novaRedacao: () =>
         set({
+          view: "estudio",
           stage: "setup",
           tema: null,
           tese: "",
@@ -132,17 +194,98 @@ export const useRedacaoStore = create<RedacaoState>()(
           startedAt: null,
           stageStartedAt: null,
           savedAt: null,
+          provaAte: null,
         }),
+
+      historico: [],
+      salvarNoHistorico: (notaEstimada) => {
+        const s = get();
+        if (s.textoFinal.trim().length < 20) return null;
+        const stats = estatisticasTexto(s.textoFinal);
+        const tempoSegundos = s.startedAt
+          ? Math.round((Date.now() - s.startedAt) / 1000)
+          : 0;
+        const existente = s.historico.find(
+          (h) => h.titulo === s.tema?.titulo && h.texto === s.textoFinal
+        );
+        if (existente) {
+          set({
+            historico: s.historico.map((h) =>
+              h.id === existente.id
+                ? { ...h, notaEstimada: notaEstimada ?? h.notaEstimada, tempoSegundos }
+                : h
+            ),
+          });
+          return existente.id;
+        }
+        const item: RedacaoSalva = {
+          id: gerarId(),
+          criadoEm: Date.now(),
+          titulo: s.tema?.titulo ?? "Redação sem tema definido",
+          area: s.tema?.area ?? "Tema próprio",
+          texto: s.textoFinal,
+          tese: s.tese,
+          argumentos: s.argumentos,
+          intervencao: s.intervencao,
+          palavras: stats.palavras,
+          linhas: stats.linhas,
+          paragrafos: stats.paragrafos,
+          tempoSegundos,
+          ...(notaEstimada !== undefined ? { notaEstimada } : {}),
+        };
+        set({ historico: [item, ...s.historico].slice(0, 30) });
+        return item.id;
+      },
+      carregarDoHistorico: (id) => {
+        const item = get().historico.find((h) => h.id === id);
+        if (!item) return;
+        set({
+          view: "estudio",
+          stage: "escrita",
+          tema: { titulo: item.titulo, area: item.area, textosMotivadores: [] },
+          tese: item.tese,
+          argumentos: item.argumentos,
+          intervencao: item.intervencao,
+          textoFinal: item.texto,
+          startedAt: Date.now(),
+          stageStartedAt: Date.now(),
+          provaAte: null,
+        });
+      },
+      removerDoHistorico: (id) =>
+        set((s) => ({ historico: s.historico.filter((h) => h.id !== id) })),
+      limparHistorico: () => set({ historico: [] }),
+
+      checklist: [],
+      toggleChecklist: (id) =>
+        set((s) => ({
+          checklist: s.checklist.includes(id)
+            ? s.checklist.filter((c) => c !== id)
+            : [...s.checklist, id],
+        })),
+      resetChecklist: () => set({ checklist: [] }),
+
+      provaAte: null,
+      iniciarProva: (minutos = 60) =>
+        set({
+          provaAte: Date.now() + minutos * 60_000,
+          startedAt: get().startedAt ?? Date.now(),
+        }),
+      encerrarProva: () => set({ provaAte: null }),
+
+      favoritos: [],
+      toggleFavorito: (id) =>
+        set((s) => ({
+          favoritos: s.favoritos.includes(id)
+            ? s.favoritos.filter((f) => f !== id)
+            : [...s.favoritos, id],
+        })),
     }),
     {
       name: "redacao-nota-maxima",
-      version: 2,
-      // Migração simples: se não há estado persistido, retorna default;
-      // caso contrário confia no Zustand para fazer merge com os defaults.
+      version: 3,
       migrate: (persisted: unknown) => {
-        if (!persisted || typeof persisted !== "object") {
-          return {};
-        }
+        if (!persisted || typeof persisted !== "object") return {};
         return persisted as Partial<RedacaoState>;
       },
       // Faz merge com defaults para evitar `undefined` em campos novos
@@ -150,36 +293,3 @@ export const useRedacaoStore = create<RedacaoState>()(
     }
   )
 );
-
-/**
- * Estatísticas do texto no padrão da folha do ENEM.
- *
- * O ENEM considera ≈70 caracteres por linha (com margens), mas o cálculo
- * é feito por parágrafo: cada parágrafo inicia nova linha, e cada \n\n
- * também separa.
- */
-export function estatisticasTexto(texto: string) {
-  const trim = texto.trim();
-  const palavras = trim ? trim.split(/\s+/).filter(Boolean).length : 0;
-  const caracteres = texto.length;
-
-  // Cada parágrafo inicia em uma nova linha visual (com indentação implícita).
-  // Aproximação: cada parágrafo ocupa ceil(caracteres/70) linhas, mínimo 1 por parágrafo não-vazio.
-  const blocos = trim
-    .split(/\n{1,}/)
-    .map((b) => b.trim())
-    .filter((b) => b.length > 0);
-
-  let linhas = 0;
-  for (const b of blocos) {
-    // conta caracteres visíveis (desconta espaços múltiplos grosseiramente)
-    const visiveis = b.length;
-    linhas += Math.max(1, Math.ceil(visiveis / 70));
-  }
-
-  const paragrafos = blocos.length;
-
-  // Meta: 30 linhas (tamanho oficial folha ENEM dissertativa)
-  // Parágrafo introdutório ≈ 4-5 linhas; cada desenvolvimento ≈ 6-8 linhas; conclusão ≈ 5-7 linhas.
-  return { palavras, caracteres, linhas, paragrafos };
-}

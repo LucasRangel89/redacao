@@ -1,0 +1,1500 @@
+{
+  "fonte": "docs/acervo-redacoes.md",
+  "geradoPor": "scripts/parse-recursos.mjs",
+  "totalTemas": 9,
+  "totalCitacoes": 59,
+  "totalRedacoes": 22,
+  "temas": [
+    {
+      "id": "diferentes-interesses-de-empresas-e-clientes-e-os-limites-da",
+      "titulo": "Diferentes interesses de empresas e clientes e os limites da privacidade digital",
+      "enunciado": "Diferentes interesses de empresas e clientes e os limites da privacidade digital: apresente proposta de intervenção para o problema discutido, respeitando os direitos humanos.",
+      "area": "Tecnologia e Sociedade",
+      "resumo": "A privacidade digital é um tema cada vez mais relevante na atualidade, especialmente com o crescente uso de tecnologias digitais em nossas vidas diárias. ",
+      "palavrasChave": [
+        "diferentes",
+        "interesses",
+        "empresas",
+        "clientes",
+        "limites",
+        "privacidade",
+        "digital"
+      ],
+      "textosMotivadores": [
+        {
+          "fonte": "Citação — Edward Snowden",
+          "resumo": "A privacidade não é algo que eu esteja disposto a trocar por conveniência ou benefícios."
+        },
+        {
+          "fonte": "Texto motivador — acervo do projeto",
+          "resumo": "Um dos principais problemas é a discrepância entre os interesses das empresas e dos clientes. "
+        }
+      ],
+      "redacoes": [
+        {
+          "id": "r1-1",
+          "titulo": "Versão 1",
+          "paragrafos": [
+            {
+              "texto": "A privacidade digital é um tema cada vez mais relevante na atualidade, especialmente com o crescente uso de tecnologias digitais em nossas vidas diárias. Com a coleta de dados em larga escala, as empresas têm acesso a informações valiosas sobre seus clientes, o que lhes permite personalizar suas ofertas e serviços. No entanto, essa coleta de dados também levanta questões sobre a privacidade dos usuários e os limites éticos que as empresas devem seguir.",
+              "etiqueta": "Introdução"
+            },
+            {
+              "texto": "Um dos principais problemas é a discrepância entre os interesses das empresas e dos clientes. As empresas buscam coletar o máximo possível de informações para melhorar seus serviços e produtos, enquanto os clientes querem manter sua privacidade e proteger suas informações pessoais. Esse conflito de interesses muitas vezes leva a práticas questionáveis por parte das empresas, como a coleta de informações sensíveis sem o consentimento dos usuários.",
+              "etiqueta": "Desenvolvimento"
+            },
+            {
+              "texto": "Por exemplo, a coleta de dados biométricos, como as impressões digitais ou a análise de voz, pode ser considerada invasiva pelos usuários e apresentar riscos de privacidade. No entanto, muitas empresas continuam a implementar essas tecnologias sem o devido consentimento e transparência, o que coloca em risco a confiança dos usuários.",
+              "etiqueta": "Desenvolvimento"
+            },
+            {
+              "texto": "Além disso, a falta de regulamentação adequada também contribui para o abuso da privacidade digital. Muitas empresas coletam e compartilham informações pessoais sem o conhecimento ou consentimento dos usuários, muitas vezes vendendo esses dados para terceiros. Isso é especialmente problemático quando essas informações incluem dados médicos ou financeiros, que são particularmente sensíveis e podem ser usados para fins maliciosos.",
+              "etiqueta": "Desenvolvimento"
+            },
+            {
+              "texto": "Portanto, é fundamental que as empresas sejam transparentes sobre suas práticas de coleta de dados e obtenham o consentimento explícito dos usuários antes de coletar informações pessoais. Também é necessário que as leis e regulamentos sejam atualizados para refletir as mudanças na paisagem digital e proteger a privacidade dos usuários. Isso pode incluir a imposição de sanções mais severas para empresas que violam a privacidade dos usuários e a implementação de padrões éticos para a coleta e uso de dados.",
+              "etiqueta": "Desenvolvimento"
+            },
+            {
+              "texto": "Em conclusão, a privacidade digital é um direito fundamental que deve ser protegido, independentemente dos interesses comerciais das empresas. As empresas devem buscar um equilíbrio entre a coleta de informações úteis e a proteção da privacidade dos usuários, e os governos devem regulamentar e fiscalizar a coleta e o uso de dados pessoais. A privacidade digital é uma questão complexa, mas é essencial abordá-la de maneira responsável e ética para garantir a confiança dos usuários e a segurança de suas informações pessoais.",
+              "etiqueta": "Conclusão"
+            }
+          ]
+        },
+        {
+          "id": "r1-2",
+          "titulo": "Versão 2 · Diferentes interesses de empresas e clientes e os limites da privacida",
+          "paragrafos": [
+            {
+              "texto": "Nos últimos anos, houve um aumento significativo na coleta de dados pessoais pelas empresas, o que tem gerado preocupações em relação à privacidade digital dos usuários. Por um lado, as empresas alegam que a coleta de dados é necessária para melhorar a experiência do usuário e fornecer serviços mais personalizados. Por outro lado, os usuários estão preocupados com a privacidade e segurança de seus dados pessoais.",
+              "etiqueta": "Introdução"
+            },
+            {
+              "texto": "As empresas estão constantemente buscando maneiras de coletar mais dados dos usuários, desde informações básicas como nome e endereço até detalhes mais íntimos, como histórico de navegação e preferências pessoais. Enquanto as empresas afirmam que a coleta desses dados é necessária para melhorar a experiência do usuário e fornecer serviços mais personalizados, muitos usuários estão preocupados com a privacidade de seus dados pessoais e o que as empresas podem fazer com essas informações.",
+              "etiqueta": "Desenvolvimento"
+            },
+            {
+              "texto": "Por um lado, as empresas têm o direito de coletar informações sobre seus clientes, desde que seja feito de forma ética e legal. No entanto, elas também têm a responsabilidade de garantir que os dados dos clientes estejam protegidos e que não sejam utilizados de maneira inadequada ou vendidos para terceiros sem o consentimento dos usuários.",
+              "etiqueta": "Desenvolvimento"
+            },
+            {
+              "texto": "Por outro lado, os usuários também têm a responsabilidade de entender como seus dados são coletados e como as empresas os utilizam. Eles devem estar cientes dos riscos envolvidos na divulgação de suas informações pessoais e tomar medidas para proteger sua privacidade digital, como o uso de senhas seguras e a configuração de opções de privacidade em suas contas on-line.",
+              "etiqueta": "Desenvolvimento"
+            },
+            {
+              "texto": "Embora as empresas e os usuários tenham interesses diferentes em relação à privacidade digital, é possível encontrar um equilíbrio que atenda às necessidades de ambas as partes. As empresas devem ser transparentes sobre suas práticas de coleta de dados e fornecer aos usuários opções claras para controlar suas informações pessoais. Os usuários, por sua vez, devem tomar medidas para proteger sua privacidade digital e estar cientes dos riscos envolvidos na divulgação de informações pessoais.",
+              "etiqueta": "Desenvolvimento"
+            },
+            {
+              "texto": "Em resumo, a coleta de dados pessoais pelas empresas é um assunto complexo que envolve diferentes interesses. As empresas têm o direito de coletar informações sobre seus clientes, desde que seja feito de forma ética e legal, e os usuários devem tomar medidas para proteger sua privacidade digital e estar cientes dos riscos envolvidos na divulgação de informações pessoais. É importante encontrar um equilíbrio que atenda às necessidades de ambas as partes e garanta a proteção da privacidade digital dos usuários.",
+              "etiqueta": "Conclusão"
+            }
+          ]
+        }
+      ],
+      "citacoes": [
+        "c1-1",
+        "c1-2",
+        "c1-3",
+        "c1-4",
+        "c1-5",
+        "c1-6",
+        "c1-7",
+        "c1-8",
+        "c1-9",
+        "c1-10"
+      ]
+    },
+    {
+      "id": "sigilo-de-dados",
+      "titulo": "Sigilo de dados",
+      "enunciado": "Sigilo de dados: apresente proposta de intervenção para o problema discutido, respeitando os direitos humanos.",
+      "area": "Tecnologia e Sociedade",
+      "resumo": "O sigilo de dados é um tema de grande importância para a sociedade contemporânea, especialmente diante do crescente uso da tecnologia da informação em nosso cotidiano. ",
+      "palavrasChave": [
+        "sigilo",
+        "dados"
+      ],
+      "textosMotivadores": [
+        {
+          "fonte": "Citação — Alan Westin",
+          "resumo": "A privacidade é um direito fundamental. Sem privacidade, não há liberdade de pensamento, liberdade de expressão e liberdade de ação\"."
+        },
+        {
+          "fonte": "Texto motivador — acervo do projeto",
+          "resumo": "A privacidade dos dados é garantida por diversas leis e regulamentos, como a Lei Geral de Proteção de Dados (LGPD), a General Data Protection Regulation (GDPR) da União Europeia e a Lei de Acesso à Informação. "
+        }
+      ],
+      "redacoes": [
+        {
+          "id": "r2-1",
+          "titulo": "Versão 1",
+          "paragrafos": [
+            {
+              "texto": "O sigilo de dados é um tema de grande importância para a sociedade contemporânea, especialmente diante do crescente uso da tecnologia da informação em nosso cotidiano. O acesso a informações pessoais e confidenciais é cada vez mais comum, e a proteção desses dados se torna uma questão crucial para garantir a privacidade e a segurança das pessoas.",
+              "etiqueta": "Introdução"
+            },
+            {
+              "texto": "A privacidade dos dados é garantida por diversas leis e regulamentos, como a Lei Geral de Proteção de Dados (LGPD), a General Data Protection Regulation (GDPR) da União Europeia e a Lei de Acesso à Informação. Essas leis definem os direitos e deveres de empresas e organizações em relação à coleta, armazenamento e uso de informações pessoais.",
+              "etiqueta": "Desenvolvimento"
+            },
+            {
+              "texto": "No entanto, apesar da existência de leis de proteção de dados, a violação de sigilo de informações ainda é uma prática comum em muitos setores da sociedade. Empresas e organizações podem coletar e armazenar informações pessoais de forma inadequada, sem a devida proteção e segurança. Além disso, indivíduos mal-intencionados podem utilizar técnicas de invasão de sistemas para acessar informações confidenciais.",
+              "etiqueta": "Desenvolvimento"
+            },
+            {
+              "texto": "A violação de sigilo de dados pode ter consequências graves para a privacidade e a segurança das pessoas. Informações como dados bancários, histórico médico e informações de identidade podem ser usadas de forma indevida, como em fraudes e crimes virtuais.",
+              "etiqueta": "Desenvolvimento"
+            },
+            {
+              "texto": "Portanto, é necessário que sejam implementadas medidas eficazes para garantir o sigilo de dados. As empresas e organizações devem adotar políticas claras de proteção de dados, incluindo a criptografia e a armazenagem segura de informações pessoais. Além disso, é fundamental que haja uma maior conscientização e educação da população em relação à proteção de dados, para que as pessoas possam tomar medidas de proteção adequadas e reconhecer situações de violação de privacidade.",
+              "etiqueta": "Desenvolvimento"
+            },
+            {
+              "texto": "Outro ponto importante é a fiscalização e a punição de violações de sigilo de dados. As leis de proteção de dados devem ser aplicadas de forma rigorosa e eficaz, de modo a garantir a responsabilização de empresas e indivíduos que violam a privacidade de outras pessoas.",
+              "etiqueta": "Desenvolvimento"
+            },
+            {
+              "texto": "Em resumo, o sigilo de dados é um tema fundamental para a privacidade e segurança da sociedade contemporânea. É necessário que sejam implementadas medidas eficazes de proteção de dados, incluindo a conscientização da população, a adoção de políticas claras de proteção de dados pelas empresas e organizações, e a fiscalização e punição de violações de privacidade. Somente assim poderemos garantir um uso seguro e responsável das tecnologias da informação.",
+              "etiqueta": "Conclusão"
+            }
+          ]
+        },
+        {
+          "id": "r2-2",
+          "titulo": "Versão 2",
+          "paragrafos": [
+            {
+              "texto": "Sigilo de dados é um tema cada vez mais relevante na era digital em que vivemos. Com a crescente utilização da tecnologia e a facilidade de acesso à informação, é importante discutir o direito à privacidade e a proteção dos dados pessoais. Nesse sentido, é necessário compreender o contexto histórico-sócio-cultural em que se inserem as discussões sobre o sigilo de dados.",
+              "etiqueta": "Introdução"
+            },
+            {
+              "texto": "A história do sigilo de dados remonta aos tempos mais antigos, quando governos e impérios utilizavam códigos secretos para proteger informações confidenciais. Na Grécia antiga, por exemplo, a criptografia já era utilizada para enviar mensagens secretas em tempos de guerra. No entanto, com o advento da tecnologia digital, a proteção dos dados pessoais tornou-se um tema ainda mais relevante.",
+              "etiqueta": "Desenvolvimento"
+            },
+            {
+              "texto": "Atualmente, a privacidade é um direito fundamental reconhecido em várias constituições ao redor do mundo. No Brasil, a Constituição Federal de 1988 assegura o direito à intimidade e à vida privada. Além disso, a Lei Geral de Proteção de Dados (LGPD), que entrou em vigor em 2020, estabelece regras claras para a proteção dos dados pessoais.",
+              "etiqueta": "Desenvolvimento"
+            },
+            {
+              "texto": "No entanto, mesmo com essas garantias legais, é comum ouvirmos falar sobre violações de privacidade e vazamentos de dados. Grandes empresas de tecnologia, como Facebook e Google, já foram acusadas de utilizar informações pessoais de seus usuários de forma indevida. Esses casos mostram que a proteção dos dados pessoais ainda é um desafio na era digital.",
+              "etiqueta": "Desenvolvimento"
+            },
+            {
+              "texto": "Por outro lado, a discussão sobre o sigilo de dados não se resume apenas à proteção da privacidade individual. Questões relacionadas à segurança nacional, proteção de direitos autorais e combate ao terrorismo também entram em jogo. Nesse sentido, é necessário encontrar um equilíbrio entre o direito à privacidade e a necessidade de acesso a informações por parte do Estado e de empresas.",
+              "etiqueta": "Desenvolvimento"
+            },
+            {
+              "texto": "Em suma, o sigilo de dados é um tema complexo e que demanda uma abordagem multidisciplinar. É importante considerar as questões histórico-sócio-culturais que envolvem a proteção dos dados pessoais, bem como as garantias legais existentes. Ao mesmo tempo, é preciso debater sobre os limites do direito à privacidade e a necessidade de acesso a informações em contextos específicos. Somente assim será possível avançar em direção a uma sociedade digital mais justa e segura.",
+              "etiqueta": "Conclusão"
+            }
+          ]
+        }
+      ],
+      "citacoes": [
+        "c2-1",
+        "c2-2",
+        "c2-3",
+        "c2-4",
+        "c2-5",
+        "c2-6",
+        "c2-7",
+        "c2-8",
+        "c2-9",
+        "c2-10"
+      ]
+    },
+    {
+      "id": "a-influencia-da-satisfacao-no-trabalho-sobre-o-desempenho-do",
+      "titulo": "A influência da satisfação no trabalho sobre o desempenho do funcionário",
+      "enunciado": "A influência da satisfação no trabalho sobre o desempenho do funcionário: apresente proposta de intervenção para o problema discutido, respeitando os direitos humanos.",
+      "area": "Economia e Trabalho",
+      "resumo": "A satisfação no trabalho é um tema cada vez mais importante para as organizações, pois está diretamente ligada ao desempenho dos funcionários e, consequentemente, ao sucesso da empresa. ",
+      "palavrasChave": [
+        "influencia",
+        "satisfacao",
+        "trabalho",
+        "desempenho",
+        "funcionario"
+      ],
+      "textosMotivadores": [
+        {
+          "fonte": "Citação — Donald Trump",
+          "resumo": "O sucesso nos negócios requer treinamento e disciplina e trabalho duro. Mas se você não está apaixonado pelo que está fazendo, você nunca terá sucesso."
+        },
+        {
+          "fonte": "Texto motivador — acervo do projeto",
+          "resumo": "A satisfação no trabalho pode ser definida como o grau de contentamento ou felicidade que um funcionário experimenta em relação ao seu trabalho. "
+        }
+      ],
+      "redacoes": [
+        {
+          "id": "r3-1",
+          "titulo": "Versão 1",
+          "paragrafos": [
+            {
+              "texto": "A satisfação no trabalho é um tema cada vez mais importante para as organizações, pois está diretamente ligada ao desempenho dos funcionários e, consequentemente, ao sucesso da empresa. Funcionários satisfeitos tendem a ser mais produtivos, engajados e leais à empresa, o que resulta em melhorias significativas na qualidade do trabalho e no atendimento aos clientes.",
+              "etiqueta": "Introdução"
+            },
+            {
+              "texto": "A satisfação no trabalho pode ser definida como o grau de contentamento ou felicidade que um funcionário experimenta em relação ao seu trabalho. É influenciada por vários fatores, como ambiente de trabalho, salário, benefícios, relacionamento com colegas e superiores, oportunidades de crescimento e desenvolvimento pessoal, entre outros. Funcionários que se sentem valorizados e respeitados tendem a ser mais satisfeitos e a se dedicar mais ao trabalho.",
+              "etiqueta": "Desenvolvimento"
+            },
+            {
+              "texto": "A influência da satisfação no trabalho sobre o desempenho do funcionário pode ser vista em várias áreas. Por exemplo, funcionários satisfeitos tendem a ser mais motivados e comprometidos com a empresa, o que se reflete em um trabalho mais produtivo e de melhor qualidade. Eles também são mais propensos a permanecer na empresa e a recomendar a empresa a outras pessoas, o que pode melhorar a reputação e a atratividade da empresa.",
+              "etiqueta": "Desenvolvimento"
+            },
+            {
+              "texto": "Além disso, a satisfação no trabalho pode ter um impacto positivo na saúde e bem-estar dos funcionários. Funcionários insatisfeitos tendem a experimentar níveis mais altos de estresse e ansiedade, o que pode levar a problemas de saúde física e mental, absenteísmo e baixa produtividade. Por outro lado, funcionários satisfeitos tendem a experimentar níveis mais baixos de estresse e a ter melhor saúde mental e física.",
+              "etiqueta": "Desenvolvimento"
+            },
+            {
+              "texto": "É importante ressaltar que a satisfação no trabalho não é uma questão isolada e pode ser influenciada por vários fatores externos, como a cultura organizacional, a liderança e a política de recursos humanos da empresa. Portanto, as empresas devem investir em um ambiente de trabalho saudável, com comunicação aberta, treinamento e desenvolvimento, remuneração justa e benefícios adequados. Também é importante ouvir o feedback dos funcionários e implementar mudanças com base em suas preocupações e necessidades.",
+              "etiqueta": "Desenvolvimento"
+            },
+            {
+              "texto": "Em conclusão, a satisfação no trabalho é um fator crítico para o desempenho do funcionário e o sucesso da empresa. Funcionários satisfeitos tendem a ser mais engajados, produtivos e leais à empresa, além de terem melhor saúde e bem-estar. Portanto, as empresas devem investir em um ambiente de trabalho saudável e satisfatório, que valorize e respeite seus funcionários, para garantir um desempenho elevado e sustentável no longo prazo.",
+              "etiqueta": "Conclusão"
+            }
+          ]
+        },
+        {
+          "id": "r3-2",
+          "titulo": "Versão 2 · A influência da satisfação no trabalho sobre o desempenho do funcionár",
+          "paragrafos": [
+            {
+              "texto": "A satisfação no trabalho é um fator importante que pode afetar diretamente o desempenho de um funcionário. Quando um funcionário está satisfeito com seu trabalho, ele tende a ser mais produtivo, engajado e motivado a realizar suas tarefas com excelência. Por outro lado, quando um funcionário está insatisfeito, ele pode ser menos produtivo, menos motivado e até mesmo buscar outras oportunidades de emprego.",
+              "etiqueta": "Introdução"
+            },
+            {
+              "texto": "A satisfação no trabalho é influenciada por uma série de fatores, incluindo o ambiente de trabalho, o relacionamento com colegas e supervisores, a remuneração e as oportunidades de desenvolvimento profissional. Quando esses fatores são favoráveis, os funcionários tendem a se sentir mais satisfeitos e motivados em seu trabalho.",
+              "etiqueta": "Desenvolvimento"
+            },
+            {
+              "texto": "Por outro lado, quando os funcionários estão insatisfeitos com seu trabalho, pode haver consequências negativas para o desempenho da empresa, como uma queda na produtividade e qualidade do trabalho, aumento do absenteísmo e rotatividade de funcionários. Além disso, a insatisfação dos funcionários pode afetar a cultura organizacional e a imagem da empresa, resultando em uma redução da atratividade da empresa para potenciais candidatos a emprego.",
+              "etiqueta": "Desenvolvimento"
+            },
+            {
+              "texto": "É importante que as empresas compreendam a importância da satisfação no trabalho e adotem medidas para garantir que seus funcionários estejam satisfeitos e motivados em seu trabalho. Isso pode incluir a criação de um ambiente de trabalho positivo, o estabelecimento de uma cultura de comunicação aberta e transparente, a oferta de oportunidades de desenvolvimento profissional e uma remuneração justa e competitiva.",
+              "etiqueta": "Desenvolvimento"
+            },
+            {
+              "texto": "Os funcionários também têm um papel importante a desempenhar na criação de um ambiente de trabalho positivo. Eles podem contribuir para um ambiente de trabalho colaborativo e saudável, estabelecendo relacionamentos positivos com seus colegas e supervisores e buscando oportunidades de desenvolvimento profissional.",
+              "etiqueta": "Desenvolvimento"
+            },
+            {
+              "texto": "Em resumo, a satisfação no trabalho é um fator importante que pode afetar diretamente o desempenho do funcionário e, consequentemente, o desempenho da empresa como um todo. As empresas devem compreender a importância da satisfação no trabalho e adotar medidas para garantir que seus funcionários estejam satisfeitos e motivados em seu trabalho. Os funcionários também têm um papel importante a desempenhar na criação de um ambiente de trabalho positivo, colaborando para um ambiente de trabalho saudável e buscando oportunidades de desenvolvimento profissional.",
+              "etiqueta": "Conclusão"
+            }
+          ]
+        },
+        {
+          "id": "r3-3",
+          "titulo": "Versão 3",
+          "paragrafos": [
+            {
+              "texto": "A satisfação no trabalho é um tema de grande importância nas organizações, uma vez que está diretamente ligada ao desempenho dos funcionários. A influência da satisfação no trabalho pode ser percebida em diversas áreas, desde a saúde mental até a produtividade. Nessa perspectiva, é importante discutir como a satisfação no trabalho pode afetar o desempenho do funcionário.",
+              "etiqueta": "Introdução"
+            },
+            {
+              "texto": "A relação entre a satisfação no trabalho e o desempenho do funcionário pode ser analisada através de diversas teorias e estudos. Segundo a teoria de Maslow, as necessidades dos seres humanos são organizadas em uma hierarquia, onde as necessidades fisiológicas e de segurança são as mais básicas, seguidas pelas necessidades sociais, de estima e de realização pessoal. A satisfação no trabalho está diretamente ligada às necessidades de estima e de realização pessoal, uma vez que o trabalho pode fornecer reconhecimento e satisfação pessoal.",
+              "etiqueta": "Desenvolvimento"
+            },
+            {
+              "texto": "Além disso, a satisfação no trabalho também pode ser afetada por fatores externos, como o ambiente de trabalho, a cultura organizacional e as políticas de recursos humanos. Um estudo realizado pela Universidade de Harvard mostrou que empresas com culturas organizacionais positivas e que valorizam o bem-estar dos funcionários têm um desempenho melhor do que aquelas que não possuem essas características.",
+              "etiqueta": "Desenvolvimento"
+            },
+            {
+              "texto": "Outro estudo realizado pela Universidade de Warwick, no Reino Unido, mostrou que funcionários felizes são até 12% mais produtivos do que aqueles que não estão satisfeitos. Isso pode ser explicado pelo fato de que funcionários felizes tendem a ser mais engajados e motivados, o que leva a um melhor desempenho.",
+              "etiqueta": "Desenvolvimento"
+            },
+            {
+              "texto": "A relação entre satisfação no trabalho e desempenho do funcionário é um tema que vem sendo estudado há décadas. Desde a Revolução Industrial, quando as condições de trabalho eram extremamente precárias, até os dias de hoje, onde há uma preocupação crescente com o bem-estar dos funcionários, a satisfação no trabalho sempre foi um tema relevante.",
+              "etiqueta": "Desenvolvimento"
+            },
+            {
+              "texto": "Frederick Winslow Taylor, considerado o pai da administração científica, defendia que o desempenho dos funcionários poderia ser melhorado através da análise dos processos de trabalho e da aplicação de métodos científicos. No entanto, sua abordagem era bastante mecânica e desconsiderava a importância do bem-estar dos funcionários.",
+              "etiqueta": "Desenvolvimento"
+            },
+            {
+              "texto": "Já Elton Mayo, um dos principais estudiosos da Escola de Relações Humanas, defendia que o bem-estar dos funcionários era essencial para o desempenho das empresas. Ele realizou estudos na fábrica da Western Electric, em Hawthorne, onde observou que o desempenho dos funcionários melhorava não apenas com mudanças no ambiente de trabalho, mas também com a atenção que era dada a eles.",
+              "etiqueta": "Desenvolvimento"
+            },
+            {
+              "texto": "A satisfação no trabalho é um tema que tem sido discutido há décadas, e a relação entre satisfação e desempenho é cada vez mais evidente. É importante que as empresas percebam que investir no bem-estar dos",
+              "etiqueta": "Conclusão"
+            }
+          ]
+        }
+      ],
+      "citacoes": [
+        "c3-1",
+        "c3-2",
+        "c3-3",
+        "c3-4",
+        "c3-5"
+      ]
+    },
+    {
+      "id": "o-papel-do-cidadao-no-cumprimento-dos-objetivos-de-desenvolv",
+      "titulo": "O papel do cidadão no cumprimento dos objetivos de desenvolvimento sustentável no brasil",
+      "enunciado": "O papel do cidadão no cumprimento dos objetivos de desenvolvimento sustentável no Brasil: apresente proposta de intervenção para o problema discutido, respeitando os direitos humanos.",
+      "area": "Cidadania e Direitos",
+      "resumo": "O desenvolvimento sustentável é um tema cada vez mais importante para a sociedade, especialmente no Brasil, que enfrenta desafios como desigualdade social, degradação ambiental e baixo índice de desenvolvimento humano em algumas regiões do…",
+      "palavrasChave": [
+        "cidadao",
+        "cumprimento",
+        "objetivos",
+        "desenvolvimento",
+        "sustentavel"
+      ],
+      "textosMotivadores": [
+        {
+          "fonte": "Citação — Relatório Brundtland",
+          "resumo": "O desenvolvimento sustentável é aquele que satisfaz as necessidades do presente sem comprometer a capacidade das gerações futuras de satisfazerem as suas próprias necessidades."
+        },
+        {
+          "fonte": "Texto motivador — acervo do projeto",
+          "resumo": "Os ODS foram definidos pela Organização das Nações Unidas (ONU) em 2015 como uma agenda global para o desenvolvimento sustentável até 2030. "
+        }
+      ],
+      "redacoes": [
+        {
+          "id": "r4-1",
+          "titulo": "Versão 1",
+          "paragrafos": [
+            {
+              "texto": "O desenvolvimento sustentável é um tema cada vez mais importante para a sociedade, especialmente no Brasil, que enfrenta desafios como desigualdade social, degradação ambiental e baixo índice de desenvolvimento humano em algumas regiões do país. Nesse contexto, o papel do cidadão é fundamental para o cumprimento dos Objetivos de Desenvolvimento Sustentável (ODS) no Brasil.",
+              "etiqueta": "Introdução"
+            },
+            {
+              "texto": "Os ODS foram definidos pela Organização das Nações Unidas (ONU) em 2015 como uma agenda global para o desenvolvimento sustentável até 2030. Eles abrangem uma ampla gama de temas, desde erradicação da pobreza e fome zero até ação climática e parcerias globais para o desenvolvimento. No Brasil, os ODS têm sido adotados como uma estratégia para a promoção do desenvolvimento sustentável em nível nacional, estadual e municipal.",
+              "etiqueta": "Desenvolvimento"
+            },
+            {
+              "texto": "O papel do cidadão no cumprimento dos ODS é crucial, pois muitos dos objetivos dependem da mudança de comportamento e da participação ativa da população. Por exemplo, o ODS número 12 (Consumo e Produção Sustentáveis) exige que as pessoas mudem seus hábitos de consumo e produção para reduzir o impacto ambiental e social de suas escolhas. Isso inclui evitar desperdício, escolher produtos sustentáveis e adotar práticas de reciclagem e reutilização.",
+              "etiqueta": "Desenvolvimento"
+            },
+            {
+              "texto": "Além disso, o cidadão também pode exercer pressão sobre as empresas e governos para que adotem práticas mais sustentáveis. Isso pode incluir a exigência de produtos e serviços mais sustentáveis, a participação em campanhas de conscientização e mobilização e a participação em processos de tomada de decisão relacionados a políticas públicas e legislação ambiental.",
+              "etiqueta": "Desenvolvimento"
+            },
+            {
+              "texto": "Outro papel importante do cidadão no cumprimento dos ODS é a promoção da justiça social e da equidade. Isso inclui a luta contra a discriminação e a exclusão social, o apoio a iniciativas de desenvolvimento local e o engajamento em projetos de solidariedade e cooperação entre as comunidades.",
+              "etiqueta": "Desenvolvimento"
+            },
+            {
+              "texto": "No entanto, é importante ressaltar que o papel do cidadão não pode substituir a responsabilidade do governo e das empresas na promoção do desenvolvimento sustentável. É necessário que os governos adotem políticas públicas que incentivem a adoção de práticas sustentáveis pelas empresas e pela população em geral, e que as empresas adotem práticas mais responsáveis e sustentáveis em suas atividades.",
+              "etiqueta": "Desenvolvimento"
+            },
+            {
+              "texto": "Em conclusão, o papel do cidadão no cumprimento dos ODS no Brasil é fundamental para o sucesso da agenda de desenvolvimento sustentável até 2030. O cidadão pode contribuir para o cumprimento dos ODS por meio da mudança de comportamento, da pressão sobre empresas e governos e da promoção da justiça social e da equidade. No entanto, é necessário que o governo e as empresas também assumam sua responsabilidade na promoção do desenvolvimento sustentável, por meio de políticas públicas e práticas mais responsáveis e sustentáveis em suas atividades.",
+              "etiqueta": "Conclusão"
+            }
+          ]
+        },
+        {
+          "id": "r4-2",
+          "titulo": "Versão 2 · O papel do cidadão no cumprimento dos objetivos de desenvolvimento sus",
+          "paragrafos": [
+            {
+              "texto": "Os Objetivos de Desenvolvimento Sustentável (ODS) foram estabelecidos pela Organização das Nações Unidas (ONU) em 2015 como uma agenda global para o desenvolvimento sustentável até 2030. No Brasil, os ODS têm sido adotados como uma estratégia para enfrentar os principais desafios sociais, econômicos e ambientais do país.",
+              "etiqueta": "Introdução"
+            },
+            {
+              "texto": "Os ODS são compostos por 17 objetivos e 169 metas, que abrangem uma ampla gama de áreas, como erradicação da pobreza, saúde e bem-estar, educação de qualidade, igualdade de gênero, energia limpa e acessível, trabalho decente e crescimento econômico, entre outros.",
+              "etiqueta": "Desenvolvimento"
+            },
+            {
+              "texto": "O cumprimento dos ODS requer a participação de todos os setores da sociedade, incluindo governos, empresas, organizações da sociedade civil e cidadãos. O papel do cidadão é fundamental nesse processo, pois é ele quem pode contribuir ativamente para a realização dos objetivos.",
+              "etiqueta": "Desenvolvimento"
+            },
+            {
+              "texto": "O cidadão pode desempenhar um papel importante no cumprimento dos ODS, adotando hábitos e comportamentos sustentáveis em sua vida cotidiana. Isso inclui a redução do consumo de recursos naturais, a adoção de práticas sustentáveis em casa e no trabalho, o uso do transporte público, a redução do desperdício de alimentos e o consumo consciente.",
+              "etiqueta": "Desenvolvimento"
+            },
+            {
+              "texto": "Além disso, o cidadão pode se envolver em iniciativas locais que promovem o desenvolvimento sustentável, como a participação em grupos comunitários que trabalham para melhorar a qualidade de vida das pessoas, a promoção de atividades educacionais sobre o meio ambiente e o voluntariado em projetos sociais e ambientais.",
+              "etiqueta": "Desenvolvimento"
+            },
+            {
+              "texto": "Os cidadãos também podem exercer sua cidadania ativa, cobrando dos governos e empresas ações concretas em prol do desenvolvimento sustentável. Isso pode incluir o engajamento em processos democráticos, como a participação em eleições e consultas públicas, e o uso de redes sociais e outras ferramentas para pressionar os tomadores de decisão a adotar políticas e práticas sustentáveis.",
+              "etiqueta": "Desenvolvimento"
+            },
+            {
+              "texto": "Em resumo, o cumprimento dos ODS requer a participação ativa de todos os setores da sociedade, incluindo cidadãos, empresas e governos. O papel do cidadão é fundamental nesse processo, pois é ele quem pode contribuir ativamente para a realização dos objetivos. Adotar hábitos e comportamentos sustentáveis em sua vida cotidiana, participar de iniciativas locais e exercer sua cidadania ativa são algumas das formas pelas quais o cidadão pode contribuir para o desenvolvimento sustentável do Brasil.",
+              "etiqueta": "Conclusão"
+            }
+          ]
+        },
+        {
+          "id": "r4-3",
+          "titulo": "Versão 3",
+          "paragrafos": [
+            {
+              "texto": "Nos últimos anos, o conceito de desenvolvimento sustentável tem se tornado cada vez mais presente nas discussões sobre o futuro do planeta. O Brasil, assim como outros países, tem a sua parcela de responsabilidade em alcançar os Objetivos de Desenvolvimento Sustentável (ODS) estabelecidos pela Organização das Nações Unidas (ONU) para 2030. Nesse sentido, o papel do cidadão brasileiro é crucial para o cumprimento desses objetivos.",
+              "etiqueta": "Introdução"
+            },
+            {
+              "texto": "Historicamente, o Brasil enfrenta desafios socioeconômicos que impactam diretamente no desenvolvimento sustentável do país. A desigualdade social, a pobreza, a falta de acesso a serviços básicos como saúde e educação, são apenas alguns dos problemas que afetam a população brasileira. No entanto, esses problemas não podem ser encarados como desculpas para não agir em prol do desenvolvimento sustentável.",
+              "etiqueta": "Desenvolvimento"
+            },
+            {
+              "texto": "O cidadão brasileiro tem um papel importante nessa questão. Ele deve estar consciente da sua responsabilidade social e ambiental e agir de forma a contribuir para a construção de uma sociedade mais justa e sustentável. É necessário que cada um faça a sua parte, seja através de pequenas ações cotidianas, como economizar água e energia, reciclar lixo, usar transporte público, ou através de ações mais amplas, como participar de campanhas de conscientização, pressionar governos e empresas para que adotem práticas mais sustentáveis.",
+              "etiqueta": "Desenvolvimento"
+            },
+            {
+              "texto": "Segundo o filósofo francês Michel Foucault, \"a sociedade não é um objeto de natureza, mas uma construção histórica\". Isso significa que a sociedade é formada a partir das ações e escolhas individuais e coletivas ao longo do tempo. Dessa forma, cabe aos cidadãos brasileiros assumirem o compromisso de construir uma sociedade mais sustentável e justa.",
+              "etiqueta": "Desenvolvimento"
+            },
+            {
+              "texto": "Além disso, o escritor brasileiro Paulo Freire afirma que \"a educação não transforma o mundo. A educação muda as pessoas. As pessoas transformam o mundo\". Nesse sentido, é fundamental que a educação ambiental seja parte integrante do currículo escolar, desde a educação básica até o ensino superior. Isso possibilitará que as gerações futuras estejam mais preparadas e conscientes da sua responsabilidade em relação ao meio ambiente e ao desenvolvimento sustentável.",
+              "etiqueta": "Desenvolvimento"
+            },
+            {
+              "texto": "Em suma, o papel do cidadão brasileiro no cumprimento dos Objetivos de Desenvolvimento Sustentável no Brasil é crucial. Ele deve estar consciente da sua responsabilidade social e ambiental, e agir de forma a contribuir para a construção de uma sociedade mais justa e sustentável. Como disse o líder indiano Mahatma Gandhi, \"seja a mudança que você quer ver no mundo\".",
+              "etiqueta": "Conclusão"
+            }
+          ]
+        }
+      ],
+      "citacoes": [
+        "c4-1",
+        "c4-2",
+        "c4-3",
+        "c4-4",
+        "c4-5"
+      ]
+    },
+    {
+      "id": "efeitos-negativos-da-pandemia-no-futuro-da-educacao-do-brasi",
+      "titulo": "Efeitos negativos da pandemia no futuro da educação do brasil",
+      "enunciado": "Efeitos negativos da pandemia no futuro da educação do Brasil: apresente proposta de intervenção para o problema discutido, respeitando os direitos humanos.",
+      "area": "Educação",
+      "resumo": "A pandemia da Covid-19 trouxe uma série de desafios para a educação no Brasil, afetando tanto o ensino básico quanto o superior. ",
+      "palavrasChave": [
+        "efeitos",
+        "negativos",
+        "pandemia",
+        "futuro",
+        "educacao"
+      ],
+      "textosMotivadores": [
+        {
+          "fonte": "Texto motivador — acervo do projeto",
+          "resumo": "A pandemia da Covid-19 trouxe uma série de desafios para a educação no Brasil, afetando tanto o ensino básico quanto o superior. "
+        },
+        {
+          "fonte": "Texto motivador — acervo do projeto",
+          "resumo": "Um dos principais efeitos negativos é o aumento da desigualdade educacional. "
+        }
+      ],
+      "redacoes": [
+        {
+          "id": "r5-1",
+          "titulo": "Versão 1",
+          "paragrafos": [
+            {
+              "texto": "A pandemia da Covid-19 trouxe uma série de desafios para a educação no Brasil, afetando tanto o ensino básico quanto o superior. Com o fechamento das escolas e universidades e a necessidade de adaptação ao ensino remoto, surgiram diversos efeitos negativos que podem afetar o futuro da educação no país.",
+              "etiqueta": "Introdução"
+            },
+            {
+              "texto": "Um dos principais efeitos negativos é o aumento da desigualdade educacional. Com a necessidade de acesso à tecnologia e à internet para acompanhar as aulas remotas, muitos estudantes de baixa renda e regiões mais afastadas do país foram prejudicados. O ensino remoto também pode afetar a qualidade do ensino, já que muitos professores não estão preparados para lidar com aulas online e há dificuldades para o desenvolvimento de atividades práticas e interativas.",
+              "etiqueta": "Desenvolvimento"
+            },
+            {
+              "texto": "Além disso, a pandemia também pode afetar a formação de novos profissionais e pesquisadores, especialmente nas áreas de saúde e ciências biológicas. Com a suspensão de aulas práticas e a impossibilidade de realizar pesquisas em laboratórios, muitos estudantes podem ter dificuldades para adquirir as habilidades e competências necessárias para a formação em suas áreas.",
+              "etiqueta": "Desenvolvimento"
+            },
+            {
+              "texto": "Outro efeito negativo da pandemia na educação é a possível queda no interesse dos estudantes pelo ensino superior. Com a crise econômica e a incerteza em relação ao futuro do mercado de trabalho, muitos jovens podem optar por deixar de lado a formação superior para buscar empregos imediatos ou mesmo desistir de estudar. Isso pode afetar não apenas a formação dos indivíduos, mas também a competitividade do país em um mundo cada vez mais globalizado e exigente em termos de qualificação profissional.",
+              "etiqueta": "Desenvolvimento"
+            },
+            {
+              "texto": "No entanto, é importante ressaltar que a pandemia também pode trazer oportunidades de inovação e transformação para a educação no Brasil. Com a adoção de novas tecnologias e metodologias de ensino, pode haver a possibilidade de ampliar o acesso à educação e criar novas formas de aprendizado. Além disso, a crise pode estimular a busca por soluções criativas e colaborativas para os desafios educacionais, promovendo a formação de uma sociedade mais engajada e comprometida com o futuro da educação no país.",
+              "etiqueta": "Desenvolvimento"
+            },
+            {
+              "texto": "Em conclusão, a pandemia da Covid-19 trouxe diversos efeitos negativos para o futuro da educação no Brasil, como o aumento da desigualdade educacional, a queda na qualidade do ensino, a dificuldade na formação de novos profissionais e a queda no interesse pelo ensino superior. No entanto, é possível também enxergar oportunidades de inovação e transformação para a educação no país, que podem ser promovidas por meio da adoção de novas tecnologias e metodologias de ensino e da busca por soluções criativas e colaborativas para os desafios educacionais.",
+              "etiqueta": "Conclusão"
+            }
+          ]
+        },
+        {
+          "id": "r5-2",
+          "titulo": "Versão 2 · Efeitos negativos da pandemia no futuro da educação do Brasil",
+          "paragrafos": [
+            {
+              "texto": "A pandemia de COVID-19 teve um impacto significativo em todos os aspectos da vida, incluindo a educação. No Brasil, o fechamento das escolas e a transição para o ensino remoto tiveram consequências graves para os estudantes, professores e todo o sistema educacional. Infelizmente, esses efeitos negativos podem ter um impacto duradouro no futuro da educação do país.",
+              "etiqueta": "Introdução"
+            },
+            {
+              "texto": "Uma das principais consequências da pandemia na educação foi a interrupção do aprendizado presencial. Muitas escolas tiveram que fechar suas portas por meses a fio, deixando os estudantes sem acesso ao ensino formal. Mesmo com a transição para o ensino remoto, muitos alunos não tinham acesso à tecnologia ou à internet de qualidade, o que dificultava ainda mais o aprendizado. Essa falta de acesso e a perda de contato direto com os professores e colegas podem ter um impacto negativo na qualidade da educação e na formação dos alunos.",
+              "etiqueta": "Desenvolvimento"
+            },
+            {
+              "texto": "Outro efeito negativo da pandemia na educação é a desigualdade. Infelizmente, as crianças e jovens que já enfrentavam desvantagens sociais e econômicas foram ainda mais afetados pela pandemia. Esses estudantes são mais propensos a não ter acesso à tecnologia ou à internet de qualidade e podem ter menos apoio em casa para acompanhar o ensino remoto. Isso pode levar a uma ampliação da lacuna de desempenho entre os estudantes mais ricos e os mais pobres, o que pode ter um impacto duradouro na igualdade de oportunidades.",
+              "etiqueta": "Desenvolvimento"
+            },
+            {
+              "texto": "Além disso, a pandemia também afetou os professores e a qualidade da educação que eles são capazes de oferecer. Os professores tiveram que se adaptar rapidamente a novas tecnologias e métodos de ensino, o que pode ter sido difícil para alguns. Eles também tiveram que lidar com a sobrecarga de trabalho e a pressão adicional de manter os alunos engajados em um ambiente remoto. Isso pode ter um impacto negativo em sua capacidade de oferecer uma educação de qualidade e pode levar a uma perda de talentos no setor.",
+              "etiqueta": "Desenvolvimento"
+            },
+            {
+              "texto": "Em resumo, os efeitos negativos da pandemia na educação do Brasil são significativos e podem ter um impacto duradouro no futuro do país. A interrupção do aprendizado presencial, a desigualdade e a pressão adicional sobre os professores são apenas algumas das consequências negativas que precisam ser abordadas. É importante que o governo, as escolas e a sociedade em geral trabalhem juntos para minimizar esses efeitos e garantir que a educação continue a ser uma prioridade para o país. Somente assim será possível garantir um futuro mais justo e igualitário para os estudantes brasileiros.",
+              "etiqueta": "Conclusão"
+            }
+          ]
+        },
+        {
+          "id": "r5-3",
+          "titulo": "Versão 3 · Efeitos negativos da pandemia no futuro da educação do Brasil",
+          "paragrafos": [
+            {
+              "texto": "A pandemia de COVID-19 deixou um rastro de destruição em todo o mundo, afetando de forma significativa todos os aspectos da vida. A educação foi um dos setores mais impactados pela pandemia, e o Brasil não foi exceção. As medidas de isolamento social e a transição para o ensino remoto tiveram consequências graves para os estudantes, professores e todo o sistema educacional. Infelizmente, esses efeitos negativos podem ter um impacto duradouro no futuro da educação do país.",
+              "etiqueta": "Introdução"
+            },
+            {
+              "texto": "Para entender a magnitude dos efeitos negativos da pandemia na educação brasileira, é importante considerar a história, a sociedade e a cultura do país. Durante muitos anos, o Brasil enfrentou desafios na área da educação, incluindo a falta de investimento e a desigualdade social. A pandemia apenas ampliou essas desigualdades e colocou em evidência a precariedade do sistema educacional.",
+              "etiqueta": "Desenvolvimento"
+            },
+            {
+              "texto": "A educação sempre foi uma questão central no Brasil, como afirmou o sociólogo Florestan Fernandes: \"a educação é a chave para a transformação da sociedade\". No entanto, a desigualdade social tem sido uma barreira para a realização desse objetivo. A pandemia apenas agravou essa situação, deixando os estudantes mais vulneráveis ainda mais desamparados. Como destacou o filósofo Paulo Freire, \"a educação não transforma o mundo. Ela transforma as pessoas, e as pessoas transformam o mundo\". No entanto, a pandemia pode ter dificultado essa transformação, especialmente para os estudantes mais pobres.",
+              "etiqueta": "Desenvolvimento"
+            },
+            {
+              "texto": "Além disso, a pandemia pode ter um impacto significativo na qualidade da educação no Brasil. A transição para o ensino remoto foi rápida e improvisada, e muitos estudantes e professores não estavam preparados para essa mudança. Como afirmou o sociólogo Pierre Bourdieu, \"a educação é um campo de lutas\", e a pandemia apenas aumentou a pressão sobre os professores e o sistema educacional em geral. A qualidade da educação pode ser comprometida se não forem tomadas medidas para enfrentar esses desafios.",
+              "etiqueta": "Desenvolvimento"
+            },
+            {
+              "texto": "Em resumo, os efeitos negativos da pandemia na educação do Brasil são significativos e podem ter um impacto duradouro no futuro do país. A desigualdade social e a falta de investimento em educação são questões históricas que a pandemia apenas ampliou. É importante que o governo, as escolas e a sociedade em geral trabalhem juntos para minimizar esses efeitos e garantir que a educação continue a ser uma prioridade para o país. Como afirmou o educador Anísio Teixeira, \"a educação não pode ser vista como um processo de aquisição de conhecimento, mas como um processo de desenvolvimento da capacidade crítica dos indivíduos\". Somente assim será possível garantir um futuro mais justo e igualitário para os estudantes brasileiros.",
+              "etiqueta": "Conclusão"
+            }
+          ]
+        }
+      ],
+      "citacoes": []
+    },
+    {
+      "id": "desmonetizacao",
+      "titulo": "Desmonetização",
+      "enunciado": "Desmonetização: apresente proposta de intervenção para o problema discutido, respeitando os direitos humanos.",
+      "area": "Tecnologia e Sociedade",
+      "resumo": "A desmonetização é um processo que tem ganhado cada vez mais atenção na atualidade. ",
+      "palavrasChave": [
+        "desmonetizacao"
+      ],
+      "textosMotivadores": [
+        {
+          "fonte": "Citação — Sheryl Sandberg",
+          "resumo": "Não há dúvida de que o dinheiro tem desempenhado um papel importante no desenvolvimento das sociedades, mas o avanço da tecnologia da informação está dando origem a novas formas de transações que podem ser ainda mais efi"
+        },
+        {
+          "fonte": "Texto motivador — acervo do projeto",
+          "resumo": "Uma das vantagens da desmonetização é a possibilidade de redução da criminalidade, já que o dinheiro em espécie é uma das formas mais utilizadas para o financiamento de atividades ilícitas. "
+        }
+      ],
+      "redacoes": [
+        {
+          "id": "r6-1",
+          "titulo": "Versão 1",
+          "paragrafos": [
+            {
+              "texto": "A desmonetização é um processo que tem ganhado cada vez mais atenção na atualidade. Trata-se da substituição do dinheiro em espécie por meios digitais de pagamento, como cartões de crédito e débito, transferências eletrônicas e pagamentos via celular. Essa tendência tem como objetivo trazer maior praticidade e segurança às transações financeiras, mas também levanta questões sobre a privacidade e a inclusão financeira.",
+              "etiqueta": "Introdução"
+            },
+            {
+              "texto": "Uma das vantagens da desmonetização é a possibilidade de redução da criminalidade, já que o dinheiro em espécie é uma das formas mais utilizadas para o financiamento de atividades ilícitas. Além disso, a adoção de meios digitais de pagamento traz mais segurança para as transações financeiras, já que é possível rastrear e identificar cada transação.",
+              "etiqueta": "Desenvolvimento"
+            },
+            {
+              "texto": "No entanto, a desmonetização também pode trazer desafios para a inclusão financeira, principalmente em países em desenvolvimento, onde muitas pessoas ainda não possuem acesso a meios digitais de pagamento. A exclusão financeira pode agravar a desigualdade social e impedir o acesso de muitos indivíduos aos serviços financeiros básicos.",
+              "etiqueta": "Desenvolvimento"
+            },
+            {
+              "texto": "Outra questão levantada pela desmonetização é a privacidade financeira. Com a adoção de meios digitais de pagamento, é possível rastrear e monitorar todas as transações financeiras de um indivíduo, o que pode levantar questões sobre a privacidade e a liberdade individual. É importante que sejam estabelecidas regulamentações e proteções para garantir a privacidade financeira dos cidadãos.",
+              "etiqueta": "Desenvolvimento"
+            },
+            {
+              "texto": "Por outro lado, a desmonetização também pode trazer benefícios para a economia, como a redução dos custos de impressão e distribuição do dinheiro em espécie, e o aumento da eficiência e rapidez das transações financeiras. Além disso, a adoção de meios digitais de pagamento pode estimular a inovação e a competição no mercado financeiro, trazendo novas opções e benefícios para os consumidores.",
+              "etiqueta": "Desenvolvimento"
+            },
+            {
+              "texto": "Em conclusão, a desmonetização é um processo que apresenta vantagens e desafios. É necessário que sejam estabelecidas regulamentações e proteções para garantir a inclusão financeira e a privacidade dos cidadãos, mas também é importante considerar os benefícios que a adoção de meios digitais de pagamento pode trazer para a economia e para os consumidores. A desmonetização é uma tendência que deve ser acompanhada de perto, com o objetivo de maximizar seus benefícios e minimizar seus desafios.",
+              "etiqueta": "Conclusão"
+            }
+          ]
+        },
+        {
+          "id": "r6-2",
+          "titulo": "Versão 2",
+          "paragrafos": [
+            {
+              "texto": "A desmonetização, ou a substituição de transações em dinheiro por transações eletrônicas, é um processo em andamento em todo o mundo, impulsionado pela tecnologia e pela necessidade de aumentar a eficiência e a segurança financeira. No entanto, este processo não é isento de desafios e questões a serem consideradas.",
+              "etiqueta": "Introdução"
+            },
+            {
+              "texto": "Historicamente, a monetização sempre foi uma das principais formas de transações financeiras, tanto em nível pessoal quanto comercial. No entanto, ao longo do tempo, a tecnologia tornou possível a realização de transações eletrônicas, proporcionando maior segurança e eficiência. Hoje em dia, a desmonetização é vista como uma evolução natural deste processo, capaz de aumentar a segurança e a eficiência das transações financeiras.",
+              "etiqueta": "Desenvolvimento"
+            },
+            {
+              "texto": "No entanto, a desmonetização também traz desafios e questões importantes a serem consideradas. Uma delas é a exclusão financeira, pois nem todos têm acesso a tecnologias que permitam transações eletrônicas. Isso pode limitar o acesso das pessoas a serviços financeiros e impedir que elas realizem transações importantes.",
+              "etiqueta": "Desenvolvimento"
+            },
+            {
+              "texto": "Além disso, a desmonetização também pode afetar a privacidade das transações financeiras. Como observou o professor de Direito da Universidade de Harvard, Yochai Benkler, \"o dinheiro em papel oferece anonimato e privacidade para as transações financeiras. Quando tudo é eletrônico, a capacidade do governo ou das empresas de rastrear nossas transações é enorme\". Portanto, a desmonetização deve ser acompanhada por medidas para proteger a privacidade dos usuários.",
+              "etiqueta": "Desenvolvimento"
+            },
+            {
+              "texto": "Por fim, a desmonetização também pode ter impactos sociais e culturais significativos. Como mencionado pela pesquisadora da Universidade de Berkeley, Clair Brown, \"as transações em dinheiro têm um significado social, cultural e emocional importante\". A desmonetização pode afetar a maneira como as pessoas interagem social e culturalmente, além de afetar as relações comerciais e pessoais.",
+              "etiqueta": "Conclusão"
+            },
+            {
+              "texto": "Em suma, a desmonetização é um processo em andamento em todo o mundo, que traz benefícios em termos de segurança e eficiência das transações financeiras. No entanto, é preciso considerar cuidadosamente os desafios e questões que ele traz, como a exclusão financeira, a privacidade das transações financeiras e os impactos sociais e culturais. Somente assim podemos garantir que a desmonetização seja implementada de forma justa e equilibrada, beneficiando a todos os cidadãos.",
+              "etiqueta": "Conclusão"
+            }
+          ]
+        }
+      ],
+      "citacoes": [
+        "c6-1",
+        "c6-2",
+        "c6-3",
+        "c6-4",
+        "c6-5"
+      ]
+    },
+    {
+      "id": "inclusao-financeira-e-inclusao-digital",
+      "titulo": "Inclusão Financeira e Inclusão Digital",
+      "enunciado": "Inclusão Financeira e Inclusão Digital: apresente proposta de intervenção para o problema discutido, respeitando os direitos humanos.",
+      "area": "Tecnologia e Sociedade",
+      "resumo": "Nos dias de hoje, com o avanço da tecnologia e o crescimento da internet, a inclusão digital e a inclusão financeira se tornaram temas cada vez mais importantes para a sociedade. ",
+      "palavrasChave": [
+        "inclusao",
+        "financeira",
+        "digital"
+      ],
+      "textosMotivadores": [
+        {
+          "fonte": "Citação — Ban Ki-moon",
+          "resumo": "A tecnologia pode ser a fonte de um novo mundo de oportunidades, mas se não estiver ao alcance de todos, pode acentuar a desigualdade existente."
+        },
+        {
+          "fonte": "Texto motivador — acervo do projeto",
+          "resumo": "A inclusão digital pode ser definida como o acesso e uso da tecnologia e da internet, enquanto a inclusão financeira trata da possibilidade de acesso aos serviços financeiros, como conta bancária, cartões de crédito, empréstimos e investimentos."
+        }
+      ],
+      "redacoes": [
+        {
+          "id": "r7-1",
+          "titulo": "Versão 1",
+          "paragrafos": [
+            {
+              "texto": "Nos dias de hoje, com o avanço da tecnologia e o crescimento da internet, a inclusão digital e a inclusão financeira se tornaram temas cada vez mais importantes para a sociedade. Ainda assim, muitas pessoas enfrentam dificuldades para acessar esses recursos e muitas vezes são excluídas de diversas oportunidades por conta disso.",
+              "etiqueta": "Introdução"
+            },
+            {
+              "texto": "A inclusão digital pode ser definida como o acesso e uso da tecnologia e da internet, enquanto a inclusão financeira trata da possibilidade de acesso aos serviços financeiros, como conta bancária, cartões de crédito, empréstimos e investimentos.",
+              "etiqueta": "Desenvolvimento"
+            },
+            {
+              "texto": "Essas duas inclusões estão interligadas, já que o acesso à tecnologia facilita o acesso aos serviços financeiros e vice-versa. Além disso, ambas são essenciais para a inclusão social e econômica de indivíduos e comunidades.",
+              "etiqueta": "Desenvolvimento"
+            },
+            {
+              "texto": "É importante ressaltar que a falta de inclusão digital e financeira pode gerar desigualdades sociais e econômicas. Por exemplo, sem acesso à internet, muitas pessoas são excluídas de oportunidades de trabalho e de educação, o que pode perpetuar o ciclo de pobreza.",
+              "etiqueta": "Desenvolvimento"
+            },
+            {
+              "texto": "Da mesma forma, sem acesso a serviços financeiros, muitas pessoas ficam excluídas do sistema econômico, dificultando a possibilidade de investimentos e de planejamento financeiro a longo prazo. Essas desigualdades afetam diretamente o desenvolvimento social e econômico de uma sociedade.",
+              "etiqueta": "Desenvolvimento"
+            },
+            {
+              "texto": "Diante disso, é necessário que sejam desenvolvidas políticas públicas que promovam a inclusão digital e financeira. Uma dessas políticas é a oferta de programas de inclusão digital em escolas públicas e comunitárias, permitindo que crianças e jovens tenham acesso a tecnologia e aprendam a usá-la de forma produtiva.",
+              "etiqueta": "Conclusão"
+            }
+          ]
+        },
+        {
+          "id": "r7-2",
+          "titulo": "Versão 2",
+          "paragrafos": [
+            {
+              "texto": "Além disso, a disponibilização de serviços financeiros em regiões com menor desenvolvimento econômico pode ser uma forma de promover a inclusão financeira. Isso pode ser feito através da criação de cooperativas de crédito e microcrédito, por exemplo, que ofereçam serviços financeiros para pessoas que não têm acesso aos bancos tradicionais.",
+              "etiqueta": "Introdução"
+            },
+            {
+              "texto": "Também é importante que as empresas sejam incentivadas a promover a inclusão digital e financeira em seus negócios, oferecendo serviços e produtos que atendam às necessidades de pessoas com diferentes níveis de renda e acesso à tecnologia.",
+              "etiqueta": "Desenvolvimento"
+            },
+            {
+              "texto": "Em resumo, a inclusão digital e financeira são fundamentais para a inclusão social e econômica de uma sociedade. É necessário que políticas públicas, empresas e organizações da sociedade civil trabalhem juntas para promover o acesso à tecnologia e aos serviços financeiros, visando a redução das desigualdades e o desenvolvimento sustentável.",
+              "etiqueta": "Conclusão"
+            }
+          ]
+        },
+        {
+          "id": "r7-3",
+          "titulo": "Versão 3",
+          "paragrafos": [
+            {
+              "texto": "A inclusão financeira e digital é uma das grandes questões da atualidade, pois envolve o acesso a serviços financeiros e tecnológicos que permitem uma participação plena na sociedade. Neste sentido, é importante analisar a evolução histórica e cultural que envolve essa temática para entender como ela se tornou uma questão relevante nos dias de hoje.",
+              "etiqueta": "Introdução"
+            },
+            {
+              "texto": "Historicamente, a inclusão financeira e digital era um privilégio para poucos, uma vez que o acesso a esses serviços era restrito a uma pequena parcela da população, em sua maioria pertencentes às classes mais abastadas. Com o tempo, essa realidade começou a mudar, especialmente com o avanço tecnológico que permitiu a popularização dos serviços bancários e a inclusão digital.",
+              "etiqueta": "Desenvolvimento"
+            },
+            {
+              "texto": "No entanto, ainda há muito a ser feito para que a inclusão financeira e digital seja uma realidade para todos. Como destacou o economista Muhammad Yunus, fundador do Grameen Bank, \"a pobreza não é criada pelos pobres, mas pelos sistemas que criamos\". Ou seja, é necessário que haja uma mudança estrutural para que a inclusão financeira e digital seja efetiva e alcance todas as camadas da população.",
+              "etiqueta": "Desenvolvimento"
+            },
+            {
+              "texto": "Além disso, a inclusão financeira e digital também envolve questões culturais, especialmente no que se refere à educação financeira e tecnológica. Como ressaltou a educadora financeira Nathalia Arcuri, \"precisamos mudar a nossa relação com o dinheiro e entender que ele pode ser um aliado para a realização de sonhos e não um problema\". Nesse sentido, é fundamental investir na formação de uma cultura financeira e digital que permita uma participação mais ativa da população nesses setores.",
+              "etiqueta": "Desenvolvimento"
+            },
+            {
+              "texto": "Outro ponto importante é a questão da segurança e privacidade dos dados financeiros e digitais. Como alertou o filósofo Zygmunt Bauman, \"a tecnologia é o fio que costura nossas vidas, mas também é a ferramenta que pode nos transformar em mercadorias\". Portanto, é preciso estabelecer limites claros e efetivos para o uso desses dados, garantindo a privacidade e segurança dos usuários.",
+              "etiqueta": "Desenvolvimento"
+            },
+            {
+              "texto": "Diante disso, é fundamental que haja uma mobilização em torno da inclusão financeira e digital, tanto por parte das empresas e governos quanto dos cidadãos. Como afirmou a ativista Malala Yousafzai, \"a educação é a melhor arma para combater a pobreza, a discriminação e a desigualdade\". Portanto, investir na formação e acesso aos serviços financeiros e digitais é uma forma de promover a inclusão social e a justiça financeira.",
+              "etiqueta": "Conclusão"
+            }
+          ]
+        }
+      ],
+      "citacoes": [
+        "c7-1",
+        "c7-2",
+        "c7-3",
+        "c7-4",
+        "c7-5"
+      ]
+    },
+    {
+      "id": "tecnologia",
+      "titulo": "Tecnologia",
+      "enunciado": "Tecnologia: apresente proposta de intervenção para o problema discutido, respeitando os direitos humanos.",
+      "area": "Tecnologia e Sociedade",
+      "resumo": "A tecnologia é uma parte integral da nossa sociedade, e seu impacto tem sido cada vez mais significativo ao longo dos anos. ",
+      "palavrasChave": [
+        "tecnologia"
+      ],
+      "textosMotivadores": [
+        {
+          "fonte": "Citação — Manuel Castells",
+          "resumo": "A tecnologia é um instrumento de poder e, como tal, é capaz de mudar a estrutura social e econômica de uma sociedade."
+        },
+        {
+          "fonte": "Texto motivador — acervo do projeto",
+          "resumo": "A tecnologia tem trazido benefícios significativos para a sociedade. "
+        }
+      ],
+      "redacoes": [
+        {
+          "id": "r8-1",
+          "titulo": "Versão 1",
+          "paragrafos": [
+            {
+              "texto": "A tecnologia é uma parte integral da nossa sociedade, e seu impacto tem sido cada vez mais significativo ao longo dos anos. Desde a revolução industrial até a era digital, a tecnologia tem transformado a maneira como vivemos, trabalhamos e nos relacionamos.",
+              "etiqueta": "Introdução"
+            },
+            {
+              "texto": "A tecnologia tem trazido benefícios significativos para a sociedade. A comunicação instantânea e global, a automação de tarefas repetitivas e a facilidade de acesso à informação são apenas alguns exemplos de como a tecnologia pode melhorar nossas vidas. Além disso, a tecnologia tem sido fundamental para o avanço da ciência, da medicina e de outras áreas de conhecimento.",
+              "etiqueta": "Desenvolvimento"
+            },
+            {
+              "texto": "No entanto, a tecnologia também apresenta desafios significativos. Uma das principais preocupações é o impacto da tecnologia no mercado de trabalho, com muitas tarefas sendo automatizadas e substituídas por sistemas computacionais. Além disso, a tecnologia também pode ter um impacto negativo na saúde mental e física, com o aumento da sedentarismo e do isolamento social.",
+              "etiqueta": "Desenvolvimento"
+            },
+            {
+              "texto": "Outro desafio é o uso ético e responsável da tecnologia. A privacidade e a segurança das informações pessoais são questões críticas em um mundo cada vez mais conectado, e o mau uso da tecnologia pode ter consequências graves para a sociedade.",
+              "etiqueta": "Desenvolvimento"
+            },
+            {
+              "texto": "É importante, portanto, que a tecnologia seja desenvolvida e utilizada de forma ética e responsável. As empresas e organizações devem implementar medidas para garantir a segurança e a privacidade dos dados, bem como para mitigar os efeitos negativos da tecnologia no mercado de trabalho e na saúde. Além disso, a população em geral deve ser educada sobre a importância do uso consciente e responsável da tecnologia, de modo a minimizar seu impacto negativo.",
+              "etiqueta": "Desenvolvimento"
+            },
+            {
+              "texto": "Em resumo, a tecnologia tem trazido benefícios significativos para a sociedade, mas também apresenta desafios importantes. É fundamental que a tecnologia seja desenvolvida e utilizada de forma ética e responsável, com medidas implementadas para mitigar seus efeitos negativos. Somente assim poderemos aproveitar plenamente os benefícios da tecnologia enquanto minimizamos seus impactos negativos na sociedade.",
+              "etiqueta": "Conclusão"
+            }
+          ]
+        },
+        {
+          "id": "r8-2",
+          "titulo": "Versão 2",
+          "paragrafos": [
+            {
+              "texto": "A tecnologia é uma das forças motrizes mais significativas da nossa sociedade. Desde a invenção da roda, a tecnologia tem sido fundamental para o desenvolvimento da humanidade. Neste contexto, é importante considerar as questões histórico-sócio-culturais relacionadas à tecnologia e discutir seus impactos na nossa vida.",
+              "etiqueta": "Introdução"
+            },
+            {
+              "texto": "A história da tecnologia é a história da humanidade. Desde as primeiras ferramentas de pedra, a tecnologia tem sido um dos principais fatores que diferenciam os seres humanos de outras espécies. Com o passar dos séculos, a tecnologia avançou rapidamente, com invenções como o papel, a imprensa, a máquina a vapor e a eletricidade transformando o mundo em que vivemos.",
+              "etiqueta": "Desenvolvimento"
+            },
+            {
+              "texto": "No entanto, a tecnologia também tem sido responsável por profundas transformações sociais e culturais. Com a Revolução Industrial, por exemplo, a produção em massa e a urbanização mudaram radicalmente a vida das pessoas. Mais recentemente, a popularização da Internet e dos dispositivos móveis tem mudado a maneira como nos comunicamos, trabalhamos e nos relacionamos.",
+              "etiqueta": "Desenvolvimento"
+            },
+            {
+              "texto": "É importante considerar os efeitos da tecnologia na nossa vida. A dependência da tecnologia pode ter efeitos negativos na nossa saúde mental e física. Além disso, a tecnologia pode criar barreiras na comunicação e levar à alienação social. Por outro lado, a tecnologia pode ser usada para melhorar a educação, a saúde e a qualidade de vida.",
+              "etiqueta": "Desenvolvimento"
+            },
+            {
+              "texto": "O papel da tecnologia na sociedade é complexo e multifacetado. Por um lado, a tecnologia pode ser uma ferramenta poderosa para promover a mudança social e melhorar a vida das pessoas. Por outro lado, a tecnologia pode ser usada para perpetuar desigualdades sociais e criar novos problemas. É importante considerar cuidadosamente o papel da tecnologia na nossa vida e trabalhar para garantir que ela seja usada para o bem comum.",
+              "etiqueta": "Desenvolvimento"
+            },
+            {
+              "texto": "Em suma, a tecnologia é uma das forças mais importantes que moldam a nossa sociedade. É importante considerar a história da tecnologia e seus efeitos sociais e culturais. Ao mesmo tempo, é preciso trabalhar para garantir que a tecnologia seja usada de forma responsável e que promova a mudança social positiva. Somente assim poderemos aproveitar todo o potencial da tecnologia para melhorar a vida das pessoas.",
+              "etiqueta": "Conclusão"
+            }
+          ]
+        }
+      ],
+      "citacoes": [
+        "c8-1",
+        "c8-2",
+        "c8-3",
+        "c8-4",
+        "c8-5",
+        "c8-6",
+        "c8-7",
+        "c8-8",
+        "c8-9",
+        "c8-10"
+      ]
+    },
+    {
+      "id": "diversidade-e-inclusao-no-ambiente-laboral",
+      "titulo": "Diversidade e Inclusão no Ambiente Laboral",
+      "enunciado": "Diversidade e Inclusão no Ambiente Laboral: apresente proposta de intervenção para o problema discutido, respeitando os direitos humanos.",
+      "area": "Economia e Trabalho",
+      "resumo": "Nos últimos anos, tem havido um aumento significativo na conscientização sobre a importância da diversidade e inclusão no ambiente laboral. ",
+      "palavrasChave": [
+        "diversidade",
+        "inclusao",
+        "ambiente",
+        "laboral"
+      ],
+      "textosMotivadores": [
+        {
+          "fonte": "Citação — Mikhail Bakhtin",
+          "resumo": "A diversidade é a harmonia da diferença."
+        },
+        {
+          "fonte": "Texto motivador — acervo do projeto",
+          "resumo": "A diversidade e a inclusão têm vários benefícios para as empresas. "
+        }
+      ],
+      "redacoes": [
+        {
+          "id": "r9-1",
+          "titulo": "Versão 1",
+          "paragrafos": [
+            {
+              "texto": "Nos últimos anos, tem havido um aumento significativo na conscientização sobre a importância da diversidade e inclusão no ambiente laboral. A diversidade refere-se à presença de pessoas de diferentes origens, raças, etnias, gêneros, orientações sexuais e habilidades. A inclusão, por sua vez, significa criar um ambiente onde todas as pessoas se sintam valorizadas e respeitadas, independentemente de suas diferenças.",
+              "etiqueta": "Introdução"
+            },
+            {
+              "texto": "A diversidade e a inclusão têm vários benefícios para as empresas. A diversidade traz uma variedade de perspectivas, experiências e habilidades para a equipe, o que pode levar a soluções mais criativas e inovadoras para os desafios de negócios. Além disso, a inclusão ajuda a aumentar a satisfação e o engajamento dos funcionários, o que pode levar a uma maior produtividade e retenção de talentos.",
+              "etiqueta": "Desenvolvimento"
+            },
+            {
+              "texto": "No entanto, apesar do crescente reconhecimento da importância da diversidade e inclusão, muitas empresas ainda enfrentam desafios significativos na criação de um ambiente verdadeiramente inclusivo. Isso pode incluir preconceitos inconscientes, falta de conscientização e treinamento em diversidade e inclusão, e práticas de contratação e promoção que favorecem determinados grupos.",
+              "etiqueta": "Desenvolvimento"
+            },
+            {
+              "texto": "É importante que as empresas tomem medidas para superar esses desafios e criar um ambiente verdadeiramente inclusivo. Isso pode incluir a implementação de programas de diversidade e inclusão, treinamentos para gerentes e funcionários sobre preconceitos inconscientes e práticas de contratação e promoção mais equitativas.",
+              "etiqueta": "Desenvolvimento"
+            },
+            {
+              "texto": "Além disso, é importante reconhecer que a diversidade e inclusão são questões contínuas que requerem esforços contínuos. As empresas devem estar dispostas a ouvir feedback e ajustar suas políticas e práticas para garantir que estejam criando um ambiente inclusivo e acolhedor para todos.",
+              "etiqueta": "Desenvolvimento"
+            },
+            {
+              "texto": "Em resumo, a diversidade e inclusão são fundamentais para criar um ambiente de trabalho que promova a criatividade, a inovação e a satisfação dos funcionários. As empresas devem tomar medidas proativas para superar os desafios e criar um ambiente verdadeiramente inclusivo, e estar dispostas a ajustar suas práticas e políticas para garantir que estão promovendo a diversidade e a inclusão contínuas. Somente assim podemos garantir um ambiente de trabalho onde todas as pessoas são valorizadas e respeitadas.",
+              "etiqueta": "Conclusão"
+            }
+          ]
+        },
+        {
+          "id": "r9-2",
+          "titulo": "Versão 2",
+          "paragrafos": [
+            {
+              "texto": "A diversidade e inclusão são temas cada vez mais relevantes na sociedade contemporânea. Em um ambiente laboral, a inclusão de pessoas de diferentes origens, raças, gêneros, orientações sexuais e habilidades pode ser benéfica para todos. Neste contexto, é importante considerar as questões histórico-sócio-culturais relacionadas à diversidade e inclusão no ambiente de trabalho e discutir seus impactos na nossa vida.",
+              "etiqueta": "Introdução"
+            },
+            {
+              "texto": "A história da inclusão no ambiente laboral tem sido uma luta constante por parte de grupos marginalizados. Desde a era colonial, os povos indígenas, escravizados e as mulheres foram forçados a trabalhar em condições precárias e sem direitos básicos. Ao longo do tempo, foram necessárias lutas e mudanças legais para garantir a inclusão e a igualdade de oportunidades.",
+              "etiqueta": "Desenvolvimento"
+            },
+            {
+              "texto": "No entanto, ainda existem desafios a serem enfrentados no ambiente de trabalho. A discriminação e o preconceito são barreiras significativas para a inclusão e diversidade no ambiente de trabalho. Além disso, a falta de representatividade e acesso a oportunidades de carreira são problemas que afetam negativamente a inclusão no ambiente laboral.",
+              "etiqueta": "Desenvolvimento"
+            },
+            {
+              "texto": "Por outro lado, a inclusão e diversidade no ambiente de trabalho podem trazer benefícios significativos para a empresa e para a sociedade em geral. A diversidade de perspectivas e habilidades pode levar a inovações e soluções criativas. Além disso, a inclusão no ambiente de trabalho pode levar a uma maior satisfação dos funcionários e melhoria na reputação da empresa.",
+              "etiqueta": "Desenvolvimento"
+            },
+            {
+              "texto": "É importante reconhecer a importância da diversidade e inclusão no ambiente de trabalho e trabalhar para garantir que todos tenham acesso a oportunidades justas. Além disso, é fundamental que empresas e instituições desenvolvam políticas e práticas inclusivas para garantir um ambiente de trabalho acolhedor e livre de preconceito.",
+              "etiqueta": "Desenvolvimento"
+            },
+            {
+              "texto": "Em suma, a diversidade e inclusão no ambiente de trabalho são fundamentais para garantir uma sociedade mais justa e igualitária. É importante considerar a história e lutas passadas, assim como os desafios atuais e trabalhar para garantir um ambiente laboral inclusivo e diverso para todos. Somente assim poderemos aproveitar todo o potencial das pessoas e construir um futuro melhor para todos.",
+              "etiqueta": "Conclusão"
+            }
+          ]
+        }
+      ],
+      "citacoes": [
+        "c9-1",
+        "c9-2",
+        "c9-3",
+        "c9-4",
+        "c9-5",
+        "c9-6",
+        "c9-7",
+        "c9-8",
+        "c9-9"
+      ]
+    }
+  ],
+  "citacoes": [
+    {
+      "id": "c1-1",
+      "texto": "A privacidade não é algo que eu esteja disposto a trocar por conveniência ou benefícios.",
+      "autor": "Edward Snowden",
+      "fonte": "Edward Snowden, ex-agente de inteligência dos Estados Unidos que revelou a extensão do programa de vigilância do governo em 2013.",
+      "tipo": "filosofico",
+      "temaId": "diferentes-interesses-de-empresas-e-clientes-e-os-limites-da",
+      "area": "Tecnologia e Sociedade"
+    },
+    {
+      "id": "c1-2",
+      "texto": "A privacidade não é um luxo que podemos nos dar, é um direito fundamental que devemos defender.",
+      "autor": "Sheryl Sandberg",
+      "fonte": "Sheryl Sandberg, executiva do Facebook, em um discurso proferido em 2018.",
+      "tipo": "sociologico",
+      "temaId": "diferentes-interesses-de-empresas-e-clientes-e-os-limites-da",
+      "area": "Tecnologia e Sociedade"
+    },
+    {
+      "id": "c1-3",
+      "texto": "A privacidade é a capacidade de controlar a informação sobre si mesmo e decidir quem tem acesso a ela.",
+      "autor": "Daniel Solove",
+      "fonte": "Daniel Solove, professor de Direito e autor do livro \"The Future of Reputation\", publicado em 2007.",
+      "tipo": "cultural",
+      "temaId": "diferentes-interesses-de-empresas-e-clientes-e-os-limites-da",
+      "area": "Tecnologia e Sociedade"
+    },
+    {
+      "id": "c1-4",
+      "texto": "A privacidade é um valor que está no cerne das sociedades democráticas, e a proteção dos dados pessoais é um desafio crucial para a nossa era digital.",
+      "autor": "European Digital Rights",
+      "fonte": "European Digital Rights (EDRi), organização não governamental europeia que defende os direitos digitais, em um comunicado sobre a privacidade na era digital, publicado em 2021.",
+      "tipo": "legal",
+      "temaId": "diferentes-interesses-de-empresas-e-clientes-e-os-limites-da",
+      "area": "Tecnologia e Sociedade"
+    },
+    {
+      "id": "c1-5",
+      "texto": "A privacidade é um direito humano fundamental, e a proteção dos dados pessoais é essencial para garantir a dignidade humana, a liberdade e a democracia.",
+      "autor": "Comissão Interamericana de Direitos Humanos",
+      "fonte": "Comissão Interamericana de Direitos Humanos (CIDH), em um relatório sobre privacidade e proteção de dados, publicado em 2018.",
+      "tipo": "legal",
+      "temaId": "diferentes-interesses-de-empresas-e-clientes-e-os-limites-da",
+      "area": "Tecnologia e Sociedade"
+    },
+    {
+      "id": "c1-6",
+      "texto": "A privacidade é um direito fundamental que tem raízes históricas profundas na história americana.",
+      "autor": "Louis D. Brandeis e Samuel D. Warren",
+      "fonte": "Louis D. Brandeis e Samuel D. Warren, advogados americanos e autores do artigo \"The Right to Privacy\", publicado em 1890.",
+      "tipo": "filosofico",
+      "temaId": "diferentes-interesses-de-empresas-e-clientes-e-os-limites-da",
+      "area": "Tecnologia e Sociedade"
+    },
+    {
+      "id": "c1-7",
+      "texto": "As pessoas têm uma expectativa razoável de que suas informações pessoais serão mantidas em sigilo, e essa expectativa é vital para a liberdade e a dignidade humana.",
+      "autor": "Alan Westin",
+      "fonte": "Alan Westin, sociólogo e autor do livro \"Privacy and Freedom\", publicado em 1967.",
+      "tipo": "cultural",
+      "temaId": "diferentes-interesses-de-empresas-e-clientes-e-os-limites-da",
+      "area": "Tecnologia e Sociedade"
+    },
+    {
+      "id": "c1-8",
+      "texto": "A privacidade é um dos valores fundamentais de nossa sociedade, e a proteção da privacidade é essencial para preservar a liberdade individual.",
+      "autor": "Comissão Europeia",
+      "fonte": "Comissão Europeia, em um relatório sobre privacidade e proteção de dados, publicado em 2012.",
+      "tipo": "legal",
+      "temaId": "diferentes-interesses-de-empresas-e-clientes-e-os-limites-da",
+      "area": "Tecnologia e Sociedade"
+    },
+    {
+      "id": "c1-9",
+      "texto": "A privacidade é um valor democrático, e a proteção dos dados pessoais é uma condição essencial para o exercício da cidadania na era digital.",
+      "autor": "Alexandre de Moraes",
+      "fonte": "Alexandre de Moraes, Ministro do Supremo Tribunal Federal do Brasil, em um discurso proferido em 2019.",
+      "tipo": "legal",
+      "temaId": "diferentes-interesses-de-empresas-e-clientes-e-os-limites-da",
+      "area": "Tecnologia e Sociedade"
+    },
+    {
+      "id": "c1-10",
+      "texto": "A privacidade é um direito humano fundamental que deve ser protegido em todas as esferas da vida, incluindo a era digital.",
+      "autor": "Conselho de Direitos Humanos das Nações Unidas",
+      "fonte": "Conselho de Direitos Humanos das Nações Unidas, em uma resolução sobre privacidade na era digital, adotada em 2018.",
+      "tipo": "legal",
+      "temaId": "diferentes-interesses-de-empresas-e-clientes-e-os-limites-da",
+      "area": "Tecnologia e Sociedade"
+    },
+    {
+      "id": "c2-1",
+      "texto": "A privacidade é um direito fundamental. Sem privacidade, não há liberdade de pensamento, liberdade de expressão e liberdade de ação\".",
+      "autor": "Alan Westin",
+      "fonte": "Alan Westin",
+      "tipo": "filosofico",
+      "temaId": "sigilo-de-dados",
+      "area": "Tecnologia e Sociedade"
+    },
+    {
+      "id": "c2-2",
+      "texto": "Se você não está pagando por isso, você não é o cliente; você é o produto sendo vendido.",
+      "autor": "Andrew Lewis",
+      "fonte": "Andrew Lewis",
+      "tipo": "sociologico",
+      "temaId": "sigilo-de-dados",
+      "area": "Tecnologia e Sociedade"
+    },
+    {
+      "id": "c2-3",
+      "texto": "A criptografia tem sido usada desde os tempos antigos para proteger a informação. Ela é a arte de escrever mensagens secretas.",
+      "autor": "Simon Singh",
+      "fonte": "Simon Singh",
+      "tipo": "sociologico",
+      "temaId": "sigilo-de-dados",
+      "area": "Tecnologia e Sociedade"
+    },
+    {
+      "id": "c2-4",
+      "texto": "As pessoas têm um direito fundamental à privacidade e devem ter controle sobre como suas informações pessoais são coletadas, usadas e compartilhadas.",
+      "autor": "Barack Obama",
+      "fonte": "Barack Obama",
+      "tipo": "sociologico",
+      "temaId": "sigilo-de-dados",
+      "area": "Tecnologia e Sociedade"
+    },
+    {
+      "id": "c2-5",
+      "texto": "O direito à privacidade é um dos direitos humanos fundamentais. Ela é essencial para a dignidade e autonomia da pessoa e é fundamental para o exercício da liberdade de expressão.",
+      "autor": "Tribunal Europeu dos Direitos Humanos",
+      "fonte": "Tribunal Europeu dos Direitos Humanos",
+      "tipo": "legal",
+      "temaId": "sigilo-de-dados",
+      "area": "Tecnologia e Sociedade"
+    },
+    {
+      "id": "c2-6",
+      "texto": "A privacidade não é um luxo, é uma necessidade.",
+      "autor": "Edward Snowden",
+      "fonte": "Edward Snowden",
+      "tipo": "filosofico",
+      "temaId": "sigilo-de-dados",
+      "area": "Tecnologia e Sociedade"
+    },
+    {
+      "id": "c2-7",
+      "texto": "A privacidade é um direito, não um privilégio. E é necessário ter mecanismos que garantam a proteção dos dados pessoais.",
+      "autor": "Jan Philipp Albrecht",
+      "fonte": "Jan Philipp Albrecht",
+      "tipo": "sociologico",
+      "temaId": "sigilo-de-dados",
+      "area": "Tecnologia e Sociedade"
+    },
+    {
+      "id": "c2-8",
+      "texto": "A privacidade é a liberdade de pensar, agir e se expressar sem medo de julgamentos e retaliações.",
+      "autor": "Sherry Turkle",
+      "fonte": "Sherry Turkle",
+      "tipo": "filosofico",
+      "temaId": "sigilo-de-dados",
+      "area": "Tecnologia e Sociedade"
+    },
+    {
+      "id": "c2-9",
+      "texto": "A privacidade é uma questão de dignidade e respeito pelos indivíduos.",
+      "autor": "Daniel Solove",
+      "fonte": "Daniel Solove",
+      "tipo": "filosofico",
+      "temaId": "sigilo-de-dados",
+      "area": "Tecnologia e Sociedade"
+    },
+    {
+      "id": "c2-10",
+      "texto": "A privacidade é a capacidade de se manter em paz com o mundo e consigo mesmo.",
+      "autor": "Judith Martin.",
+      "fonte": "Judith Martin.",
+      "tipo": "filosofico",
+      "temaId": "sigilo-de-dados",
+      "area": "Tecnologia e Sociedade"
+    },
+    {
+      "id": "c3-1",
+      "texto": "O sucesso nos negócios requer treinamento e disciplina e trabalho duro. Mas se você não está apaixonado pelo que está fazendo, você nunca terá sucesso.",
+      "autor": "Donald Trump",
+      "fonte": "Donald Trump",
+      "tipo": "sociologico",
+      "temaId": "a-influencia-da-satisfacao-no-trabalho-sobre-o-desempenho-do",
+      "area": "Economia e Trabalho"
+    },
+    {
+      "id": "c3-2",
+      "texto": "Se você quer que seus funcionários trabalhem duro, dê-lhes um motivo para se importar.",
+      "autor": "Richard Branson",
+      "fonte": "Richard Branson",
+      "tipo": "sociologico",
+      "temaId": "a-influencia-da-satisfacao-no-trabalho-sobre-o-desempenho-do",
+      "area": "Economia e Trabalho"
+    },
+    {
+      "id": "c3-3",
+      "texto": "Quando você trata as pessoas como se elas fossem importantes, elas respondem como se fossem importantes.",
+      "autor": "Charles Schwab",
+      "fonte": "Charles Schwab",
+      "tipo": "sociologico",
+      "temaId": "a-influencia-da-satisfacao-no-trabalho-sobre-o-desempenho-do",
+      "area": "Economia e Trabalho"
+    },
+    {
+      "id": "c3-4",
+      "texto": "A satisfação no trabalho vem do senso de realização, propósito e controle que você tem sobre o seu trabalho.",
+      "autor": "Rosabeth Moss Kanter",
+      "fonte": "Rosabeth Moss Kanter",
+      "tipo": "filosofico",
+      "temaId": "a-influencia-da-satisfacao-no-trabalho-sobre-o-desempenho-do",
+      "area": "Economia e Trabalho"
+    },
+    {
+      "id": "c3-5",
+      "texto": "O trabalho duro e a dedicação são importantes, mas sem satisfação no trabalho, não há motivação.",
+      "autor": "Marc Benioff.",
+      "fonte": "Marc Benioff.",
+      "tipo": "sociologico",
+      "temaId": "a-influencia-da-satisfacao-no-trabalho-sobre-o-desempenho-do",
+      "area": "Economia e Trabalho"
+    },
+    {
+      "id": "c4-1",
+      "texto": "O desenvolvimento sustentável é aquele que satisfaz as necessidades do presente sem comprometer a capacidade das gerações futuras de satisfazerem as suas próprias necessidades.",
+      "autor": "Relatório Brundtland",
+      "fonte": "Relatório Brundtland, 1987",
+      "tipo": "sociologico",
+      "temaId": "o-papel-do-cidadao-no-cumprimento-dos-objetivos-de-desenvolv",
+      "area": "Cidadania e Direitos"
+    },
+    {
+      "id": "c4-2",
+      "texto": "O Brasil é um dos principais protagonistas globais no que se refere ao desenvolvimento sustentável e à luta contra a pobreza e a desigualdade.",
+      "autor": "Ban Ki-moon",
+      "fonte": "Ban Ki-moon, Secretário-Geral da ONU, em 2015",
+      "tipo": "legal",
+      "temaId": "o-papel-do-cidadao-no-cumprimento-dos-objetivos-de-desenvolv",
+      "area": "Cidadania e Direitos"
+    },
+    {
+      "id": "c4-3",
+      "texto": "O papel do cidadão é crucial na construção de um mundo sustentável. São necessárias ações individuais e coletivas, que vão desde a mudança de hábitos até a participação em processos de decisão.",
+      "autor": "Fórum Brasileiro de ONGs e Movimentos Sociais para o Desenvolvimento",
+      "fonte": "Fórum Brasileiro de ONGs e Movimentos Sociais para o Desenvolvimento, 2012",
+      "tipo": "sociologico",
+      "temaId": "o-papel-do-cidadao-no-cumprimento-dos-objetivos-de-desenvolv",
+      "area": "Cidadania e Direitos"
+    },
+    {
+      "id": "c4-4",
+      "texto": "A Agenda 2030 para o Desenvolvimento Sustentável não é apenas um conjunto de metas, mas sim um compromisso moral e político comum.",
+      "autor": "Michel Temer",
+      "fonte": "Michel Temer, ex-presidente do Brasil, em 2018",
+      "tipo": "legal",
+      "temaId": "o-papel-do-cidadao-no-cumprimento-dos-objetivos-de-desenvolv",
+      "area": "Cidadania e Direitos"
+    },
+    {
+      "id": "c4-5",
+      "texto": "A sustentabilidade é um valor que deve estar presente em todas as áreas da vida, desde o consumo até a produção, passando pela educação e pelo trabalho.",
+      "autor": "Ministério do Meio Ambiente",
+      "fonte": "Ministério do Meio Ambiente, Brasil, em 2020",
+      "tipo": "legal",
+      "temaId": "o-papel-do-cidadao-no-cumprimento-dos-objetivos-de-desenvolv",
+      "area": "Cidadania e Direitos"
+    },
+    {
+      "id": "c6-1",
+      "texto": "Não há dúvida de que o dinheiro tem desempenhado um papel importante no desenvolvimento das sociedades, mas o avanço da tecnologia da informação está dando origem a novas formas de transações que podem ser ainda mais eficientes e seguras do que o dinheiro.",
+      "autor": "Sheryl Sandberg",
+      "fonte": "Sheryl Sandberg",
+      "tipo": "sociologico",
+      "temaId": "desmonetizacao",
+      "area": "Tecnologia e Sociedade"
+    },
+    {
+      "id": "c6-2",
+      "texto": "A desmonetização é uma ferramenta para erradicar a corrupção e o dinheiro negro, mas a mudança cultural para uma economia digital só pode ser alcançada se houver uma educação adequada para a população e a inclusão financeira para todos.",
+      "autor": "Narendra Modi",
+      "fonte": "Narendra Modi",
+      "tipo": "sociologico",
+      "temaId": "desmonetizacao",
+      "area": "Tecnologia e Sociedade"
+    },
+    {
+      "id": "c6-3",
+      "texto": "A desmonetização é apenas o começo da jornada rumo a uma economia digital e sem dinheiro. A verdadeira revolução será quando pudermos criar um sistema financeiro verdadeiramente inclusivo e transparente que atenda às necessidades de todos os cidadãos, independentemente de sua renda ou status social.",
+      "autor": "Bill Gates",
+      "fonte": "Bill Gates",
+      "tipo": "sociologico",
+      "temaId": "desmonetizacao",
+      "area": "Tecnologia e Sociedade"
+    },
+    {
+      "id": "c6-4",
+      "texto": "A desmonetização é um sinal claro de que o mundo está mudando rapidamente e que aqueles que não se adaptarem a essa mudança serão deixados para trás. As empresas precisam se adaptar à nova realidade e oferecer soluções inovadoras para atender às necessidades dos consumidores.",
+      "autor": "Jack Ma",
+      "fonte": "Jack Ma",
+      "tipo": "sociologico",
+      "temaId": "desmonetizacao",
+      "area": "Tecnologia e Sociedade"
+    },
+    {
+      "id": "c6-5",
+      "texto": "A desmonetização é uma oportunidade para repensarmos nossos hábitos de consumo e como podemos usar a tecnologia para tornar nossa vida mais simples e eficiente. Mas é importante lembrar que essa mudança deve ser feita com responsabilidade e com o objetivo de beneficiar toda a sociedade.",
+      "autor": "Mark Zuckerberg",
+      "fonte": "Mark Zuckerberg",
+      "tipo": "sociologico",
+      "temaId": "desmonetizacao",
+      "area": "Tecnologia e Sociedade"
+    },
+    {
+      "id": "c7-1",
+      "texto": "A tecnologia pode ser a fonte de um novo mundo de oportunidades, mas se não estiver ao alcance de todos, pode acentuar a desigualdade existente.",
+      "autor": "Ban Ki-moon",
+      "fonte": "Ban Ki-moon, ex-Secretário Geral da ONU.",
+      "tipo": "legal",
+      "temaId": "inclusao-financeira-e-inclusao-digital",
+      "area": "Tecnologia e Sociedade"
+    },
+    {
+      "id": "c7-2",
+      "texto": "A inclusão digital é a nova fronteira do desenvolvimento humano.",
+      "autor": "Kofi Annan",
+      "fonte": "Kofi Annan, ex-Secretário Geral da ONU.",
+      "tipo": "legal",
+      "temaId": "inclusao-financeira-e-inclusao-digital",
+      "area": "Tecnologia e Sociedade"
+    },
+    {
+      "id": "c7-3",
+      "texto": "Inclusão financeira é uma ferramenta poderosa para reduzir a pobreza e promover o desenvolvimento econômico.",
+      "autor": "Christine Lagarde",
+      "fonte": "Christine Lagarde, ex-diretora-gerente do Fundo Monetário Internacional.",
+      "tipo": "sociologico",
+      "temaId": "inclusao-financeira-e-inclusao-digital",
+      "area": "Tecnologia e Sociedade"
+    },
+    {
+      "id": "c7-4",
+      "texto": "O acesso a serviços financeiros básicos é um direito humano fundamental.",
+      "autor": "Queen Máxima dos Países Baixos",
+      "fonte": "Queen Máxima dos Países Baixos, advogada das Nações Unidas para a inclusão financeira.",
+      "tipo": "sociologico",
+      "temaId": "inclusao-financeira-e-inclusao-digital",
+      "area": "Tecnologia e Sociedade"
+    },
+    {
+      "id": "c7-5",
+      "texto": "Inclusão financeira é importante para empoderar as pessoas e promover a estabilidade econômica.",
+      "autor": "Janet Yellen",
+      "fonte": "Janet Yellen, ex-presidente do Federal Reserve dos Estados Unidos.",
+      "tipo": "sociologico",
+      "temaId": "inclusao-financeira-e-inclusao-digital",
+      "area": "Tecnologia e Sociedade"
+    },
+    {
+      "id": "c8-1",
+      "texto": "A tecnologia é um instrumento de poder e, como tal, é capaz de mudar a estrutura social e econômica de uma sociedade.",
+      "autor": "Manuel Castells",
+      "fonte": "Manuel Castells",
+      "tipo": "sociologico",
+      "temaId": "tecnologia",
+      "area": "Tecnologia e Sociedade"
+    },
+    {
+      "id": "c8-2",
+      "texto": "A tecnologia é como um martelo. Você pode usá-lo para construir uma casa ou para quebrar uma janela.",
+      "autor": "Neil Postman",
+      "fonte": "Neil Postman",
+      "tipo": "sociologico",
+      "temaId": "tecnologia",
+      "area": "Tecnologia e Sociedade"
+    },
+    {
+      "id": "c8-3",
+      "texto": "A tecnologia não é boa nem má; é neutra. É o uso que fazemos dela que a torna boa ou má.",
+      "autor": "William Gibson",
+      "fonte": "William Gibson",
+      "tipo": "sociologico",
+      "temaId": "tecnologia",
+      "area": "Tecnologia e Sociedade"
+    },
+    {
+      "id": "c8-4",
+      "texto": "A tecnologia é apenas uma ferramenta. Em termos sociais e culturais, ela é o que fazemos com ela.",
+      "autor": "Neil Postman",
+      "fonte": "Neil Postman",
+      "tipo": "sociologico",
+      "temaId": "tecnologia",
+      "area": "Tecnologia e Sociedade"
+    },
+    {
+      "id": "c8-5",
+      "texto": "A tecnologia é a mão esquerda da ciência. É a aplicação prática do conhecimento científico na vida cotidiana.",
+      "autor": "Arthur C. Clarke",
+      "fonte": "Arthur C. Clarke",
+      "tipo": "sociologico",
+      "temaId": "tecnologia",
+      "area": "Tecnologia e Sociedade"
+    },
+    {
+      "id": "c8-6",
+      "texto": "A tecnologia permite que a humanidade avance, mas é importante lembrar que nem todo progresso é bom.",
+      "autor": "Edward Abbey",
+      "fonte": "Edward Abbey",
+      "tipo": "sociologico",
+      "temaId": "tecnologia",
+      "area": "Tecnologia e Sociedade"
+    },
+    {
+      "id": "c8-7",
+      "texto": "A tecnologia avança em um ritmo mais rápido do que a nossa capacidade de lidar com as mudanças sociais e culturais que ela traz.",
+      "autor": "Sherry Turkle",
+      "fonte": "Sherry Turkle",
+      "tipo": "filosofico",
+      "temaId": "tecnologia",
+      "area": "Tecnologia e Sociedade"
+    },
+    {
+      "id": "c8-8",
+      "texto": "A tecnologia está mudando a maneira como pensamos sobre nós mesmos e sobre o mundo.",
+      "autor": "Nicholas Carr",
+      "fonte": "Nicholas Carr",
+      "tipo": "filosofico",
+      "temaId": "tecnologia",
+      "area": "Tecnologia e Sociedade"
+    },
+    {
+      "id": "c8-9",
+      "texto": "A tecnologia pode ser uma força positiva na nossa vida, mas devemos estar cientes de seus efeitos negativos potenciais.",
+      "autor": "Martin Heidegger",
+      "fonte": "Martin Heidegger",
+      "tipo": "filosofico",
+      "temaId": "tecnologia",
+      "area": "Tecnologia e Sociedade"
+    },
+    {
+      "id": "c8-10",
+      "texto": "A tecnologia é a resposta quando perguntamos 'como?', mas a filosofia é a resposta quando perguntamos 'por quê?'.",
+      "autor": "Michael Scriven",
+      "fonte": "Michael Scriven",
+      "tipo": "filosofico",
+      "temaId": "tecnologia",
+      "area": "Tecnologia e Sociedade"
+    },
+    {
+      "id": "c9-1",
+      "texto": "A diversidade é a harmonia da diferença.",
+      "autor": "Mikhail Bakhtin",
+      "fonte": "Mikhail Bakhtin",
+      "tipo": "filosofico",
+      "temaId": "diversidade-e-inclusao-no-ambiente-laboral",
+      "area": "Economia e Trabalho"
+    },
+    {
+      "id": "c9-2",
+      "texto": "A diversidade é um presente, não uma ameaça.",
+      "autor": "Angela Merkel",
+      "fonte": "Angela Merkel",
+      "tipo": "sociologico",
+      "temaId": "diversidade-e-inclusao-no-ambiente-laboral",
+      "area": "Economia e Trabalho"
+    },
+    {
+      "id": "c9-3",
+      "texto": "A diversidade não é sobre como nos diferenciamos, mas sobre como podemos ser unidos.",
+      "autor": "Sheryl Sandberg",
+      "fonte": "Sheryl Sandberg",
+      "tipo": "sociologico",
+      "temaId": "diversidade-e-inclusao-no-ambiente-laboral",
+      "area": "Economia e Trabalho"
+    },
+    {
+      "id": "c9-4",
+      "texto": "Se quisermos ter uma economia forte e próspera, precisamos ter uma força de trabalho diversa e inclusiva.",
+      "autor": "Alexis Herman",
+      "fonte": "Alexis Herman",
+      "tipo": "sociologico",
+      "temaId": "diversidade-e-inclusao-no-ambiente-laboral",
+      "area": "Economia e Trabalho"
+    },
+    {
+      "id": "c9-5",
+      "texto": "A inclusão é o caminho para a igualdade.",
+      "autor": "Jay-Z",
+      "fonte": "Jay-Z",
+      "tipo": "sociologico",
+      "temaId": "diversidade-e-inclusao-no-ambiente-laboral",
+      "area": "Economia e Trabalho"
+    },
+    {
+      "id": "c9-6",
+      "texto": "A inclusão é a única maneira de garantir que todos tenham acesso às oportunidades que merecem.",
+      "autor": "Elizabeth Warren",
+      "fonte": "Elizabeth Warren",
+      "tipo": "sociologico",
+      "temaId": "diversidade-e-inclusao-no-ambiente-laboral",
+      "area": "Economia e Trabalho"
+    },
+    {
+      "id": "c9-7",
+      "texto": "A diversidade é um fator-chave para a inovação e o sucesso empresarial.",
+      "autor": "Michael Dell",
+      "fonte": "Michael Dell",
+      "tipo": "sociologico",
+      "temaId": "diversidade-e-inclusao-no-ambiente-laboral",
+      "area": "Economia e Trabalho"
+    },
+    {
+      "id": "c9-8",
+      "texto": "A inclusão é a única maneira de garantir que todos possam contribuir plenamente para a sociedade.",
+      "autor": "Ban Ki-moon",
+      "fonte": "Ban Ki-moon",
+      "tipo": "sociologico",
+      "temaId": "diversidade-e-inclusao-no-ambiente-laboral",
+      "area": "Economia e Trabalho"
+    },
+    {
+      "id": "c9-9",
+      "texto": "A inclusão é o primeiro passo para a igualdade de oportunidades e uma sociedade mais justa.",
+      "autor": "Hillary Clinton",
+      "fonte": "Hillary Clinton",
+      "tipo": "sociologico",
+      "temaId": "diversidade-e-inclusao-no-ambiente-laboral",
+      "area": "Economia e Trabalho"
+    }
+  ]
+}

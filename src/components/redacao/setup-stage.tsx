@@ -31,6 +31,8 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { useRedacaoStore } from "@/lib/store";
+import { apiTemas, STATIC_MODE } from "@/lib/api";
+import { acervo } from "@/lib/recursos";
 import { AREAS_TEMAS, type Tema } from "@/lib/types";
 
 const useStore = useRedacaoStore;
@@ -39,6 +41,7 @@ export function SetupStage() {
   const setTema = useStore((s) => s.setTema);
   const setStage = useStore((s) => s.setStage);
   const iniciarSessao = useRedacaoStore((s) => s.iniciarSessao);
+  const irParaBiblioteca = useStore((s) => s.irParaBiblioteca);
   const temaAtual = useStore((s) => s.tema);
 
   const [area, setArea] = useState<string>("Geral");
@@ -51,16 +54,15 @@ export function SetupStage() {
   async function gerarTemas() {
     setGerando(true);
     try {
-      const res = await fetch("/api/temas", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ area }),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data?.error ?? "Erro ao gerar temas");
-      setTemas(data.temas as Tema[]);
+      const { data, origem } = await apiTemas(area);
+      const novosTemas = data.temas as Tema[];
+      setTemas(novosTemas);
       setExpandido(null);
-      toast.success(`${data.temas.length} temas gerados com base em debates reais.`);
+      toast.success(
+        origem === "ia"
+          ? `${novosTemas.length} temas gerados com base em debates reais.`
+          : `${novosTemas.length} temas do acervo local selecionados.`
+      );
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Falha ao gerar temas.");
     } finally {
@@ -149,9 +151,9 @@ export function SetupStage() {
             Gerador de temas atualizados
           </CardTitle>
           <CardDescription>
-            Busca fundamentada (grounded search): a IA pesquisa debates reais e
-            recentes da sociedade brasileira para propor temas no formato ENEM, com
-            textos motivadores.
+            {STATIC_MODE
+              ? `Sem servidor de IA, os temas vêm do acervo versionado no projeto (${acervo.totalTemas} dossiês temáticos).`
+              : "Busca fundamentada (grounded search): a IA pesquisa debates reais e recentes para propor temas ENEM, com textos motivadores. Se o provedor falhar, usamos o acervo local."}
           </CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col sm:flex-row gap-3">
@@ -176,9 +178,17 @@ export function SetupStage() {
             ) : (
               <>
                 <WandSparkles className="mr-2 h-4 w-4" />
-                Gerar temas com IA
+                {STATIC_MODE ? "Sortear temas do acervo" : "Gerar temas com IA"}
               </>
             )}
+          </Button>
+          <Button
+            variant="outline"
+            onClick={() => irParaBiblioteca()}
+            className="sm:w-56"
+          >
+            <BookOpenText className="mr-2 h-4 w-4" />
+            Explorar biblioteca ({acervo.totalTemas})
           </Button>
         </CardContent>
       </Card>

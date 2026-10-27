@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import {
+  BookOpenText,
   ClipboardCheck,
   ExternalLink,
   Loader2,
@@ -18,6 +19,7 @@ import { Progress } from "@/components/ui/progress";
 import { toast } from "sonner";
 import { Markdown } from "@/components/redacao/markdown";
 import { useRedacaoStore } from "@/lib/store";
+import { apiBusca, apiChat, apiRevisao } from "@/lib/api";
 import type {
   BuscaResultado,
   ChatMessage,
@@ -40,7 +42,8 @@ const MODOS: { value: ModoRevisao; label: string; desc: string }[] = [
 ];
 
 export function SidePanel() {
-  const { tema, tese, argumentos, textoFinal } = useRedacaoStore();
+  const { tema, tese, argumentos, textoFinal, irParaBiblioteca, salvarNoHistorico } =
+    useRedacaoStore();
 
   // ---- Mentor ----
   const [mensagens, setMensagens] = useState<ChatMessage[]>([]);
@@ -70,26 +73,17 @@ export function SidePanel() {
     setEntrada("");
     setPensando(true);
     try {
-      const res = await fetch("/api/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          messages: novas,
-          contexto: {
-            tema: tema?.titulo,
-            tese,
-            arquitetura: argumentos
-              .map((a, i) => `A${i + 1}: ${a.topicoFrasal}`)
-              .join(" | "),
-            trechoTexto: textoFinal.slice(0, 1200),
-          },
-        }),
+      const { data } = await apiChat(novas, {
+        tema: tema?.titulo,
+        tese,
+        arquitetura: argumentos
+          .map((a, i) => `A${i + 1}: ${a.topicoFrasal}`)
+          .join(" | "),
+        trechoTexto: textoFinal.slice(0, 1200),
       });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data?.error ?? "Erro");
       setMensagens((m) => [
         ...m,
-        { role: "assistant", content: data.resposta as string },
+        { role: "assistant", content: data.resposta },
       ]);
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "O mentor falhou.");
@@ -103,14 +97,8 @@ export function SidePanel() {
     setBuscando(true);
     setResultado(null);
     try {
-      const res = await fetch("/api/busca", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ query }),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data?.error ?? "Erro");
-      setResultado(data as BuscaResultado);
+      const { data } = await apiBusca(query);
+      setResultado(data);
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Falha na busca.");
     } finally {
@@ -126,14 +114,10 @@ export function SidePanel() {
     setRevisando(true);
     setRevisao(null);
     try {
-      const res = await fetch("/api/revisao", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ texto: textoFinal, modo, tema: tema?.titulo }),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data?.error ?? "Erro");
-      setRevisao(data as RevisaoResultado);
+      const { data } = await apiRevisao(textoFinal, modo, tema?.titulo ?? "");
+      setRevisao(data);
+      // Registra o diagnóstico no histórico local para acompanhar a evolução.
+      salvarNoHistorico(data.notaEstimada);
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Falha na revisão.");
     } finally {
@@ -296,23 +280,43 @@ export function SidePanel() {
                 <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
                   Fontes
                 </p>
-                {resultado.resultados.map((r, i) => (
-                  <a
-                    key={i}
-                    href={r.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="block rounded-lg border border-border p-2.5 hover:border-primary/40 transition-colors"
-                  >
-                    <p className="flex items-start gap-1 text-xs font-medium leading-snug">
-                      <ExternalLink className="mt-0.5 h-3 w-3 shrink-0 text-blue-400" />
-                      {r.title}
-                    </p>
-                    <p className="mt-1 line-clamp-2 text-[11px] text-muted-foreground">
-                      {r.snippet}
-                    </p>
-                  </a>
-                ))}
+                {resultado.resultados.map((r, i) =>
+                  r.url.startsWith("local://") ? (
+                    <button
+                      key={i}
+                      type="button"
+                      onClick={() => irParaBiblioteca(query)}
+                      className="block w-full rounded-lg border border-border p-2.5 text-left hover:border-primary/40 transition-colors"
+                    >
+                      <p className="flex items-start gap-1 text-xs font-medium leading-snug">
+                        <BookOpenText className="mt-0.5 h-3 w-3 shrink-0 text-blue-400" />
+                        {r.title}
+                      </p>
+                      <p className="mt-1 line-clamp-2 text-[11px] text-muted-foreground">
+                        {r.snippet}
+                      </p>
+                      <p className="mt-1 text-[10px] font-medium text-blue-300">
+                        Abrir na Biblioteca →
+                      </p>
+                    </button>
+                  ) : (
+                    <a
+                      key={i}
+                      href={r.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block rounded-lg border border-border p-2.5 hover:border-primary/40 transition-colors"
+                    >
+                      <p className="flex items-start gap-1 text-xs font-medium leading-snug">
+                        <ExternalLink className="mt-0.5 h-3 w-3 shrink-0 text-blue-400" />
+                        {r.title}
+                      </p>
+                      <p className="mt-1 line-clamp-2 text-[11px] text-muted-foreground">
+                        {r.snippet}
+                      </p>
+                    </a>
+                  )
+                )}
               </div>
             </>
           )}

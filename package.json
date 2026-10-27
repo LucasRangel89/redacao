@@ -4,10 +4,12 @@
   "description": "Plataforma inteligente de auxílio à escrita com IA Generativa — planejamento estruturado e revisão profunda de redações ENEM/Concursos",
   "private": true,
   "scripts": {
-    "dev": "next dev -p 3000",
+    "dev": "next dev -p 3000 -H 0.0.0.0",
     "build": "next build && cp -r .next/static .next/standalone/.next/ && cp -r public .next/standalone/",
+    "build:pages": "node scripts/build-pages.mjs",
+    "recursos": "node scripts/parse-recursos.mjs",
     "start": "NODE_ENV=production node .next/standalone/server.js",
-    "lint": "next lint",
+    "lint": "eslint .",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
