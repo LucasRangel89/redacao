@@ -2,9 +2,9 @@ name: Publicar no GitHub Pages
 
 on:
   push:
-    # main (produção) e branches de trabalho — assim uma branch de entrega
-    # também gera uma pré-visualização pública sem precisar de merge.
-    branches: [main, "arena/**"]
+    # O ambiente github-pages normalmente só permite deploy a partir da main.
+    # Branches de trabalho são validadas pelo workflow ci.yml (sem deploy).
+    branches: [main]
   workflow_dispatch:
 
 permissions:

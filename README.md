@@ -20,7 +20,9 @@ Plataforma de treino de redações dissertativo-argumentativas (ENEM/Concursos) 
 
 1. Existe um workflow em [`.github/workflows/deploy-pages.yml`](.github/workflows/deploy-pages.yml) que roda `npm ci → npm run recursos → npm run build:pages` e publica a pasta `out/` (com `index.html` de verdade) via `actions/deploy-pages`.
 2. No seu repositório, vá em **Settings → Pages → Build and deployment → Source** e selecione **GitHub Actions** (não "Deploy from a branch").
-3. Faça um push na `main` — ou em qualquer branch `arena/**`, que também dispara o workflow (útil para pré-visualizar uma entrega). O link passa a ser `https://<usuario>.github.io/redacao/`. Você também pode rodar manualmente em **Actions → Publicar no GitHub Pages → Run workflow**.
+3. Faça um merge/push na `main` (ou rode manualmente em **Actions → Publicar no GitHub Pages → Run workflow**). O link passa a ser `https://<usuario>.github.io/redacao/`.
+
+Branches de trabalho não publicam (o ambiente `github-pages` normalmente só autoriza a `main`), mas são validadas automaticamente pelo workflow **Validar build** (`ci.yml`): TypeScript, ESLint e os dois builds.
 
 O build estático usa `basePath: /redacao` automaticamente (variável `PAGES_BASE_PATH`) e gera `out/.nojekyll`, sem o qual o Pages bloqueia a pasta `_next`. O ícone e o manifest também respeitam esse prefixo.
 
