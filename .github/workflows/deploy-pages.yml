@@ -38,6 +38,12 @@ jobs:
       - name: Regenerar acervo estruturado
         run: npm run recursos
 
+      - name: Validar repertórios verificados
+        run: npm run validar:repertorios
+
+      - name: Testes unitários
+        run: npm test
+
       # Gera out/ com index.html de verdade (não o README).
       - name: Build estático
         run: npm run build:pages

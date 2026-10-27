@@ -54,7 +54,7 @@ No modo estático **todas as ferramentas continuam funcionando** — temas, arqu
 Cinco seções acessíveis pelo cabeçalho (ou `Alt+1` … `Alt+5`): **Início**, **Estúdio**, **Biblioteca**, **Guia ENEM** e **Progresso**. O stepper de 3 etapas permanece dentro do Estúdio — você pode sair para consultar um repertório e voltar sem perder o rascunho.
 
 - **Início** — visão geral, estado do ambiente (IA online / modo local), atalhos, retomada do rascunho e progresso do checklist.
-- **Biblioteca** — acervo de **9 dossiês temáticos, 22 redações modelo e 59 citações**, com busca, filtros por área/tipo, favoritos, leitura anotada por parágrafo (Introdução / Desenvolvimento / Conclusão) e ações "usar no plano" e "inserir no rascunho".
+- **Biblioteca** — acervo de **9 dossiês temáticos, 22 redações modelo, 59 citações do acervo e 20 repertórios com fonte verificada**, com busca, filtros por área/tipo, favoritos, leitura anotada por parágrafo (Introdução / Desenvolvimento / Conclusão) e ações "usar no plano" e "inserir no rascunho". Paráfrases vêm rotuladas para nunca virarem citação falsa.
 - **Guia ENEM** — 5 competências, estrutura de cada bloco, fórmula da intervenção, conectivos clicáveis, checklist interativo persistente, plano de 7 dias e erros comuns.
 - **Progresso** — versões salvas localmente, métricas, gráfico de evolução (palavras × nota estimada), exportação `.txt` e exclusão.
 
@@ -69,6 +69,21 @@ Cinco seções acessíveis pelo cabeçalho (ou `Alt+1` … `Alt+5`): **Início**
 - 💬 **Mentor socrático** — questiona e guia, nunca escreve pelo aluno (também em modo local).
 - 🔎 **Busca** — checagem de fatos na web com fontes clicáveis; sem servidor, busca no acervo com link direto para a Biblioteca.
 - 📝 **Revisão** — três modos (rápida / gramatical / profunda). O modo local entrega um **diagnóstico heurístico honesto** por competência, com correções de oralidade, pontos fortes, prioridades e próximos passos.
+
+### 📦 Seus dados em qualquer aparelho (novo)
+
+O app é de **uso pessoal** e não tem login: seus textos ficam no navegador de cada
+aparelho. Em **Início → Meus dados** (ou em **Progresso → Meus dados**) você pode:
+
+- **Baixar meus dados** — gera um arquivo `.json` com histórico de versões,
+  favoritos, checklist e o rascunho em andamento.
+- **Restaurar de arquivo** — no celular/tablet, escolha **Juntar** (soma sem
+  duplicar e mantém o que você está escrevendo) ou **Substituir tudo**.
+- **Apagar tudo** — remove seus dados deste navegador (LGPD).
+
+Leve o arquivo pelo Google Drive, e-mail ou WhatsApp. **Nada é enviado a
+servidores**: a transferência depende só de você. Funciona inclusive no site
+estático do GitHub Pages.
 
 ### ⚡ Produtividade (novo)
 - **Modo prova** com contagem regressiva de 60 minutos no editor.
@@ -101,6 +116,8 @@ npm run dev                 # http://localhost:3000
 | `npm run start` | Sobe o servidor de produção |
 | `npm run build:pages` | Build **estático** em `out/` para GitHub Pages (restaura `/api` ao final) |
 | `npm run recursos` | Regenera `src/data/recursos.json` a partir de `docs/acervo-redacoes.md` |
+| `npm run validar:repertorios` | Valida autor/fonte/URL dos 20 repertórios verificados |
+| `npm test` | 17 testes de lógica pura (`node --test` + `tsx`) |
 | `npm run lint` | ESLint 9 (flat config) |
 | `npm run typecheck` | `tsc --noEmit` (TypeScript estrito) |
 
@@ -125,7 +142,11 @@ Os dois arquivos enviados como referência foram versionados em [`docs/`](docs/)
 
 `scripts/parse-recursos.mjs` converte o markdown em dados estruturados (`src/data/recursos.json`): dossiês temáticos com enunciado ENEM, textos motivadores, redações modelo anotadas por função e banco de citações classificado por tipo de repertório. **Edite o markdown e rode `npm run recursos`** — o workflow de Pages faz isso automaticamente.
 
-> As citações do acervo podem conter atribuições imprecisas. A interface avisa para conferir a fonte antes de usar em prova.
+> As citações do acervo podem conter atribuições imprecisas — a interface avisa
+> para conferir a fonte. Por isso existe também
+> [`src/data/repertorios-verificados.json`](src/data/repertorios-verificados.json):
+> 20 itens curados com autor, fonte, ano e link institucional. Rode
+> `npm run validar:repertorios` após adicionar um item (o CI também valida).
 
 ---
 
@@ -148,23 +169,32 @@ src/
 │   │   ├── biblioteca-view.tsx    # Acervo navegável + leitor anotado
 │   │   ├── guia-view.tsx          # Guia ENEM + checklist + plano de treino
 │   │   ├── progresso-view.tsx     # Histórico + gráfico de evolução
+│   │   ├── dados-pessoais-card.tsx# Backup/restauração em arquivo (sem login)
 │   │   ├── setup-stage.tsx · arquitetura-stage.tsx · escrita-stage.tsx
 │   │   ├── side-panel.tsx         # Mentor / Busca / Revisão
 │   │   └── markdown.tsx
 │   └── ui/                        # shadcn/ui (apenas os usados)
 ├── data/
 │   ├── recursos.json              # Gerado a partir de docs/acervo-redacoes.md
+│   ├── repertorios-verificados.json / .ts  # 20 fontes curadas + helpers
 │   └── guia.ts                    # Conteúdo curado do Guia ENEM
 └── lib/
     ├── api.ts                     # Cliente único: backend ↔ fallback local
     ├── local-ai.ts                # Motor heurístico offline (temas, mentor, revisão…)
     ├── recursos.ts                # Acesso tipado + busca no acervo
+    ├── backup.ts                  # Geração/validação/mesclagem do backup (puro)
     ├── store.ts                   # Zustand (views, rascunho, histórico, favoritos)
     ├── ai.ts · rate-limit.ts · types.ts · utils.ts · validation.ts
 scripts/
 ├── parse-recursos.mjs             # Markdown → JSON estruturado
+├── validar-repertorios.mjs        # Integridade das fontes verificadas
 └── build-pages.mjs                # Export estático seguro (move/restaura /api)
-.github/workflows/deploy-pages.yml  # Publicação real no GitHub Pages
+tests/
+├── repertorios.test.ts            # 9 testes (fontes, filtros, priorização)
+└── backup.test.ts                 # 8 testes (ida e volta, mesclagem, saneamento)
+.github/workflows/
+├── deploy-pages.yml               # Publicação real no GitHub Pages
+└── ci.yml                         # Validação+testes+builds em PRs/branches
 ```
 
 ## 🔒 Segurança e qualidade
@@ -173,7 +203,11 @@ scripts/
 - Camada de IA **apenas no backend**; nenhuma chave vaza para o cliente.
 - `output: "export"` remove `headers()` (não suportado) — em produção Node os security headers permanecem.
 - TypeScript estrito (`noUncheckedIndexedAccess`), ESLint 9, `reactStrictMode`.
-- `beforeunload` para prevenir perda acidental; dados salvos apenas em `localStorage`.
+- 17 testes (`node --test`) cobrindo repertórios verificados e backup/restauração;
+  validador de integridade das fontes roda no CI.
+- `beforeunload` para prevenir perda acidental; dados salvos apenas em
+  `localStorage`. O arquivo de backup é validado e saneado antes de entrar no app
+  (limites de tamanho, checklist restrito a IDs conhecidos, versões deduplicadas).
 
 ---
 
@@ -193,13 +227,20 @@ scripts/
 - [x] Build estático funcional para GitHub Pages + workflow de deploy
 - [x] Exportação em PDF com folha de correção oficial
 - [x] Modo prova cronometrado
+- [x] **Banco de repertórios verificados** — 20 itens com autor, fonte, ano e link
+  institucional; paráfrases rotuladas; aviso nas citações não conferidas
+- [x] **Backup/restauração em arquivo** — levar dados entre notebook, celular e
+  tablet sem login, sem servidor e sem custo (**P0.1 redefinido para uso pessoal**)
 
 **Próximos passos sugeridos (por impacto)**
-- [ ] **Login + nuvem (Prisma/Postgres)** — histórico entre dispositivos e turmas; o schema já existe em `prisma/schema.prisma`.
-- [ ] **Correção por IA com rubrica oficial** — calibrar o prompt com redações nota 1000 reais e salvar o feedback por competência no histórico.
+- [ ] **Diagnóstico local mais profundo** (P1.2) — novas regras de concordância,
+  crase e repetição com testes; melhora o app no celular sem exigir IA.
+- [ ] **Correção por IA com rubrica oficial** (P1.1) — calibrar o prompt com
+  redações nota 1000 reais e salvar o feedback por competência no histórico.
+- [ ] **Comparador de versões** (P1.3, diff lado a lado) mostrando o que melhorou.
+- [ ] **Conta + sincronização automática** (P0.1B, adiado) — só se o projeto
+  deixar de ser de uso pessoal; ver trade-offs no plano.
 - [ ] **Área do professor** — turmas, envio de temas, correção em lote e devolutiva padronizada.
-- [ ] **Comparador de versões** (diff lado a lado) mostrando o que melhorou entre rascunhos.
-- [ ] **Banco de repertórios verificados** — curadoria de leis, dados do IBGE e obras com fonte conferida (evita citações inventadas).
 - [ ] **Transcrição de voz** para rascunho ditado e leitura em voz alta da redação.
 - [ ] **Simulado oficial** com cronômetro, folha em PDF e cronograma de treino adaptativo.
 - [ ] **PWA offline real** (service worker) para estudar sem internet.

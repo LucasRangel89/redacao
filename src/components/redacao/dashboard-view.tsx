@@ -9,6 +9,7 @@ import {
   CheckCircle2,
   ClipboardCheck,
   CloudOff,
+  FileJson,
   FileText,
   GraduationCap,
   Lightbulb,
@@ -119,6 +120,12 @@ export function DashboardView() {
       descricao: "Revisão rápida ou pelas 5 competências",
       icon: Sparkles,
       onClick: () => abrirEstudio("escrita"),
+    },
+    {
+      titulo: "Meus dados",
+      descricao: "Baixar backup e levar para outro aparelho",
+      icon: FileJson,
+      onClick: () => setView("progresso"),
     },
     {
       titulo: "Meu progresso",
@@ -236,7 +243,7 @@ export function DashboardView() {
       <section className="space-y-3">
         <div className="flex items-end justify-between gap-2">
           <h2 className="text-lg font-semibold">Por onde quer começar?</h2>
-          <span className="text-xs text-muted-foreground">6 atalhos</span>
+          <span className="text-xs text-muted-foreground">{acoes.length} atalhos</span>
         </div>
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {acoes.map((acao) => {

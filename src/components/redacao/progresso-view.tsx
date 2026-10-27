@@ -34,6 +34,7 @@ import {
 import { toast } from "sonner";
 import { useRedacaoStore, type RedacaoSalva } from "@/lib/store";
 import { CHECKLIST } from "@/data/guia";
+import { DadosPessoaisCard } from "@/components/redacao/dados-pessoais-card";
 import { cn } from "@/lib/utils";
 
 function formatarData(ts: number) {
@@ -310,6 +311,9 @@ export function ProgressoView() {
           </Button>
         </CardContent>
       </Card>
+
+      {/* Portabilidade entre aparelhos (P0.1) */}
+      <DadosPessoaisCard />
 
       <AlertDialog open={Boolean(confirmar)} onOpenChange={(open) => !open && setConfirmar(null)}>
         <AlertDialogContent>

@@ -23,6 +23,10 @@ jobs:
         run: npm ci
       - name: Regenerar acervo
         run: npm run recursos
+      - name: Validar repertórios verificados
+        run: npm run validar:repertorios
+      - name: Testes unitários
+        run: npm test
       - name: TypeScript
         run: npm run typecheck
       - name: ESLint
