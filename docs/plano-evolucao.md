@@ -32,6 +32,7 @@
 | Acervo | `docs/acervo-redacoes.md` → `src/data/recursos.json` via `scripts/parse-recursos.mjs`; 9 temas, 22 redações, 59 citações |
 | Guia | Conteúdo curado estático em `src/data/guia.ts` |
 | IA | Rotas em `src/app/api/*` (Gemini ou SDK embutido) + fallback local em `src/lib/local-ai.ts`, orquestrado por `src/lib/api.ts` |
+| Diagnóstico local | 26 regras puras e testáveis em `src/lib/analise-texto.ts` (concordância, crase, regência, pontuação, oralidade, repetição, coesão, análise de repertório) |
 | Deploy | `npm run build:pages` → `out/` → `actions/deploy-pages` (GitHub Pages, `basePath: /redacao`); `npm run build` → standalone com Node |
 | Qualidade | `npm run typecheck`, `npm run lint`, `ci.yml` (ambos os builds em PRs), `deploy-pages.yml` (publish na `main`) |
 | Dados do usuário | 100% locais, sem login; `historico`, `favoritos`, `checklist`, `provaAte` no store; backup/restore em arquivo JSON (P0.1) |
@@ -44,9 +45,11 @@
   a curadoria verificada.
 - `prisma/schema.prisma` usa SQLite e não tem modelos de usuário/turma
   (proposital: P0.1B adiado).
-- O diagnóstico local é heurístico; sem IA, não há correção gramatical profunda
-  (concordância, regência, crase).
-- Sem autenticação, o histórico não sobrevive à troca de dispositivo.
+- O diagnóstico local cobre 26 padrões de alta precisão, mas não faz análise
+  sintática completa (sujeitos longos, crase facultativa, regência de verbos
+  raros). Para esses casos, use IA configurada ou corretor humano.
+- A troca de dispositivo é manual (arquivo de backup do P0.1); sem P0.1B não há
+  sincronização automática.
 - Não há service worker: “modo local” ainda depende de carregar o site pela rede.
 
 ## 3. Princípios imutáveis
@@ -151,20 +154,38 @@
   - [ ] Fallback local continua disponível e rotulado como estimativa.
   - [ ] Histórico guarda o JSON da revisão e reexibe sem nova chamada à IA.
 
-#### P1.2 · Diagnóstico local mais profundo (sem IA)
+#### ✅ P1.2 · Diagnóstico local mais profundo (CONCLUÍDO em 2026-10-27)
 - **Valor:** melhorar a experiência no GitHub Pages sem custo.
-- **Esforço:** M.
-- **Escopo**
-  - Estender `src/lib/local-ai.ts`: detectar concordância verbal/nominal básica,
-    crase comuns, regência, vírgula antes de "mas/e", repetição por janela de 30
-    palavras, diversidade de conectivos, citação sem análise.
-  - Extrair heurísticas para `src/lib/analise-texto.ts` (testável isoladamente),
-    mantendo `revisaoLocal` como orquestrador.
-  - Adicionar testes com `node --test` (sem framework novo) em `tests/`.
+- **Esforço:** M (concluído).
+- **Decisão de produto (explicada em linguagem simples):** havia dois caminhos —
+  (A) regras escritas à mão no aparelho, ou (B) mandar o texto para uma IA. A
+  opção B cobre mais casos, mas exige chave, servidor, custo e envia o texto do
+  estudante para fora. Mantivemos a **A como padrão gratuito/offline** e a **B
+  como opção** quando `GEMINI_API_KEY` existir. As regras são de alta precisão:
+  preferimos avisar menos e acertar, em vez de "corrigir" texto correto.
+- **Escopo entregue**
+  - `src/lib/analise-texto.ts` — módulo puro com **26 regras** auto-documentadas
+    em 8 categorias: concordância (5), crase (3), regência (3), pontuação (4),
+    oralidade (8), repetição em janela de 30 palavras (1), coesão/conectivos
+    repetidos (1) e repertório sem análise (1). Cada regra traz `exemploErro`,
+    `exemploCorrecao` e `explicacao`.
+  - `aplicarRegras()` garante ao menos **uma sugestão por categoria presente**
+    (senão 10 erros de concordância esconderiam o aviso pedagógico de "citação
+    sem análise"), deduplica, prioriza e limita a 14 itens.
+  - `src/lib/local-ai.ts` — `revisaoLocal` virou orquestrador: consome
+    `analisarTexto()` e monta resumo, competências, feedbacks e próximos passos.
+    Modo gramatical sem achados agora devolve lista vazia (sem "correção" falsa).
+  - `CorrecaoGramatical` ganhou `categoria` e `regra` opcionais — o painel
+    Revisão exibe selo da categoria, nome da regra, trecho citado e sugestão.
+  - Nova aba **Guia ENEM → Revisão local (26)** com o catálogo completo e o
+    aviso de que é apoio didático, não nota oficial.
+  - 15 testes em `tests/analise-texto.test.ts`, incluindo a bateria automática
+    que roda **todas as regras** contra seus exemplos.
 - **Critérios de aceite**
-  - [ ] Pelo menos 12 regras documentadas com exemplo de erro e correção.
-  - [ ] Nenhum falso positivo em texto formal de exemplo (casos de teste).
-  - [ ] `npm run typecheck` e testes locais passam.
+  - [x] 26 regras documentadas com exemplo de erro e correção (mínimo 12).
+  - [x] Nenhum falso positivo em texto formal de controle nem em 10 frases
+    corretas "parecidas" (testes dedicados).
+  - [x] `npm run typecheck`, `npm run lint` e 32 testes passam.
 
 #### P1.3 · Comparador de versões (diff)
 - **Valor:** o estudante enxerga concretamente o que melhorou — reforço de aprendizado.
@@ -229,19 +250,22 @@
 ```text
 Fase 1 (P0)  → ✅ P0.2 repertórios verificados · ✅ P0.1 backup sem login
                ⏸️ P0.1B conta + nuvem (adiado, uso pessoal)
-Fase 2 (P1)  → correção calibrada, diff, área do professor
+Fase 2 (P1)  → ✅ P1.2 diagnóstico local (26 regras)
+               → P1.3 diff de versões · P1.1 correção por IA calibrada
+               → ⏸️ P1.4 área do professor (depende de P0.1B)
 Fase 3 (P2)  → PWA offline, voz, acessibilidade, simulado, analytics
 ```
 
-A Fase 1 foi concluída. Próximo passo recomendado: **P1.2** (diagnóstico local
-mais profundo) — melhora o uso no celular/GitHub Pages sem exigir infraestrutura.
-Não implemente P1.4 (área do professor) antes de P0.1B.
+Fase 1 e P1.2 concluídos. Próximo passo recomendado: **P1.3** (comparador de
+versões) — mostra concretamente o que melhorou entre rascunhos, funciona 100%
+offline e sem infraestrutura. Não implemente P1.4 (área do professor) antes de
+P0.1B.
 
 ## 6. Definição de pronto (DoD)
 
 - [ ] `npm run typecheck` sem erros.
 - [ ] `npm run lint` sem erros.
-- [ ] `npm test` (17 testes) e `npm run validar:repertorios` passam.
+- [ ] `npm test` (32 testes) e `npm run validar:repertorios` passam.
 - [ ] `npm run build` (Node) e `npm run build:pages` (estático) passam.
 - [ ] Fluxo funciona em **modo local** (sem `GEMINI_API_KEY`) e em **modo IA**.
 - [ ] Testado em viewport 375px e 1440px, sem console errors.
@@ -302,6 +326,24 @@ ENTREGA
 > Observação honesta: o modo IA foi exercitado com respostas simuladas no
 > navegador, porque este ambiente não possui `GEMINI_API_KEY`. A chamada real ao
 > provedor continua dependendo da configuração de quem publicar o app em Node.
+
+## 7.2 Registro de validação do P1.2 (2026-10-27)
+
+| Verificação | Resultado |
+| --- | --- |
+| `npm ci` | ✓ lockfile sincronizado (sem alterações) |
+| `npm run validar:repertorios` | ✓ 20 repertórios verificados |
+| `npm test` | ✓ **32 testes** (9 repertórios + 8 backup + 15 análise de texto), 0 falhas |
+| `npm run typecheck` / `npm run lint` | ✓ limpos |
+| `npm run build:pages` / `npm run build` | ✓ ambos passam após as mudanças de UI |
+| Bateria de regras | ✓ 26/26 detectam o próprio `exemploErro` e **nenhuma** sinaliza o `exemploCorrecao` |
+| Falsos positivos | ✓ 0 em redação formal de controle e em 10 frases corretas "parecidas" |
+| E2E navegador · **modo local** | ✓ 7 etapas: Guia → Revisão local (26 regras) → Estúdio → Escrita → Revisão categorizada → modo gramatical → atalho abre a aba certa → **viewport 375px sem overflow**; 0 erros de console |
+| E2E navegador · **modo IA** | ✓ 3 etapas com `/api/status`, `/api/temas`, `/api/arquitetura` e `/api/revisao` **mockados**: detecção "IA online", catálogo disponível e diagnóstico da IA preservado; 0 erros de console |
+
+> O modo IA segue validado por mocks (sem `GEMINI_API_KEY` neste ambiente). A
+> refatoração de `local-ai.ts` não tocou em `src/lib/api.ts` nem nas rotas, e o
+> fallback local continua disponível se uma chamada de IA falhar.
 
 ## 8. Notas de infraestrutura
 

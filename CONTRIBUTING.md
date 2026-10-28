@@ -43,6 +43,11 @@ npm run build:pages    # estático para GitHub Pages (modo local)
 
 ## Padrões do projeto
 
+- **Novas regras de revisão local** vão em `src/lib/analise-texto.ts`, no array
+  `REGRAS` (use o helper `regraSimples` para padrões de regex). Toda regra exige
+  `exemploErro` e `exemploCorrecao`: `tests/analise-texto.test.ts` falha se o
+  exemplo de erro não for detectado ou se o exemplo corrigido gerar falso
+  positivo. Prefira poucas regras precisas a muitas regras duvidosas.
 - **TypeScript estrito** (`strict: true` + `noImplicitAny: true`).
   Evite `any`; justifique cada exceção com um comentário.
 - **Validação nas bordas**: toda rota API deve usar `validateBody(req, schema)`

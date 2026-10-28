@@ -17,7 +17,13 @@ import {
   termos,
   type Citacao,
 } from "@/lib/recursos";
-import { CHECKLIST, CONECTIVOS } from "@/data/guia";
+import { CHECKLIST } from "@/data/guia";
+import {
+  analisarTexto,
+  REGRAS,
+  ROTULO_CATEGORIA,
+  type Diagnostico,
+} from "@/lib/analise-texto";
 import {
   buscarRepertoriosVerificados,
   repertorioVerificadoComoSugestao,
@@ -38,21 +44,7 @@ import type {
 const AVISO_LOCAL =
   "Modo local (sem IA conectada): sugestões derivadas do acervo do projeto. Reescreva com as suas palavras.";
 
-const TODOS_CONECTIVOS = CONECTIVOS.flatMap((c) => c.itens.map((i) => i.toLowerCase()));
-
-// Fronteiras Unicode: \b falha em palavras acentuadas como "né" e "tá".
-const INFORMALIDADES: { regex: RegExp; original: string; correcao: string; explicacao: string }[] = [
-  { regex: /(?<![\p{L}\p{N}])pra(?![\p{L}\p{N}])/giu, original: "pra", correcao: "para", explicacao: "Forma reduzida e oral; use a preposição formal." },
-  { regex: /(?<![\p{L}\p{N}])tá(?![\p{L}\p{N}])/giu, original: "tá", correcao: "está", explicacao: "Forma oral do verbo estar; use a forma plena." },
-  { regex: /(?<![\p{L}\p{N}])né(?![\p{L}\p{N}])/giu, original: "né", correcao: "não é", explicacao: "Marca de oralidade inadequada ao texto dissertativo." },
-  { regex: /(?<![\p{L}\p{N}])a gente(?![\p{L}\p{N}])/giu, original: "a gente", correcao: "a população / os cidadãos", explicacao: "Substitua por sujeito formal e específico." },
-  { regex: /(?<![\p{L}\p{N}])vc(?![\p{L}\p{N}])/giu, original: "vc", correcao: "você", explicacao: "Abreviação de internet; evite no texto formal." },
-  { regex: /(?<![\p{L}\p{N}])tipo(?=\s*,)/giu, original: "tipo", correcao: "como / por exemplo", explicacao: "Marcador de oralidade; prefira um conectivo de exemplificação." },
-  { regex: /(?<![\p{L}\p{N}])msm(?![\p{L}\p{N}])/giu, original: "msm", correcao: "mesmo", explicacao: "Abreviação informal." },
-  { regex: /(?<![\p{L}\p{N}])pq(?![\p{L}\p{N}])/giu, original: "pq", correcao: "porque", explicacao: "Abreviação informal de conjunção causal." },
-  { regex: /(?<![\p{L}\p{N}])em relação a(?![\p{L}\p{N}])/giu, original: "em relação a", correcao: "no que se refere a", explicacao: "Locução preferível na modalidade escrita formal." },
-  { regex: /(?<![\p{L}\p{N}])a nível de(?![\p{L}\p{N}])/giu, original: "a nível de", correcao: "no âmbito de", explicacao: "Expressão criticada pela norma culta; prefira 'no âmbito de'." },
-];
+// As heurísticas de revisão vivem em @/lib/analise-texto.ts (P1.2).
 
 // ---------------------------------------------------------------------------
 // Temas
@@ -309,99 +301,7 @@ export function buscaLocal(query: string): BuscaResultado {
 // Diagnóstico local de redação
 // ---------------------------------------------------------------------------
 
-interface Diagnostico {
-  palavras: number;
-  paragrafos: number;
-  linhas: number;
-  conectivosDistintos: number;
-  totalConectivos: number;
-  temCitacao: boolean;
-  temAnalise: boolean;
-  formalidade: number;
-  repeticaoQue: number;
-  pontuacao: number;
-  elementos: Record<"agente" | "acao" | "meio" | "finalidade" | "detalhamento", boolean>;
-  correcoes: { original: string; correcao: string; explicacao: string }[];
-  pontosFracos: string[];
-  pontosFortes: string[];
-}
-
-function analisarTexto(texto: string): Diagnostico {
-  const palavras = texto.trim().split(/\s+/).filter(Boolean).length;
-  const blocos = texto.split(/\n+/).map((b) => b.trim()).filter(Boolean);
-  const lower = texto.toLowerCase();
-  const conectivosEncontrados = TODOS_CONECTIVOS.filter((c) => lower.includes(c));
-  const totalConectivos = TODOS_CONECTIVOS.reduce(
-    (acc, c) => acc + (lower.split(c).length - 1),
-    0
-  );
-
-  const correcoes: Diagnostico["correcoes"] = [];
-  for (const regra of INFORMALIDADES) {
-    const encontrados = texto.match(regra.regex);
-    if (encontrados?.length) {
-      correcoes.push({
-        original: `${encontrados[0]} (${encontrados.length}x)`,
-        correcao: regra.correcao,
-        explicacao: regra.explicacao,
-      });
-    }
-  }
-
-  const temCitacao = /segundo|conforme|de acordo com|como afirma|como aponta|“|"|lei n|artigo|constitui|pesquisa|estudo/i.test(
-    texto
-  );
-  const temAnalise = /isso (demonstra|comprova|evidencia|revela)|portanto|logo|dessa forma|por isso|assim,|tal (contexto|fato|cenario)/i.test(
-    texto
-  );
-  const pontuacao = (texto.match(/[.,;:!?—]/g) ?? []).length;
-  const repeticaoQue = (lower.match(/\bque\b/g) ?? []).length;
-  const formalidade = Math.max(0, 100 - correcoes.length * 20);
-
-  const elementos = {
-    agente: /governo|ministério|ministerio|poder público|poder publico|união|uniao|estado|prefeitura|congresso|escolas|empresas|onu|agência|agencia|autoridade|banco central|secretaria/i.test(texto),
-    acao: /deve|devem|precisa|é necessário|e necessario|implementar|ampliar|criar|promover|investir|fiscalizar|garantir|regulamentar|oferecer|estimular/i.test(texto),
-    meio: /por meio de|através de|atras|via |com a criação|com a implementa|mediante|por intermédio|utilizando|com campanhas|com cursos/i.test(texto),
-    finalidade: /para que|a fim de|com o objetivo|com a finalidade|para garantir|para reduzir|visando|com vistas a/i.test(texto),
-    detalhamento: /o que permitirá|o que possibilitará|garantindo que|de modo que|por exemplo|como forma de|com acompanhamento|monitoramento|indicadores|metas|auditoria/i.test(texto),
-  };
-
-  const pontosFortes: string[] = [];
-  const pontosFracos: string[] = [];
-  if (blocos.length >= 4) pontosFortes.push(`Estrutura com ${blocos.length} blocos de parágrafo — introdução, desenvolvimento e conclusão aparentes.`);
-  else pontosFracos.push(`O texto tem ${blocos.length} bloco(s). Organize em 4 ou 5 parágrafos.`);
-  if (palavras >= 350 && palavras <= 650) pontosFortes.push(`${palavras} palavras: extensão adequada à folha oficial (≈30 linhas).`);
-  else if (palavras < 350) pontosFracos.push(`Apenas ${palavras} palavras. Desenvolva mais os argumentos para chegar a ≈350–550 palavras.`);
-  else pontosFracos.push(`${palavras} palavras podem ultrapassar 30 linhas. Revise o limite da folha oficial.`);
-  if (conectivosEncontrados.length >= 5) pontosFortes.push(`${conectivosEncontrados.length} conectivos distintos: boa variedade de relações lógicas.`);
-  else pontosFracos.push(`Só ${conectivosEncontrados.length} conectivo(s) distinto(s). Varie com causalidade, oposição e conclusão.`);
-  if (temCitacao) pontosFortes.push("Há indícios de repertório produtivo (citação, dado ou lei).");
-  else pontosFracos.push("Não encontrei repertório explícito. Insira ao menos duas referências verificáveis.");
-  if (temAnalise) pontosFortes.push("O texto apresenta marcadores de análise e encadeamento argumentativo.");
-  else pontosFracos.push("Faltam marcadores de análise (ex.: 'isso demonstra que…') após os repertórios.");
-  if (correcoes.length === 0) pontosFortes.push("Nenhuma marca evidente de oralidade encontrada na varredura local.");
-  else pontosFracos.push(`${correcoes.length} padrão(ões) de informalidade detectado(s) — veja as correções sugeridas.`);
-  if (repeticaoQue > palavras / 25) pontosFracos.push(`"que" aparece ${repeticaoQue}x. Substitua parte das ocorrências por conectivos precisos.`);
-  if (Object.values(elementos).every(Boolean)) pontosFortes.push("Proposta de intervenção com indícios dos 5 elementos obrigatórios.");
-  else pontosFracos.push(`Intervenção incompleta: falta(m) ${Object.entries(elementos).filter(([, v]) => !v).map(([k]) => k).join(", ")}.`);
-
-  return {
-    palavras,
-    paragrafos: blocos.length,
-    linhas: blocos.reduce((acc, b) => acc + Math.max(1, Math.ceil(b.length / 70)), 0),
-    conectivosDistintos: conectivosEncontrados.length,
-    totalConectivos,
-    temCitacao,
-    temAnalise,
-    formalidade,
-    repeticaoQue,
-    pontuacao,
-    elementos,
-    correcoes: correcoes.slice(0, 10),
-    pontosFracos,
-    pontosFortes,
-  };
-}
+// Diagnóstico estruturado e regras: @/lib/analise-texto.ts
 
 function arredondarNota(valor: number): number {
   return Math.max(0, Math.min(200, Math.round(valor / 40) * 40));
@@ -409,8 +309,12 @@ function arredondarNota(valor: number): number {
 
 function feedbackCompetencia(codigo: string, d: Diagnostico): string {
   switch (codigo) {
-    case "C1":
-      return `Varredura local: ${d.correcoes.length} padrão(ões) de informalidade, ${d.pontuacao} sinais de pontuação e ${d.repeticaoQue} ocorrências de "que". ${d.correcoes.length ? "Substitua os registros orais e revise a pontuação." : "Sem desvios evidentes na amostra — confirme com uma leitura em voz alta."}`;
+    case "C1": {
+      const categorias = Object.entries(d.porCategoria)
+        .filter(([, n]) => n > 0)
+        .map(([c, n]) => `${n} ${ROTULO_CATEGORIA[c as keyof typeof ROTULO_CATEGORIA]}`);
+      return `Varredura local de ${REGRAS.length} regras: ${d.correcoes.length} sugestão(ões)${categorias.length ? ` (${categorias.join(", ")})` : ""}, ${d.pontuacao} sinais de pontuação e ${d.repeticaoQue} ocorrências de "que". ${d.correcoes.length ? "Confira cada trecho citado antes de alterar o texto." : "Nenhum padrão monitorado apareceu — confirme com uma leitura em voz alta."}`;
+    }
     case "C2":
       return `${d.temCitacao ? "Foram encontrados indícios de repertório." : "Não encontrei repertório explícito."} ${d.temAnalise ? "Há marcadores de análise do repertório." : "Inclua uma frase de análise depois de cada citação."} Verifique também se os termos do enunciado reaparecem no texto.`;
     case "C3":
@@ -428,7 +332,7 @@ export function revisaoLocal(texto: string, modo: ModoRevisao, tema = ""): Revis
   const d = analisarTexto(texto);
   const prefixo = "Diagnóstico local (sem IA): análise heurística, não uma nota oficial.";
   const curto = d.palavras < 250;
-  const resumo = `${prefixo} ${d.palavras} palavras · ${d.paragrafos} parágrafos · ~${d.linhas} linhas · ${d.conectivosDistintos} conectivos distintos.${
+  const resumo = `${prefixo} ${d.palavras} palavras · ${d.paragrafos} parágrafos · ~${d.linhas} linhas · ${d.conectivosDistintos} conectivos distintos · ${REGRAS.length} regras locais verificadas, ${d.correcoes.length} ponto(s) de atenção.${
     tema ? ` Tema considerado: ${tema.slice(0, 100)}.` : ""
   }${curto ? " Texto abaixo da extensão recomendada: as notas foram ajustadas para baixo." : ""}`;
 
@@ -475,18 +379,15 @@ export function revisaoLocal(texto: string, modo: ModoRevisao, tema = ""): Revis
 
   if (modo === "gramatical") {
     return {
-      resumo: `${resumo} ${d.correcoes.length ? "Foram listadas sugestões de substituição para marcas de oralidade." : "Nenhum desvio evidente detectado pela varredura local; faça uma revisão manual de concordância e crase."}`,
+      resumo: `${resumo} ${
+        d.correcoes.length
+          ? "Cada sugestão abaixo cita o trecho encontrado e uma possível substituição."
+          : `Nenhum dos ${REGRAS.length} padrões monitorados apareceu; ainda assim, revise concordância, regência e crase com um corretor humano.`
+      }`,
       pontosFortes: base.pontosFortes,
       pontosMelhoria: base.pontosMelhoria,
-      correcoes: d.correcoes.length
-        ? d.correcoes
-        : [
-            {
-              original: "(varredura local)",
-              correcao: "revisão manual",
-              explicacao: "Este modo local detecta padrões predefinidos. Para erros de concordância, regência e crase, conecte uma chave de IA ou revise com um corretor humano.",
-            },
-          ],
+      // Sem correção "fake": silêncio honesto é melhor que um item inventado.
+      correcoes: d.correcoes,
       competencias: undefined,
     };
   }
@@ -500,7 +401,11 @@ export function revisaoLocal(texto: string, modo: ModoRevisao, tema = ""): Revis
     notaEstimada: competencias.reduce((acc, c) => acc + c.nota, 0),
     proximosPassos: [
       ...d.pontosFracos.slice(0, 3),
+      ...(d.correcoes.length
+        ? [`Revise as ${d.correcoes.length} sugestões com trecho citado — comece por ${ROTULO_CATEGORIA[d.ocorrencias[0]!.categoria]}.`]
+        : []),
       ...(faltantes.length ? [`Complete na conclusão: ${faltantes.join(", ")}.`] : []),
+      `Veja as ${REGRAS.length} regras com exemplos no Guia ENEM → Revisão local.`,
       `Marque os ${CHECKLIST.length} itens do Checklist no Guia ENEM e reescreva o parágrafo mais fraco.`,
       "Para uma correção por competência feita por IA, configure GEMINI_API_KEY no servidor.",
     ],

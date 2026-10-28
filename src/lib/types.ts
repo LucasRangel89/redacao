@@ -58,10 +58,24 @@ export interface CompetenciaScore {
   feedback: string;
 }
 
+/** Categorias das regras do diagnóstico local (P1.2). */
+export type CategoriaRegra =
+  | "concordancia"
+  | "crase"
+  | "regencia"
+  | "pontuacao"
+  | "oralidade"
+  | "repeticao"
+  | "coesao"
+  | "argumentacao";
+
 export interface CorrecaoGramatical {
   original: string;
   correcao: string;
   explicacao: string;
+  /** Preenchido pelo analisador local; ausente em respostas de IA. */
+  categoria?: CategoriaRegra;
+  regra?: string;
 }
 
 export interface RevisaoResultado {

@@ -42,7 +42,10 @@ interface RedacaoState {
   // Navegação
   view: View;
   bibliotecaQuery: string;
+  /** Aba ativa do Guia ENEM (permite abrir direto em "Revisão local"). */
+  guiaAba: string;
   setView: (view: View) => void;
+  setGuiaAba: (aba: string) => void;
   irParaBiblioteca: (query?: string) => void;
   setBibliotecaQuery: (query: string) => void;
 
@@ -130,7 +133,9 @@ export const useRedacaoStore = create<RedacaoState>()(
     (set, get) => ({
       view: "inicio",
       bibliotecaQuery: "",
+      guiaAba: "competencias",
       setView: (view) => set({ view }),
+      setGuiaAba: (guiaAba) => set({ guiaAba }),
       irParaBiblioteca: (query) =>
         set({ view: "biblioteca", bibliotecaQuery: query ?? "" }),
       setBibliotecaQuery: (bibliotecaQuery) => set({ bibliotecaQuery }),
