@@ -68,7 +68,22 @@ Cinco seções acessíveis pelo cabeçalho (ou `Alt+1` … `Alt+5`): **Início**
 ### 🧠 Ferramentas integradas
 - 💬 **Mentor socrático** — questiona e guia, nunca escreve pelo aluno (também em modo local).
 - 🔎 **Busca** — checagem de fatos na web com fontes clicáveis; sem servidor, busca no acervo com link direto para a Biblioteca.
-- 📝 **Revisão** — três modos (rápida / gramatical / profunda). O modo local entrega um **diagnóstico heurístico honesto** por competência, com correções de oralidade, pontos fortes, prioridades e próximos passos.
+- 📝 **Revisão** — três modos (rápida / gramatical / profunda). O modo local entrega um **diagnóstico heurístico honesto** por competência, com 26 regras de norma culta, trecho citado, pontos fortes, prioridades e próximos passos.
+
+### 🔍 Revisão local (novo)
+
+Mesmo sem IA e sem internet, o app roda **26 regras de alta precisão** no seu
+próprio aparelho: concordância, crase, regência, pontuação, oralidade,
+repetição de palavras em janela de 30 palavras, conectivos repetidos e
+repertório citado sem análise. Cada aviso mostra **o trecho encontrado no seu
+texto**, a sugestão de substituição e o motivo — nada de "nota" sem explicação.
+A lista completa, com exemplos de erro e correção, está em
+**Guia ENEM → Revisão local (26)**.
+
+> É um apoio didático: as regras cobrem erros frequentes, mas não substituem um
+> corretor humano. As notas exibidas são **estimativas didáticas**, nunca notas
+> oficiais. Se você configurar `GEMINI_API_KEY` num servidor com Node, a revisão
+> por IA continua disponível como opção.
 
 ### 📦 Seus dados em qualquer aparelho (novo)
 
@@ -117,7 +132,7 @@ npm run dev                 # http://localhost:3000
 | `npm run build:pages` | Build **estático** em `out/` para GitHub Pages (restaura `/api` ao final) |
 | `npm run recursos` | Regenera `src/data/recursos.json` a partir de `docs/acervo-redacoes.md` |
 | `npm run validar:repertorios` | Valida autor/fonte/URL dos 20 repertórios verificados |
-| `npm test` | 17 testes de lógica pura (`node --test` + `tsx`) |
+| `npm test` | 32 testes de lógica pura (`node --test` + `tsx`) |
 | `npm run lint` | ESLint 9 (flat config) |
 | `npm run typecheck` | `tsc --noEmit` (TypeScript estrito) |
 
@@ -182,6 +197,7 @@ src/
     ├── api.ts                     # Cliente único: backend ↔ fallback local
     ├── local-ai.ts                # Motor heurístico offline (temas, mentor, revisão…)
     ├── recursos.ts                # Acesso tipado + busca no acervo
+    ├── analise-texto.ts           # 26 regras do diagnóstico local (puro, testável)
     ├── backup.ts                  # Geração/validação/mesclagem do backup (puro)
     ├── store.ts                   # Zustand (views, rascunho, histórico, favoritos)
     ├── ai.ts · rate-limit.ts · types.ts · utils.ts · validation.ts
@@ -191,7 +207,8 @@ scripts/
 └── build-pages.mjs                # Export estático seguro (move/restaura /api)
 tests/
 ├── repertorios.test.ts            # 9 testes (fontes, filtros, priorização)
-└── backup.test.ts                 # 8 testes (ida e volta, mesclagem, saneamento)
+├── backup.test.ts                 # 8 testes (ida e volta, mesclagem, saneamento)
+└── analise-texto.test.ts          # 15 testes (26 regras, falsos positivos, modos)
 .github/workflows/
 ├── deploy-pages.yml               # Publicação real no GitHub Pages
 └── ci.yml                         # Validação+testes+builds em PRs/branches
@@ -203,7 +220,8 @@ tests/
 - Camada de IA **apenas no backend**; nenhuma chave vaza para o cliente.
 - `output: "export"` remove `headers()` (não suportado) — em produção Node os security headers permanecem.
 - TypeScript estrito (`noUncheckedIndexedAccess`), ESLint 9, `reactStrictMode`.
-- 17 testes (`node --test`) cobrindo repertórios verificados e backup/restauração;
+- 32 testes (`node --test`) cobrindo repertórios verificados, backup/restauração
+  e as 26 regras do diagnóstico local (incluindo bateria de falsos positivos);
   validador de integridade das fontes roda no CI.
 - `beforeunload` para prevenir perda acidental; dados salvos apenas em
   `localStorage`. O arquivo de backup é validado e saneado antes de entrar no app
@@ -231,13 +249,15 @@ tests/
   institucional; paráfrases rotuladas; aviso nas citações não conferidas
 - [x] **Backup/restauração em arquivo** — levar dados entre notebook, celular e
   tablet sem login, sem servidor e sem custo (**P0.1 redefinido para uso pessoal**)
+- [x] **Diagnóstico local mais profundo** (P1.2) — 26 regras de concordância,
+  crase, regência, pontuação, oralidade, repetição e análise de repertório, com
+  15 testes e catálogo visível no Guia; funciona 100% offline.
 
 **Próximos passos sugeridos (por impacto)**
-- [ ] **Diagnóstico local mais profundo** (P1.2) — novas regras de concordância,
-  crase e repetição com testes; melhora o app no celular sem exigir IA.
+- [ ] **Comparador de versões** (P1.3, diff lado a lado) mostrando o que melhorou
+  entre rascunhos — funciona offline e sem IA.
 - [ ] **Correção por IA com rubrica oficial** (P1.1) — calibrar o prompt com
   redações nota 1000 reais e salvar o feedback por competência no histórico.
-- [ ] **Comparador de versões** (P1.3, diff lado a lado) mostrando o que melhorou.
 - [ ] **Conta + sincronização automática** (P0.1B, adiado) — só se o projeto
   deixar de ser de uso pessoal; ver trade-offs no plano.
 - [ ] **Área do professor** — turmas, envio de temas, correção em lote e devolutiva padronizada.

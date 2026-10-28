@@ -37,6 +37,7 @@ import {
   PLANO_TREINO,
 } from "@/data/guia";
 import { intervencaoLocal } from "@/lib/local-ai";
+import { listarRegras, ORDEM_CATEGORIAS, REGRAS, ROTULO_CATEGORIA } from "@/lib/analise-texto";
 import { acervo } from "@/lib/recursos";
 import { cn } from "@/lib/utils";
 
@@ -48,6 +49,18 @@ const CORES: Record<string, string> = {
   emerald: "text-emerald-300 border-emerald-500/30 bg-emerald-500/10",
 };
 
+const ABAS_GUIA = [
+  "competencias", "estrutura", "intervencao", "conectivos",
+  "checklist", "treino", "erros", "revisao",
+];
+
+/** Catálogo de regras do diagnóstico local, agrupado para estudo (P1.2). */
+const REGRAS_AGRUPADAS = ORDEM_CATEGORIAS.map((categoria) => ({
+  categoria,
+  rotulo: ROTULO_CATEGORIA[categoria],
+  regras: listarRegras().filter((r) => r.categoria === categoria),
+})).filter((g) => g.regras.length > 0);
+
 export function GuiaView() {
   const {
     checklist,
@@ -57,7 +70,10 @@ export function GuiaView() {
     setStage,
     tema,
     updateIntervencao,
+    guiaAba,
+    setGuiaAba,
   } = useRedacaoStore();
+  const abaAtiva = ABAS_GUIA.includes(guiaAba) ? guiaAba : "competencias";
   const [esqueleto, setEsqueleto] = useState<string | null>(null);
 
   const marcados = checklist.filter((c) => !c.startsWith("treino-")).length;
@@ -103,7 +119,7 @@ export function GuiaView() {
         </p>
       </div>
 
-      <Tabs defaultValue="competencias">
+      <Tabs value={abaAtiva} onValueChange={setGuiaAba}>
         <TabsList className="flex h-auto w-full flex-wrap justify-start gap-1">
           <TabsTrigger value="competencias" className="text-xs">Competências</TabsTrigger>
           <TabsTrigger value="estrutura" className="text-xs">Estrutura</TabsTrigger>
@@ -114,6 +130,9 @@ export function GuiaView() {
           </TabsTrigger>
           <TabsTrigger value="treino" className="text-xs">Plano de 7 dias</TabsTrigger>
           <TabsTrigger value="erros" className="text-xs">Erros comuns</TabsTrigger>
+          <TabsTrigger value="revisao" className="text-xs">
+            Revisão local ({REGRAS.length})
+          </TabsTrigger>
         </TabsList>
 
         {/* COMPETÊNCIAS */}
@@ -434,6 +453,68 @@ export function GuiaView() {
               </Card>
             ))}
           </div>
+        </TabsContent>
+
+        {/* REVISÃO LOCAL — catálogo de regras com exemplos */}
+        <TabsContent value="revisao" className="mt-4 space-y-5">
+          <Card className="border-blue-500/25 bg-blue-500/5">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-base">
+                O que o diagnóstico local verifica ({REGRAS.length} regras)
+              </CardTitle>
+              <CardDescription className="text-xs leading-relaxed">
+                São regras simples escritas à mão: funcionam no celular, no site do GitHub
+                Pages e sem internet — nenhuma inteligência artificial é consultada. O
+                Estúdio → Revisão mostra cada trecho encontrado no seu texto e uma sugestão
+                de substituição.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="pt-0">
+              <p className="text-[11px] leading-relaxed text-amber-300/90">
+                Atenção: isto é um apoio didático, não uma correção oficial. As regras
+                cobrem erros frequentes, mas não substituem a leitura atenta nem um
+                corretor humano. As notas exibidas são estimativas, nunca notas oficiais.
+              </p>
+            </CardContent>
+          </Card>
+
+          {REGRAS_AGRUPADAS.map((grupo) => (
+            <section key={grupo.categoria} className="space-y-2">
+              <h3 className="flex items-center gap-2 text-sm font-semibold">
+                {grupo.rotulo}
+                <Badge variant="outline" className="text-[10px]">
+                  {grupo.regras.length} {grupo.regras.length === 1 ? "regra" : "regras"}
+                </Badge>
+              </h3>
+              <div className="grid gap-2 md:grid-cols-2">
+                {grupo.regras.map((regra) => (
+                  <Card key={regra.id}>
+                    <CardHeader className="pb-2">
+                      <CardTitle className="flex items-start justify-between gap-2 text-sm">
+                        <span>{regra.nome}</span>
+                        <span className="shrink-0 font-mono text-[10px] text-muted-foreground">
+                          {regra.id}
+                        </span>
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-1.5 pt-0">
+                      <p className="text-[11px] leading-relaxed">
+                        <span className="font-semibold text-destructive">Erro: </span>
+                        <span className="text-muted-foreground">{regra.exemploErro}</span>
+                      </p>
+                      <p className="text-[11px] leading-relaxed">
+                        <span className="font-semibold text-emerald-400">Correção: </span>
+                        <span className="text-muted-foreground">{regra.exemploCorrecao}</span>
+                      </p>
+                      <p className="text-[11px] leading-relaxed text-muted-foreground/80">
+                        {regra.explicacao}
+                      </p>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </section>
+          ))}
         </TabsContent>
       </Tabs>
     </div>

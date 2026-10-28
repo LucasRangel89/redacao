@@ -20,6 +20,7 @@ import { toast } from "sonner";
 import { Markdown } from "@/components/redacao/markdown";
 import { useRedacaoStore } from "@/lib/store";
 import { apiBusca, apiChat, apiRevisao } from "@/lib/api";
+import { REGRAS, ROTULO_CATEGORIA } from "@/lib/analise-texto";
 import type {
   BuscaResultado,
   ChatMessage,
@@ -42,7 +43,7 @@ const MODOS: { value: ModoRevisao; label: string; desc: string }[] = [
 ];
 
 export function SidePanel() {
-  const { tema, tese, argumentos, textoFinal, irParaBiblioteca, salvarNoHistorico } =
+  const { tema, tese, argumentos, textoFinal, irParaBiblioteca, salvarNoHistorico, setView, setGuiaAba } =
     useRedacaoStore();
 
   // ---- Mentor ----
@@ -414,17 +415,39 @@ export function SidePanel() {
               {revisao.correcoes && revisao.correcoes.length > 0 && (
                 <div className="space-y-2">
                   <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-                    Correções da norma culta
+                    Sugestões com trecho citado ({revisao.correcoes.length})
                   </p>
                   {revisao.correcoes.map((c, i) => (
-                    <div key={i} className="rounded-lg border border-border p-2.5 space-y-1">
-                      <p className="text-xs text-destructive line-through decoration-destructive/60">
-                        {c.original}
-                      </p>
+                    <div key={i} className="rounded-lg border border-border p-2.5 space-y-1.5">
+                      <div className="flex flex-wrap items-center gap-1.5">
+                        {c.categoria && (
+                          <Badge
+                            variant="outline"
+                            className="border-blue-500/30 bg-blue-500/10 text-[10px] text-blue-300"
+                          >
+                            {ROTULO_CATEGORIA[c.categoria]}
+                          </Badge>
+                        )}
+                        {c.regra && (
+                          <span className="text-[10px] text-muted-foreground">{c.regra}</span>
+                        )}
+                      </div>
+                      <p className="text-xs text-destructive">{c.original}</p>
                       <p className="text-xs font-medium text-emerald-400">→ {c.correcao}</p>
                       <p className="text-[11px] text-muted-foreground">{c.explicacao}</p>
                     </div>
                   ))}
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    className="h-7 w-full justify-center text-[11px]"
+                    onClick={() => {
+                      setGuiaAba("revisao");
+                      setView("guia");
+                    }}
+                  >
+                    Ver as {REGRAS.length} regras e exemplos no Guia →
+                  </Button>
                 </div>
               )}
 
