@@ -54,7 +54,7 @@ No modo estático **todas as ferramentas continuam funcionando** — temas, arqu
 Cinco seções acessíveis pelo cabeçalho (ou `Alt+1` … `Alt+5`): **Início**, **Estúdio**, **Biblioteca**, **Guia ENEM** e **Progresso**. O stepper de 3 etapas permanece dentro do Estúdio — você pode sair para consultar um repertório e voltar sem perder o rascunho.
 
 - **Início** — visão geral, estado do ambiente (IA online / modo local), atalhos, retomada do rascunho e progresso do checklist.
-- **Biblioteca** — acervo de **9 dossiês temáticos, 22 redações modelo, 59 citações do acervo e 20 repertórios com fonte verificada**, com busca, filtros por área/tipo, favoritos, leitura anotada por parágrafo (Introdução / Desenvolvimento / Conclusão) e ações "usar no plano" e "inserir no rascunho". Paráfrases vêm rotuladas para nunca virarem citação falsa.
+- **Biblioteca** — **9 dossiês temáticos, 22 redações modelo, 59 citações locais, 255 citações do Banco de Citações e 20 repertórios verificados com links de fonte**. O Banco integrado pode ser pesquisado por eixo, tipo, uso e status; cada item mostra orientação de uso e pode ser favoritado, inserido no plano ou no rascunho. Paráfrases e alusões são rotuladas e não recebem aspas no modelo de inserção.
 - **Guia ENEM** — 5 competências, estrutura de cada bloco, fórmula da intervenção, conectivos clicáveis, checklist interativo persistente, plano de 7 dias e erros comuns.
 - **Progresso** — versões salvas localmente, métricas, gráfico de evolução (palavras × nota estimada), exportação `.txt` e exclusão.
 
@@ -131,8 +131,10 @@ npm run dev                 # http://localhost:3000
 | `npm run start` | Sobe o servidor de produção |
 | `npm run build:pages` | Build **estático** em `out/` para GitHub Pages (restaura `/api` ao final) |
 | `npm run recursos` | Regenera `src/data/recursos.json` a partir de `docs/acervo-redacoes.md` |
+| `npm run sincronizar:banco` | Atualiza `src/data/banco-citacoes.json` com a versão pública do Banco de Citações |
+| `npm run validar:banco` | Valida a cópia local do Banco sem depender da internet |
 | `npm run validar:repertorios` | Valida autor/fonte/URL dos 20 repertórios verificados |
-| `npm test` | 32 testes de lógica pura (`node --test` + `tsx`) |
+| `npm test` | Testes de lógica pura (`node --test` + `tsx`) |
 | `npm run lint` | ESLint 9 (flat config) |
 | `npm run typecheck` | `tsc --noEmit` (TypeScript estrito) |
 
@@ -155,13 +157,15 @@ Os dois arquivos enviados como referência foram versionados em [`docs/`](docs/)
 - `docs/acervo-redacoes.md` — corpus com redações, temas e citações (**fonte da verdade**).
 - `docs/visao-produto.md` — documentação de produto/UX do projeto.
 
-`scripts/parse-recursos.mjs` converte o markdown em dados estruturados (`src/data/recursos.json`): dossiês temáticos com enunciado ENEM, textos motivadores, redações modelo anotadas por função e banco de citações classificado por tipo de repertório. **Edite o markdown e rode `npm run recursos`** — o workflow de Pages faz isso automaticamente.
+`scripts/parse-recursos.mjs` converte o markdown em dados estruturados (`src/data/recursos.json`): dossiês temáticos com enunciado ENEM, textos motivadores, redações modelo anotadas por função e citações classificadas por tipo de repertório. **Edite o markdown e rode `npm run recursos`** — o workflow de Pages faz isso automaticamente.
 
-> As citações do acervo podem conter atribuições imprecisas — a interface avisa
-> para conferir a fonte. Por isso existe também
-> [`src/data/repertorios-verificados.json`](src/data/repertorios-verificados.json):
-> 20 itens curados com autor, fonte, ano e link institucional. Rode
-> `npm run validar:repertorios` após adicionar um item (o CI também valida).
+O catálogo separado [Banco de Citações](https://lucasrangel89.github.io/citacoes/) é a fonte de verdade para as 255 citações integradas. `scripts/sync-banco-citacoes.mjs` busca o `citacoes.json` público do repositório `LucasRangel89/citacoes` e valida seu esquema. O deploy do Redação sincroniza esse arquivo antes de publicar; um agendamento diário verifica novas citações. A cópia versionada em `src/data/banco-citacoes.json` permite desenvolver e testar sem rede. Para atualizá-la manualmente, rode `npm run sincronizar:banco`.
+
+> O status **“fonte confirmada” do Banco** é mantido separado dos
+> [`src/data/repertorios-verificados.json`](src/data/repertorios-verificados.json),
+> que contém 20 itens curados com autor, fonte, ano e link institucional. O Banco
+> também marca itens que ainda pedem conferência; confira a fonte original antes
+> de usar qualquer repertório em uma prova.
 
 ---
 
@@ -191,21 +195,25 @@ src/
 │   └── ui/                        # shadcn/ui (apenas os usados)
 ├── data/
 │   ├── recursos.json              # Gerado a partir de docs/acervo-redacoes.md
+│   ├── banco-citacoes.json        # Cópia sincronizada do JSON público do Banco
 │   ├── repertorios-verificados.json / .ts  # 20 fontes curadas + helpers
 │   └── guia.ts                    # Conteúdo curado do Guia ENEM
 └── lib/
     ├── api.ts                     # Cliente único: backend ↔ fallback local
     ├── local-ai.ts                # Motor heurístico offline (temas, mentor, revisão…)
-    ├── recursos.ts                # Acesso tipado + busca no acervo
+    ├── recursos.ts                # Acesso tipado + busca no acervo local
+    ├── banco-citacoes.ts          # Adaptação, filtros e formatação do Banco conectado
     ├── analise-texto.ts           # 26 regras do diagnóstico local (puro, testável)
     ├── backup.ts                  # Geração/validação/mesclagem do backup (puro)
     ├── store.ts                   # Zustand (views, rascunho, histórico, favoritos)
     ├── ai.ts · rate-limit.ts · types.ts · utils.ts · validation.ts
 scripts/
 ├── parse-recursos.mjs             # Markdown → JSON estruturado
+├── sync-banco-citacoes.mjs        # Sincroniza/valida o JSON do Banco público
 ├── validar-repertorios.mjs        # Integridade das fontes verificadas
 └── build-pages.mjs                # Export estático seguro (move/restaura /api)
 tests/
+├── banco-citacoes.test.ts        # 10 testes (sincronismo, busca, filtros e formatação)
 ├── repertorios.test.ts            # 9 testes (fontes, filtros, priorização)
 ├── backup.test.ts                 # 8 testes (ida e volta, mesclagem, saneamento)
 └── analise-texto.test.ts          # 15 testes (26 regras, falsos positivos, modos)
@@ -220,9 +228,9 @@ tests/
 - Camada de IA **apenas no backend**; nenhuma chave vaza para o cliente.
 - `output: "export"` remove `headers()` (não suportado) — em produção Node os security headers permanecem.
 - TypeScript estrito (`noUncheckedIndexedAccess`), ESLint 9, `reactStrictMode`.
-- 32 testes (`node --test`) cobrindo repertórios verificados, backup/restauração
-  e as 26 regras do diagnóstico local (incluindo bateria de falsos positivos);
-  validador de integridade das fontes roda no CI.
+- 42 testes (`node --test`) cobrindo integração e busca do Banco, repertórios verificados,
+  backup/restauração e as 26 regras do diagnóstico local (incluindo bateria de falsos
+  positivos); validadores de integridade rodam no CI.
 - `beforeunload` para prevenir perda acidental; dados salvos apenas em
   `localStorage`. O arquivo de backup é validado e saneado antes de entrar no app
   (limites de tamanho, checklist restrito a IDs conhecidos, versões deduplicadas).
@@ -252,6 +260,8 @@ tests/
 - [x] **Diagnóstico local mais profundo** (P1.2) — 26 regras de concordância,
   crase, regência, pontuação, oralidade, repetição e análise de repertório, com
   15 testes e catálogo visível no Guia; funciona 100% offline.
+- [x] **Banco de Citações conectado** — 255 itens sincronizados diariamente,
+  filtros por eixo/tipo/uso/verificação e inserção formatada no plano ou rascunho.
 
 **Próximos passos sugeridos (por impacto)**
 - [ ] **Comparador de versões** (P1.3, diff lado a lado) mostrando o que melhorou

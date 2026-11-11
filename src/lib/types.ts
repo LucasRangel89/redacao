@@ -146,7 +146,9 @@ export const TIPOS_REPERTORIO = [
   { value: "filosofico", label: "Filosófico" },
   { value: "sociologico", label: "Sociológico" },
   { value: "dados", label: "Dados estatísticos" },
+  { value: "cientifico", label: "Científico" },
   { value: "historico", label: "Histórico" },
-  { value: "legal", label: "Legislação" },
+  { value: "legal", label: "Legislação / jurídico" },
+  { value: "literario", label: "Literário" },
   { value: "cultural", label: "Cultural (livros, filmes, séries)" },
 ] as const;

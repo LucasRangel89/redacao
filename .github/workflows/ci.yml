@@ -23,6 +23,8 @@ jobs:
         run: npm ci
       - name: Regenerar acervo
         run: npm run recursos
+      - name: Validar cópia do Banco de Citações
+        run: npm run validar:banco
       - name: Validar repertórios verificados
         run: npm run validar:repertorios
       - name: Testes unitários

@@ -8,6 +8,8 @@
     "build": "next build && cp -r .next/static .next/standalone/.next/ && cp -r public .next/standalone/",
     "build:pages": "node scripts/build-pages.mjs",
     "recursos": "node scripts/parse-recursos.mjs",
+    "sincronizar:banco": "node scripts/sync-banco-citacoes.mjs",
+    "validar:banco": "node scripts/sync-banco-citacoes.mjs --check",
     "validar:repertorios": "node scripts/validar-repertorios.mjs",
     "test": "node --import tsx --test tests/*.test.ts",
     "start": "NODE_ENV=production node .next/standalone/server.js",

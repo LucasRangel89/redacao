@@ -1,7 +1,7 @@
 # Plano de evolução — Redação Nota Máxima AI
 
 > Documento vivo para as próximas conversas/iterações. Registre aqui decisões,
-> escopos e critérios de aceite. **Última atualização:** 2026-10-27.
+> escopos e critérios de aceite. **Última atualização:** 2026-11-11.
 >
 > Plano curto no [README](../README.md) ·
 > Acervo em [`docs/acervo-redacoes.md`](acervo-redacoes.md) ·
@@ -29,20 +29,21 @@
 |---|---|
 | UI | App shell com 5 views (`inicio`, `estudio`, `biblioteca`, `guia`, `progresso`) em `src/app/page.tsx` |
 | Estado | Zustand com persistência `localStorage` (chave `redacao-nota-maxima`, versão 3) em `src/lib/store.ts` |
-| Acervo | `docs/acervo-redacoes.md` → `src/data/recursos.json` via `scripts/parse-recursos.mjs`; 9 temas, 22 redações, 59 citações |
+| Acervo | `docs/acervo-redacoes.md` → `src/data/recursos.json` (9 temas, 22 redações, 59 citações locais) + `LucasRangel89/citacoes` → `src/data/banco-citacoes.json` (255 citações sincronizadas) |
 | Guia | Conteúdo curado estático em `src/data/guia.ts` |
 | IA | Rotas em `src/app/api/*` (Gemini ou SDK embutido) + fallback local em `src/lib/local-ai.ts`, orquestrado por `src/lib/api.ts` |
 | Diagnóstico local | 26 regras puras e testáveis em `src/lib/analise-texto.ts` (concordância, crase, regência, pontuação, oralidade, repetição, coesão, análise de repertório) |
-| Deploy | `npm run build:pages` → `out/` → `actions/deploy-pages` (GitHub Pages, `basePath: /redacao`); `npm run build` → standalone com Node |
-| Qualidade | `npm run typecheck`, `npm run lint`, `ci.yml` (ambos os builds em PRs), `deploy-pages.yml` (publish na `main`) |
+| Deploy | `npm run build:pages` → `out/` → `actions/deploy-pages` (GitHub Pages, `basePath: /redacao`); `npm run build` → standalone com Node; Pages sincroniza o Banco diariamente antes do build |
+| Qualidade | `npm run typecheck`, `npm run lint`, 42 testes, `ci.yml` (ambos os builds em PRs), `deploy-pages.yml` (publish na `main` e sincronização diária do Banco) |
 | Dados do usuário | 100% locais, sem login; `historico`, `favoritos`, `checklist`, `provaAte` no store; backup/restore em arquivo JSON (P0.1) |
-| Repertórios | 20 itens verificados em `src/data/repertorios-verificados.json` + 59 citações do acervo (não verificadas, com aviso) |
+| Repertórios | 20 itens curados com links em `src/data/repertorios-verificados.json` + 59 citações locais + 255 do Banco (174 marcadas pelo Banco como confirmadas; 81 pedem conferência) |
 
 **Dívidas conhecidas (resolver antes de escalar):**
 
-- O acervo original ainda tem citações com atribuição possivelmente imprecisa —
-  a UI avisa e a aba "Verificados" oferece alternativa conferida; falta expandir
-  a curadoria verificada.
+- As 59 citações do acervo local podem conter atribuições imprecisas, e 81 itens
+  do Banco estão explicitamente marcados para conferência. A UI mantém esses
+  estados separados dos 20 repertórios curados com links; falta expandir essa
+  curadoria verificada.
 - `prisma/schema.prisma` usa SQLite e não tem modelos de usuário/turma
   (proposital: P0.1B adiado).
 - O diagnóstico local cobre 26 padrões de alta precisão, mas não faz análise
@@ -134,6 +135,24 @@
   - [x] Aviso de conferência permanece visível para itens do acervo original.
   - [x] Paráfrases são rotuladas e nunca tratadas como citação literal.
   - [x] `npm run validar:repertorios` e `npm test` rodam no CI.
+
+#### ✅ P0.3 · Integração do Banco de Citações (CONCLUÍDO em 2026-11-11)
+- **Valor:** usar o catálogo especializado dentro do fluxo de planejamento e escrita,
+  sem substituir nem reescrever nenhum dos dois projetos.
+- **Escopo entregue:**
+  - Cópia estática do JSON público em `src/data/banco-citacoes.json`, atualizada
+    por `scripts/sync-banco-citacoes.mjs` e validada antes de usar.
+  - Deploy do Pages sincroniza a versão da `main` do Banco diariamente e antes de
+    cada publicação; o Redação não faz uma chamada externa a cada visita.
+  - Nova aba na Biblioteca com busca sem acentos, filtros por eixo, tipo, uso e
+    status, favoritos e acesso ao site original.
+  - Inserção em plano/rascunho usa autor, obra, ano e artigo. Paráfrases e alusões
+    entram sem aspas; o status do Banco não é confundido com os 20 repertórios
+    curados e verificados neste projeto.
+  - O motor local de repertórios e a busca local também consultam os dados do Banco.
+- **Validação:** 10 testes de integração em `tests/banco-citacoes.test.ts`;
+  `npm test` (42 testes), `npm run typecheck`, `npm run lint`, `npm run build:pages`
+  e `npm run build` aprovados.
 
 ### P1 — Fase 2: qualidade da correção
 
@@ -265,7 +284,7 @@ P0.1B.
 
 - [ ] `npm run typecheck` sem erros.
 - [ ] `npm run lint` sem erros.
-- [ ] `npm test` (32 testes) e `npm run validar:repertorios` passam.
+- [ ] `npm test` (42 testes), `npm run validar:banco` e `npm run validar:repertorios` passam.
 - [ ] `npm run build` (Node) e `npm run build:pages` (estático) passam.
 - [ ] Fluxo funciona em **modo local** (sem `GEMINI_API_KEY`) e em **modo IA**.
 - [ ] Testado em viewport 375px e 1440px, sem console errors.

@@ -6,6 +6,7 @@ import {
   BookOpen,
   ChevronDown,
   Copy,
+  ExternalLink,
   FileText,
   Heart,
   PenLine,
@@ -34,6 +35,13 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { toast } from "sonner";
 import { useRedacaoStore } from "@/lib/store";
 import {
@@ -48,6 +56,23 @@ import {
   type TemaAcervo,
 } from "@/lib/recursos";
 import {
+  bancoCitacoes,
+  buscarCitacoesBanco,
+  EIXOS_BANCO,
+  formatarCitacaoParaRedacao,
+  naturezaCitacaoBanco,
+  rotuloTagBanco,
+  textoLimpoBanco,
+  TAGS_TIPO_BANCO,
+  TAGS_USO_BANCO,
+  TOTAL_CITACOES_BANCO,
+  TOTAL_CONFERIR_FONTE_BANCO,
+  TOTAL_FONTE_CONFIRMADA_BANCO,
+  URL_BANCO_CITACOES,
+  URL_REPOSITORIO_BANCO,
+  type CitacaoBanco,
+} from "@/lib/banco-citacoes";
+import {
   AREAS_REPERTORIO,
   buscarRepertoriosVerificados,
   repertoriosVerificados,
@@ -59,7 +84,7 @@ import {
 import type { Tema } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
-type Aba = "temas" | "redacoes" | "citacoes" | "verificados" | "favoritos";
+type Aba = "temas" | "redacoes" | "citacoes" | "banco" | "verificados" | "favoritos";
 
 const COR_ETIQUETA: Record<string, string> = {
   Introdução: "border-amber-500/30 bg-amber-500/10 text-amber-300",
@@ -97,6 +122,11 @@ export function BibliotecaView() {
   const [aba, setAba] = useState<Aba>("temas");
   const [area, setArea] = useState("Todas");
   const [tipo, setTipo] = useState("todos");
+  const [bancoEixo, setBancoEixo] = useState("Todas");
+  const [bancoTipo, setBancoTipo] = useState("todos");
+  const [bancoUso, setBancoUso] = useState("todos");
+  const [bancoVerificacao, setBancoVerificacao] = useState("todos");
+  const [bancoLimite, setBancoLimite] = useState(24);
   const [temaAberto, setTemaAberto] = useState<string | null>(null);
   const [leitura, setLeitura] = useState<{ tema: TemaAcervo; redacao: RedacaoModelo } | null>(null);
 
@@ -117,6 +147,19 @@ export function BibliotecaView() {
       ),
     [query, resultados.citacoes, tipo]
   );
+  const citacoesBancoFiltradas = useMemo(
+    () =>
+      buscarCitacoesBanco({
+        consulta: query,
+        eixo: bancoEixo,
+        tipo: bancoTipo,
+        uso: bancoUso,
+        verificacao: bancoVerificacao,
+      }),
+    [query, bancoEixo, bancoTipo, bancoUso, bancoVerificacao]
+  );
+  const citacoesBancoVisiveis = citacoesBancoFiltradas.slice(0, bancoLimite);
+
   const redacoes = useMemo(
     () =>
       (query ? resultados.redacoes : TODAS_REDACOES).filter(
@@ -132,6 +175,7 @@ export function BibliotecaView() {
 
   const favoritosTemas = acervo.temas.filter((t) => favoritos.includes(`tema:${t.id}`));
   const favoritosCitacoes = acervo.citacoes.filter((c) => favoritos.includes(`cit:${c.id}`));
+  const favoritosBanco = bancoCitacoes.filter((c) => favoritos.includes(`cit:${c.id}`));
   const favoritosVerificados = repertoriosVerificados.filter((r) =>
     favoritos.includes(`verif:${r.id}`)
   );
@@ -162,14 +206,21 @@ export function BibliotecaView() {
 
   function usarCitacao(c: Citacao) {
     const ehVerificado = c.id.startsWith("verif:");
-    const trecho = `Segundo ${c.autor}, “${c.texto}”.`;
+    const citacaoBanco = c.origem === "banco" ? (c as CitacaoBanco) : null;
+    const trecho = citacaoBanco
+      ? formatarCitacaoParaRedacao(citacaoBanco)
+      : `Segundo ${c.autor}, “${c.texto}”.`;
     setTextoFinal(textoFinal.trim() ? `${textoFinal.trim()}\n\n${trecho}` : trecho);
     setView("estudio");
     setStage("escrita");
     toast.success("Citação adicionada ao rascunho.", {
       description: ehVerificado
         ? `Fonte verificada: ${c.fonte}`
-        : "Adapte ao seu argumento, acrescente uma frase de análise e confira a atribuição.",
+        : citacaoBanco?.verificacao === "#fonte-confirmada"
+          ? "O Banco marca esta fonte como confirmada. Confira a referência original e analise a citação no seu argumento."
+          : citacaoBanco
+            ? "O Banco recomenda conferir esta fonte antes de usar. Acrescente também sua análise ao repertório."
+            : "Adapte ao seu argumento, acrescente uma frase de análise e confira a atribuição.",
     });
   }
 
@@ -180,15 +231,22 @@ export function BibliotecaView() {
       alvo = useRedacaoStore.getState().argumentos[0];
     }
     if (!alvo) return;
+    const citacaoBanco = c.origem === "banco" ? (c as CitacaoBanco) : null;
     updateArgumento(alvo.id, {
-      repertorio: `${c.texto} — ${c.autor}`,
+      repertorio: citacaoBanco
+        ? `${formatarCitacaoParaRedacao(citacaoBanco)}\nComo usar: ${citacaoBanco.comoUsar}`
+        : `${c.texto} — ${c.autor}`,
     });
     setView("estudio");
     setStage("arquitetura");
     toast.success("Repertório inserido no argumento 1.", {
       description: c.id.startsWith("verif:")
         ? `Fonte verificada: ${c.fonte}`
-        : "Explique com suas palavras como ele comprova o tópico frasal.",
+        : citacaoBanco?.verificacao === "#fonte-confirmada"
+          ? "O Banco marca esta fonte como confirmada. Relacione-a ao tópico frasal com suas próprias palavras."
+          : citacaoBanco
+            ? "O Banco recomenda conferir esta fonte. Relacione-a ao tópico frasal com suas próprias palavras."
+            : "Explique com suas palavras como ele comprova o tópico frasal.",
     });
   }
 
@@ -228,15 +286,15 @@ export function BibliotecaView() {
       {/* Cabeçalho */}
       <div className="space-y-2">
         <Badge variant="outline" className="border-blue-500/30 bg-blue-500/10 text-blue-300">
-          <BookOpen className="mr-1 h-3 w-3" /> Acervo versionado no projeto
+          <BookOpen className="mr-1 h-3 w-3" /> Acervo local + Banco conectado
         </Badge>
         <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Biblioteca de redação</h1>
         <p className="max-w-3xl text-sm text-muted-foreground">
           {acervo.totalTemas} dossiês temáticos, {acervo.totalRedacoes} redações modelo
-          anotadas por função (introdução, desenvolvimento, conclusão),{" "}
-          {acervo.totalCitacoes} citações do acervo e {TOTAL_REPERTORIOS_VERIFICADOS}{" "}
+          anotadas por função (introdução, desenvolvimento, conclusão), {acervo.totalCitacoes} citações
+          do acervo local, {TOTAL_CITACOES_BANCO} citações do Banco de Citações e {TOTAL_REPERTORIOS_VERIFICADOS}{" "}
           <span className="font-medium text-emerald-300">repertórios com fonte verificada</span>.
-          Use qualquer item diretamente no seu rascunho.
+          Use qualquer item diretamente no seu plano ou rascunho.
         </p>
       </div>
 
@@ -274,6 +332,9 @@ export function BibliotecaView() {
               <TabsTrigger value="citacoes" className="text-xs">
                 Citações ({citacoes.length})
               </TabsTrigger>
+              <TabsTrigger value="banco" className="text-xs">
+                Banco de citações ({TOTAL_CITACOES_BANCO})
+              </TabsTrigger>
               <TabsTrigger value="verificados" className="text-xs">
                 <ShieldCheck className="mr-1 h-3 w-3" />
                 Verificados ({verificados.length})
@@ -283,7 +344,7 @@ export function BibliotecaView() {
               </TabsTrigger>
             </TabsList>
           </Tabs>
-          {aba !== "favoritos" && (
+          {aba !== "favoritos" && aba !== "banco" && (
             <div className="flex flex-wrap gap-1.5">
               {["Todas", ...(aba === "verificados" ? AREAS_REPERTORIO : AREAS_ACERVO)].map((a) => (
                 <button
@@ -319,6 +380,53 @@ export function BibliotecaView() {
                   {t.label}
                 </button>
               ))}
+            </div>
+          )}
+          {aba === "banco" && (
+            <div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-4">
+              <Select value={bancoEixo} onValueChange={setBancoEixo}>
+                <SelectTrigger aria-label="Filtrar por eixo temático">
+                  <SelectValue placeholder="Todos os eixos" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Todas">Todos os eixos</SelectItem>
+                  {EIXOS_BANCO.map((eixo) => (
+                    <SelectItem key={eixo} value={eixo}>{eixo}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <Select value={bancoTipo} onValueChange={setBancoTipo}>
+                <SelectTrigger aria-label="Filtrar por tipo de repertório">
+                  <SelectValue placeholder="Todos os tipos" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="todos">Todos os tipos</SelectItem>
+                  {TAGS_TIPO_BANCO.map((item) => (
+                    <SelectItem key={item.tag} value={item.tag}>{item.label}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <Select value={bancoUso} onValueChange={setBancoUso}>
+                <SelectTrigger aria-label="Filtrar por uso na redação">
+                  <SelectValue placeholder="Todos os usos" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="todos">Todos os usos</SelectItem>
+                  {TAGS_USO_BANCO.map((item) => (
+                    <SelectItem key={item.tag} value={item.tag}>{item.label}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <Select value={bancoVerificacao} onValueChange={setBancoVerificacao}>
+                <SelectTrigger aria-label="Filtrar pelo status da fonte">
+                  <SelectValue placeholder="Todos os status de fonte" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="todos">Todos os status de fonte</SelectItem>
+                  <SelectItem value="#fonte-confirmada">Banco marca como confirmada</SelectItem>
+                  <SelectItem value="#verificar-fonte">Precisa conferir</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
           )}
         </CardContent>
@@ -505,6 +613,58 @@ export function BibliotecaView() {
         </div>
       )}
 
+      {/* BANCO DE CITAÇÕES CONECTADO */}
+      {aba === "banco" && (
+        <div className="space-y-3">
+          <div className="flex flex-col gap-3 rounded-lg border border-blue-500/25 bg-blue-500/5 p-4 sm:flex-row sm:items-start sm:justify-between">
+            <div className="space-y-1.5">
+              <p className="flex items-center gap-1.5 text-sm font-semibold text-blue-200">
+                <BookOpen className="h-4 w-4" /> Banco conectado · {TOTAL_CITACOES_BANCO} citações
+              </p>
+              <p className="max-w-3xl text-xs leading-relaxed text-muted-foreground">
+                Este acervo é sincronizado do projeto Banco de Citações. Nele, {TOTAL_FONTE_CONFIRMADA_BANCO} itens estão
+                marcados como fonte confirmada e {TOTAL_CONFERIR_FONTE_BANCO} pedem conferência. Essa marcação é do Banco
+                e não substitui a aba “Verificados”, cujos repertórios têm link de fonte curado neste projeto.
+              </p>
+            </div>
+            <a
+              href={URL_BANCO_CITACOES}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex h-8 shrink-0 items-center justify-center gap-1.5 rounded-md border border-border px-3 text-xs font-medium transition-colors hover:bg-secondary"
+            >
+              Abrir o Banco <ExternalLink className="h-3.5 w-3.5" />
+            </a>
+          </div>
+          <p className="text-xs text-muted-foreground" aria-live="polite">
+            Mostrando {citacoesBancoVisiveis.length} de {citacoesBancoFiltradas.length} citações encontradas.
+          </p>
+          <div className="grid gap-3 md:grid-cols-2">
+            {citacoesBancoVisiveis.map((c) => (
+              <BancoCitacaoCard
+                key={c.id}
+                citacao={c}
+                favorito={favoritos.includes(`cit:${c.id}`)}
+                onFavorito={() => toggleFavorito(`cit:${c.id}`)}
+                onCopiar={() => copiar(formatarCitacaoParaRedacao(c), "Modelo para redação copiado.")}
+                onUsar={() => usarCitacao(c)}
+                onRepertorio={() => usarComoRepertorio(c)}
+              />
+            ))}
+            {citacoesBancoFiltradas.length === 0 && (
+              <Vazio texto="Nenhuma citação encontrada. Tente outro termo ou remova algum filtro." />
+            )}
+          </div>
+          {citacoesBancoVisiveis.length < citacoesBancoFiltradas.length && (
+            <div className="flex justify-center">
+              <Button variant="outline" onClick={() => setBancoLimite((limite) => limite + 24)}>
+                Mostrar mais citações
+              </Button>
+            </div>
+          )}
+        </div>
+      )}
+
       {/* REPERTÓRIOS VERIFICADOS */}
       {aba === "verificados" && (
         <div className="space-y-3">
@@ -550,8 +710,8 @@ export function BibliotecaView() {
                 <Heart className="h-8 w-8 text-muted-foreground/50" />
                 <p className="text-sm font-medium">Sua estante está vazia</p>
                 <p className="max-w-sm text-xs text-muted-foreground">
-                  Clique na estrela de temas, redações ou citações para guardá-los aqui e
-                  voltar rapidamente durante a escrita.
+                  Clique na estrela de temas, redações ou citações — inclusive do Banco — para
+                  guardá-los aqui e voltar rapidamente durante a escrita.
                 </p>
                 <Button size="sm" variant="outline" onClick={() => setAba("temas")}>
                   Explorar temas
@@ -637,6 +797,26 @@ export function BibliotecaView() {
                   </div>
                 </section>
               )}
+              {favoritosBanco.filter((c) => tipo === "todos" || c.tipo === tipo).length > 0 && (
+                <section className="space-y-2">
+                  <h2 className="text-sm font-semibold">Banco de Citações ({favoritosBanco.length})</h2>
+                  <div className="grid gap-3 md:grid-cols-2">
+                    {favoritosBanco
+                      .filter((c) => tipo === "todos" || c.tipo === tipo)
+                      .map((c) => (
+                        <BancoCitacaoCard
+                          key={c.id}
+                          citacao={c}
+                          favorito
+                          onFavorito={() => toggleFavorito(`cit:${c.id}`)}
+                          onCopiar={() => copiar(formatarCitacaoParaRedacao(c), "Modelo para redação copiado.")}
+                          onUsar={() => usarCitacao(c)}
+                          onRepertorio={() => usarComoRepertorio(c)}
+                        />
+                      ))}
+                  </div>
+                </section>
+              )}
             </>
           )}
         </div>
@@ -646,9 +826,12 @@ export function BibliotecaView() {
         Acervo: <code className="rounded bg-secondary px-1">docs/acervo-redacoes.md</code> ·
         gerado por <code className="rounded bg-secondary px-1">scripts/parse-recursos.mjs</code>.
         <br />
+        Banco conectado: <a className="underline underline-offset-2 hover:text-foreground" href={URL_REPOSITORIO_BANCO} target="_blank" rel="noopener noreferrer">LucasRangel89/citacoes</a> ·
+        sincronizado por <code className="rounded bg-secondary px-1">npm run sincronizar:banco</code>.
+        <br />
         Repertórios verificados: <code className="rounded bg-secondary px-1">src/data/repertorios-verificados.json</code> ·
-        validado por <code className="rounded bg-secondary px-1">npm run validar:repertorios</code>.
-        Confira sempre a fonte antes de usar em uma prova.
+        validados por <code className="rounded bg-secondary px-1">npm run validar:repertorios</code>.
+        Confira sempre a fonte original antes de usar em uma prova.
       </p>
 
       {/* Leitor de redação modelo */}
@@ -706,6 +889,116 @@ export function BibliotecaView() {
         </DialogContent>
       </Dialog>
     </div>
+  );
+}
+
+function BancoCitacaoCard({
+  citacao,
+  favorito,
+  onFavorito,
+  onCopiar,
+  onUsar,
+  onRepertorio,
+}: {
+  citacao: CitacaoBanco;
+  favorito: boolean;
+  onFavorito: () => void;
+  onCopiar: () => void;
+  onUsar: () => void;
+  onRepertorio: () => void;
+}) {
+  const tipo = TAGS_TIPO_BANCO.find((item) => citacao.tags.includes(item.tag))?.label ?? citacao.tipo;
+  const uso = citacao.tags.find((tag) => tag.startsWith("#uso-"));
+  const argumento = citacao.tags.find((tag) => tag.startsWith("#arg-"));
+  const tom = citacao.tags.find((tag) => tag.startsWith("#tom-"));
+  const natureza = naturezaCitacaoBanco(citacao);
+  const fonteIndicadaComoConfirmada = citacao.verificacao === "#fonte-confirmada";
+  const fonte = [citacao.fonte, citacao.ano, citacao.pagina].filter(Boolean).join(", ");
+
+  return (
+    <Card className="flex flex-col border-blue-500/15">
+      <CardHeader className="pb-2">
+        <div className="flex items-start justify-between gap-2">
+          <div className="flex flex-wrap gap-1.5">
+            <Badge variant="outline" className="text-[10px]">{citacao.eixo}</Badge>
+            <Badge variant="secondary" className="text-[10px]">{tipo}</Badge>
+            <Badge
+              variant="outline"
+              className={cn(
+                "text-[10px]",
+                fonteIndicadaComoConfirmada
+                  ? "border-sky-500/30 bg-sky-500/10 text-sky-200"
+                  : "border-amber-500/30 bg-amber-500/10 text-amber-200"
+              )}
+            >
+              {fonteIndicadaComoConfirmada ? "Banco: fonte confirmada" : "Conferir fonte"}
+            </Badge>
+            {natureza !== "citacao" && (
+              <Badge variant="outline" className="text-[10px]">
+                {natureza === "parafrase" ? "Paráfrase conceitual" : "Alusão literária"}
+              </Badge>
+            )}
+          </div>
+          <button
+            type="button"
+            onClick={onFavorito}
+            aria-label={favorito ? "Remover citação do Banco dos favoritos" : "Adicionar citação do Banco aos favoritos"}
+            className="shrink-0 text-muted-foreground hover:text-amber-400"
+          >
+            <Star className={cn("h-4 w-4", favorito && "fill-amber-400 text-amber-400")} />
+          </button>
+        </div>
+        <CardTitle className="text-sm font-medium leading-relaxed">
+          <Quote className="mr-1 inline h-3.5 w-3.5 text-blue-400" />
+          {textoLimpoBanco(citacao)}
+        </CardTitle>
+        <CardDescription className="text-xs">
+          — {citacao.autor}{citacao.autorInfo ? ` · ${citacao.autorInfo}` : ""}
+          <span className="ml-1 text-muted-foreground/80">({citacao.bancoId})</span>
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="mt-auto space-y-2 pt-0">
+        {fonte && <p className="text-[11px] text-muted-foreground">Fonte: {fonte}</p>}
+        {citacao.conceitoChave && (
+          <p className="rounded border border-blue-500/15 bg-blue-500/5 px-2 py-1 text-[11px]">
+            <span className="font-semibold text-blue-200">Conceito-chave:</span> {citacao.conceitoChave}
+          </p>
+        )}
+        {citacao.comoUsar && (
+          <p className="text-xs leading-relaxed text-muted-foreground">
+            <span className="font-semibold text-foreground/80">Como usar:</span> {citacao.comoUsar}
+          </p>
+        )}
+        <p className={cn(
+          "rounded border px-2 py-1 text-[10px] leading-relaxed",
+          fonteIndicadaComoConfirmada
+            ? "border-sky-500/20 bg-sky-500/5 text-sky-100/80"
+            : "border-amber-500/20 bg-amber-500/5 text-amber-200/90"
+        )}>
+          {fonteIndicadaComoConfirmada
+            ? "O Banco marca esta fonte como confirmada. A marca não substitui a conferência da obra ou da página original."
+            : "O Banco recomenda conferir a atribuição antes de usar. Este item não é uma citação verificada pelo Redação."}
+        </p>
+        <div className="flex flex-wrap gap-1">
+          {[uso, argumento, tom].filter((tag): tag is string => Boolean(tag)).map((tag) => (
+            <Badge key={tag} variant="outline" className="text-[9px] font-normal">
+              {rotuloTagBanco(tag)}
+            </Badge>
+          ))}
+        </div>
+        <div className="flex flex-wrap gap-1.5">
+          <Button size="xs" variant="outline" onClick={onCopiar}>
+            <Copy className="mr-1 h-3 w-3" /> Copiar modelo
+          </Button>
+          <Button size="xs" variant="outline" onClick={onRepertorio}>
+            <Sparkles className="mr-1 h-3 w-3" /> Usar no plano
+          </Button>
+          <Button size="xs" variant="ghost" onClick={onUsar}>
+            Inserir no rascunho <ArrowRight className="ml-1 h-3 w-3" />
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
   );
 }
 
