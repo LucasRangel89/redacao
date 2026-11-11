@@ -5,6 +5,9 @@ on:
     # O ambiente github-pages normalmente só permite deploy a partir da main.
     # Branches de trabalho são validadas pelo workflow ci.yml (sem deploy).
     branches: [main]
+  # Reconsulta o Banco diariamente, sem exigir alterações neste repositório.
+  schedule:
+    - cron: "23 6 * * *"
   workflow_dispatch:
 
 permissions:
@@ -37,6 +40,12 @@ jobs:
 
       - name: Regenerar acervo estruturado
         run: npm run recursos
+
+      - name: Sincronizar Banco de Citações
+        run: npm run sincronizar:banco
+
+      - name: Validar cópia do Banco de Citações
+        run: npm run validar:banco
 
       - name: Validar repertórios verificados
         run: npm run validar:repertorios

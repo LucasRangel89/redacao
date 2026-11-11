@@ -12,7 +12,9 @@ export type TipoCitacao =
   | "dados"
   | "historico"
   | "legal"
-  | "cultural";
+  | "cultural"
+  | "cientifico"
+  | "literario";
 
 export type EtiquetaParagrafo = "Introdução" | "Desenvolvimento" | "Conclusão";
 
@@ -35,6 +37,19 @@ export interface Citacao {
   tipo: TipoCitacao;
   temaId: string;
   area: string;
+  /** Metadados opcionais preservados nas citações importadas do Banco. */
+  origem?: "acervo" | "banco";
+  ano?: string;
+  pagina?: string;
+  conceitoChave?: string;
+  temaPrincipal?: string;
+  comoUsar?: string;
+  verificacao?: "#fonte-confirmada" | "#verificar-fonte";
+  tags?: string[];
+  autorInfo?: string;
+  autorArtigo?: string;
+  autorTipo?: "pessoa" | "norma" | "instituicao";
+  bancoId?: string;
 }
 
 export interface TemaAcervo {
@@ -68,6 +83,8 @@ export const TIPOS_CITACAO: { value: TipoCitacao; label: string }[] = [
   { value: "historico", label: "Histórico" },
   { value: "dados", label: "Dados" },
   { value: "cultural", label: "Cultural" },
+  { value: "cientifico", label: "Científico" },
+  { value: "literario", label: "Literário" },
 ];
 
 export const AREAS_ACERVO = Array.from(new Set(acervo.temas.map((t) => t.area))).sort();

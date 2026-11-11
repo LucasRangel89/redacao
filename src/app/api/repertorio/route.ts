@@ -13,11 +13,12 @@ evitando clichês (ex.: "sentido de vida" de Viktor Frankl repetido mecanicament
 
 REGRAS:
 - Filosófico/Sociológico: cite autor + obra e a ideia aplicável ao tema.
+- Científico: indique pesquisa, estudo ou publicação e os responsáveis; não invente números nem conclusões.
 - Dados: use instituições reais (IBGE, INEP, DataFolha, OMS, ONU, IPEA) e descreva a tendência sem inventar números
   precisos; quando houver, indique "dado amplamente divulgado" ou a ordem de grandeza aproximada com "≈".
 - Histórico: casos e marcos verificáveis com ano aproximado.
-- Legal: indique Constituição, lei, política pública ou documento internacional pertinentes.
-- Cultural: obras literárias, filmes, séries ou músicas com autoria correta.
+- Legal/Jurídico: indique Constituição, lei, política pública ou documento internacional pertinentes.
+- Literário/Cultural: obras, personagens ou acontecimentos culturais com autoria correta; diferencie citação literal de alusão e paráfrase.
 - "comoUsar": 1 frase ensinando a aplicar o repertório como base argumentativa (não escreva o parágrafo pronto).
 - Responda APENAS com JSON válido.`;
 

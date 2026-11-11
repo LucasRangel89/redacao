@@ -17,6 +17,13 @@ import {
   termos,
   type Citacao,
 } from "@/lib/recursos";
+import {
+  bancoCitacoes,
+  formatarCitacaoParaRedacao,
+  naturezaCitacaoBanco,
+  textoLimpoBanco,
+  type CitacaoBanco,
+} from "@/lib/banco-citacoes";
 import { CHECKLIST } from "@/data/guia";
 import {
   analisarTexto,
@@ -42,7 +49,24 @@ import type {
 } from "@/lib/types";
 
 const AVISO_LOCAL =
-  "Modo local (sem IA conectada): sugestões derivadas do acervo do projeto. Reescreva com as suas palavras.";
+  "Modo local (sem IA conectada): sugestões derivadas dos acervos do projeto. Reescreva com as suas palavras e confira as fontes.";
+const CITACOES_DISPONIVEIS: Citacao[] = [...acervo.citacoes, ...bancoCitacoes];
+
+function modeloCitacao(citacao: Citacao): string {
+  return citacao.origem === "banco"
+    ? formatarCitacaoParaRedacao(citacao as CitacaoBanco)
+    : `“${citacao.texto}” — ${citacao.autor}.`;
+}
+
+function textoCitacaoLocal(citacao: Citacao): string {
+  if (citacao.origem !== "banco") return `“${citacao.texto}”`;
+  const banco = citacao as CitacaoBanco;
+  const texto = textoLimpoBanco(banco);
+  const natureza = naturezaCitacaoBanco(banco);
+  if (natureza === "parafrase") return `[Paráfrase conceitual] ${texto}`;
+  if (natureza === "alusao") return `[Alusão literária] ${texto}`;
+  return `“${texto}”`;
+}
 
 // As heurísticas de revisão vivem em @/lib/analise-texto.ts (P1.2).
 
@@ -71,10 +95,15 @@ function citacoesRelevantes(tema: string, quantidade = 2): Citacao[] {
   const proximo = temaMaisProximo(tema);
   const doTema = proximo ? citacoesDoTema(proximo.id) : [];
   const palavras = termos(tema);
-  const ordenadas = [...acervo.citacoes].sort((a, b) => {
+  const ordenadas = [...CITACOES_DISPONIVEIS].sort((a, b) => {
     const score = (c: Citacao) => {
-      const texto = normalizar(`${c.texto} ${c.autor}`);
-      return palavras.reduce((acc, p) => acc + (texto.includes(p) ? 1 : 0), 0);
+      const texto = normalizar(
+        [c.texto, c.autor, c.fonte, c.area, c.conceitoChave, c.temaPrincipal, c.comoUsar, ...(c.tags ?? [])].join(" ")
+      );
+      const correspondencias = palavras.reduce((acc, p) => acc + (texto.includes(p) ? 1 : 0), 0);
+      const status =
+        c.verificacao === "#fonte-confirmada" ? 2 : c.verificacao === "#verificar-fonte" ? -1 : 0;
+      return correspondencias + status;
     };
     return score(b) - score(a);
   });
@@ -107,14 +136,14 @@ export function arquiteturaLocal(tema: string, teseAtual = ""): ArquiteturaSuges
       {
         topicoFrasal: `A ausência de mecanismos de controle e transparência agrava o quadro de “${alvo}”.`,
         repertorio: c1
-          ? `${c1.texto} — ${c1.autor}.`
+          ? modeloCitacao(c1)
           : `A legislação brasileira (LGPD e Constituição Federal) reconhece a proteção de dados como direito fundamental.`,
         analise: `Esse repertório revela que a fragilidade normativa não é apenas técnica: ela produz desconfiança e amplia a vulnerabilidade dos cidadãos. Logo, fiscalizar e tornar públicas as regras é condição para que a tese se concretize.`,
       },
       {
         topicoFrasal: `A desigualdade de acesso à informação perpetua os efeitos de “${alvo}”.`,
         repertorio: c2
-          ? `${c2.texto} — ${c2.autor}.`
+          ? modeloCitacao(c2)
           : `Estudos sobre inclusão digital mostram que o acesso desigual a tecnologias aprofunda disparidades sociais.`,
         analise: `Ao relacionar o repertório ao tema, percebe-se que políticas universais não atingem quem mais precisa. Por isso, a ação pública deve priorizar os grupos mais expostos, com metas e acompanhamento.`,
       },
@@ -132,11 +161,15 @@ export function repertorioLocal(tema: string, tipo: string): RepertorioSugestao[
   const palavras = termos(tema);
 
   const pontuarCitacao = (c: Citacao) => {
-    const texto = normalizar(`${c.texto} ${c.autor} ${c.fonte}`);
+    const texto = normalizar(
+      [c.texto, c.autor, c.fonte, c.area, c.conceitoChave, c.temaPrincipal, c.comoUsar, ...(c.tags ?? [])].join(" ")
+    );
     return (
       palavras.reduce((acc, p) => acc + (texto.includes(p) ? 2 : 0), 0) +
       (c.tipo === tipo ? 4 : 0) +
-      (proximo && c.temaId === proximo.id ? 3 : 0)
+      (proximo && c.temaId === proximo.id ? 3 : 0) +
+      (c.verificacao === "#fonte-confirmada" ? 2 : 0) -
+      (c.verificacao === "#verificar-fonte" ? 1 : 0)
     );
   };
 
@@ -153,21 +186,41 @@ export function repertorioLocal(tema: string, tipo: string): RepertorioSugestao[
   };
 
   const verificados = [...repertoriosVerificados]
+    .filter((r) => r.tipo === tipo)
     .sort((a, b) => pontuarVerificado(b) - pontuarVerificado(a))
     .slice(0, 3)
     .map(repertorioVerificadoComoSugestao);
 
-  const ordenadas = [...acervo.citacoes].sort((a, b) => pontuarCitacao(b) - pontuarCitacao(a));
+  const ordenadas = [...CITACOES_DISPONIVEIS].sort((a, b) => pontuarCitacao(b) - pontuarCitacao(a));
   const doTipo = ordenadas.filter((c) => c.tipo === tipo).slice(0, 3);
   const complemento = ordenadas.filter((c) => !doTipo.includes(c));
   const doAcervo = [...doTipo, ...complemento]
     .slice(0, Math.max(0, 5 - verificados.length))
-    .map((c) => ({
-      titulo: `“${c.texto.slice(0, 90)}${c.texto.length > 90 ? "…" : ""}”`,
-      fonte: c.autor,
-      ideiaCentral: c.texto,
-      comoUsar: `Cite ${c.autor} no início do parágrafo e, em seguida, explique como a ideia comprova seu tópico frasal: “Isso demonstra que…”. Confira a atribuição antes de usar.`,
-    }));
+    .map((c) => {
+      const citacaoBanco = c.origem === "banco" ? (c as CitacaoBanco) : null;
+      const texto = citacaoBanco ? textoLimpoBanco(citacaoBanco) : c.texto;
+      const referenciaBanco = citacaoBanco
+        ? ` · ${c.fonte}${c.ano ? `, ${c.ano}` : ""}`
+        : "";
+      const avisoFonte = c.verificacao === "#fonte-confirmada"
+        ? "O Banco marca esta fonte como confirmada; confira a referência original antes de citar."
+        : c.verificacao === "#verificar-fonte"
+          ? "O Banco recomenda conferir esta fonte antes de usar."
+          : "Confira a atribuição antes de usar.";
+      const natureza = citacaoBanco ? naturezaCitacaoBanco(citacaoBanco) : "citacao";
+      const trecho = `${texto.slice(0, 90)}${texto.length > 90 ? "…" : ""}`;
+      const titulo = natureza === "parafrase"
+        ? `Paráfrase conceitual: ${trecho}`
+        : natureza === "alusao"
+          ? `Alusão literária: ${trecho}`
+          : `“${trecho}”`;
+      return {
+        titulo,
+        fonte: `${c.autor}${referenciaBanco}`,
+        ideiaCentral: texto,
+        comoUsar: `${c.comoUsar ?? `Cite ${c.autor} no início do parágrafo e explique como a ideia comprova seu tópico frasal.`} ${avisoFonte}`,
+      };
+    });
 
   return [...verificados, ...doAcervo];
 }
@@ -238,7 +291,7 @@ export function chatLocal(mensagens: ChatMessage[], contexto: ContextoMentor = {
     const stats = analisarTexto(contexto.trechoTexto);
     corpo = `Li o trecho ${tema}: ~${stats.palavras} palavras, ${stats.paragrafos} blocos e ${stats.conectivosDistintos} conectivos distintos.\n\n${stats.pontosFracos[0] ?? "O próximo passo é revisar o encadeamento entre os parágrafos."}\n\nO que você quer melhorar primeiro: **estrutura**, **repertório** ou **coesão**?`;
   } else {
-    corpo = `Vamos começar pelo essencial ${tema}. Responda em uma frase: **qual é a sua tese?**\n\nDepois me diga quais dois argumentos a sustentam. Eu não vou escrever o texto por você — vou fazer as perguntas que um corretor faria.\n\nSe ainda não escolheu tema, explore a **Biblioteca** (${acervo.totalTemas} dossiês, ${acervo.totalRedacoes} redações modelo e ${acervo.totalCitacoes} citações).`;
+    corpo = `Vamos começar pelo essencial ${tema}. Responda em uma frase: **qual é a sua tese?**\n\nDepois me diga quais dois argumentos a sustentam. Eu não vou escrever o texto por você — vou fazer as perguntas que um corretor faria.\n\nSe ainda não escolheu tema, explore a **Biblioteca** (${acervo.totalTemas} dossiês, ${acervo.totalRedacoes} redações modelo, ${acervo.totalCitacoes} citações locais e ${bancoCitacoes.length} do Banco de Citações).`;
   }
   return `${intro}\n\n${corpo}`;
 }
@@ -257,11 +310,23 @@ export function buscaLocal(query: string): BuscaResultado {
           normalizar(`${t.titulo} ${t.enunciado} ${t.area} ${t.resumo}`).includes(nq) ||
           termos(query).some((p) => normalizar(t.titulo).includes(p))
       ),
-      citacoes: acervo.citacoes.filter(
-        (c) =>
-          normalizar(`${c.texto} ${c.autor}`).includes(nq) ||
-          termos(query).some((p) => normalizar(c.texto).includes(p))
-      ),
+      citacoes: CITACOES_DISPONIVEIS.filter((c) => {
+        const textoCitacao = normalizar(
+          [c.id, c.texto, c.autor, c.fonte, c.area, c.conceitoChave, c.temaPrincipal, c.comoUsar, ...(c.tags ?? [])].join(" ")
+        );
+        return (
+          textoCitacao.includes(nq) ||
+          termos(query).some((p) => textoCitacao.includes(p))
+        );
+      }).sort((a, b) => {
+        const peso = (citacao: Citacao) =>
+          citacao.verificacao === "#fonte-confirmada"
+            ? 1
+            : citacao.verificacao === "#verificar-fonte"
+              ? -1
+              : 0;
+        return peso(b) - peso(a);
+      }),
     };
   })();
 
@@ -274,14 +339,19 @@ export function buscaLocal(query: string): BuscaResultado {
   return {
     sintese:
       temas.length || citacoes.length || verificados.length
-        ? `Busca local no acervo do projeto (sem acesso à web): ${verificados.length} repertório(s) verificado(s), ${temas.length} dossiê(s) temático(s) e ${citacoes.length} citação(ões) relacionadas a “${query}”. Abra a Biblioteca para ler os textos completos.`
+        ? `Busca local nos acervos integrados (sem acesso à web): ${verificados.length} repertório(s) verificado(s), ${temas.length} dossiê(s) temático(s) e ${citacoes.length} citação(ões) relacionadas a “${query}”. Abra a Biblioteca para ler os textos completos.`
         : `Não encontrei correspondência direta para “${query}” no acervo local. Tente termos mais amplos (ex.: "educação", "tecnologia") ou conecte uma chave de IA para busca fundamentada na web.`,
     dados: [
       ...verificados.map((r) => ({
         dado: `“${r.texto}” — ${r.autor}`,
         fonte: `Fonte verificada · ${r.fonte}`,
       })),
-      ...citacoes.slice(0, 6).map((c) => ({ dado: `“${c.texto}” — ${c.autor}`, fonte: `Acervo local · ${c.tipo}` })),
+      ...citacoes.slice(0, 6).map((c) => ({
+        dado: `${c.origem === "banco" && c.verificacao === "#verificar-fonte" ? "[Conferir fonte] " : ""}${textoCitacaoLocal(c)} — ${c.autor}`,
+        fonte: c.origem === "banco"
+          ? `Banco de Citações · ${c.verificacao === "#fonte-confirmada" ? "marcada como confirmada pelo Banco" : "conferir fonte"} · ${c.fonte}`
+          : `Acervo local · ${c.tipo}`,
+      })),
     ].slice(0, 8),
     resultados: [
       ...verificados.map((r) => ({
@@ -292,7 +362,12 @@ export function buscaLocal(query: string): BuscaResultado {
       ...temas.slice(0, 4).map((t) =>
         fonteLocal(`Dossiê: ${t.titulo}`, `${t.redacoes.length} redações modelo · ${t.citacoes.length} citações · ${t.resumo.slice(0, 130)}`)
       ),
-      ...citacoes.slice(0, 4).map((c) => fonteLocal(`${c.autor}`, `Citação do acervo · ${c.texto.slice(0, 140)}`)),
+      ...citacoes.slice(0, 4).map((c) =>
+        fonteLocal(
+          `${c.origem === "banco" ? "Banco de Citações · " : ""}${c.autor}`,
+          `${c.origem === "banco" ? (c.verificacao === "#fonte-confirmada" ? "Fonte marcada como confirmada pelo Banco" : "Conferir fonte") : "Citação do acervo"} · ${textoCitacaoLocal(c).slice(0, 140)}`
+        )
+      ),
     ],
   };
 }
